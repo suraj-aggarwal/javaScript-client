@@ -2,55 +2,120 @@
   display: flex;
   margin: 2%;
   flex-direction: column;
-  background-color: white;
-  box-shadow: 10px 10px 13px -6px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 20px -7px rgba(0,0,0,0.75);
 }
-
-.menu__element {
-  padding: 1%;
+.menu-box {
   display: flex;
-  flex-direction: row;
-  border: 1px solid lightgray;
-}
-
-.option__element {
-  display: flex;
-  flex-direction: row;
+  border: 1px solid black;
 }
 
 .Checkout {
-  font-weight: bold;
   width: 30%;
-}
-
-.Shipping {
-}
-
-.Payment__Method::after {
-  content: " / ";
-}
-
-.Payment__Method {
   font-weight: bold;
 }
-
-.Payment__Method::before {
-  content: " / ";
+.Payment-Method::after {
+  content: "/";
 }
 
-.Confirmation {
-    width: 50%;
+.Payment-Method {
+  font-weight: bold;
+}
+.Payment-Method::before{
+  content: "/";
 }
 
-.Payment__Block {
-  border: 1px solid lightgray;
+.closeWindow {
+  padding: 0.5%;
+  margin-left: auto;
+}
+
+.option-box {
+  display: flex;
+  border: 1px solid black;
   border-top: 1px solid white;
-  width: 60%;
-  padding: 1%;
 }
 
-.Cart__Block {
+.Payment {
+  width: 60%;
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly ;
+}
+
+.cards > img {
+  height: 25%;
+  width: 25%;
+}
+
+.Payment > .addCards {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30%;
+  margin-top: 8%;
   width: 40%;
-  background-color: lightgray;
+  height: 35%;
+}
+
+.addCards > input {
+  height: 22%;
+  border-radius: 6%;
+}
+
+.addCards > button {
+  background-color: green;
+  height: 22%;
+  border-radius: 6%;
+}
+
+.addCards > span  {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 22%;
+}
+
+.addCards > span > input{
+  width: 45%;
+  border-radius: 6%;
+}
+
+.Cart {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  background-color: white;
+}
+.Cart > .item {
+  display: flex;
+  flex-direction: row ;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  flex: 1;
+}
+.item > img {
+  width: 12%;
+  height: 88%;
   padding: 1%;
+  background-color: lightgray;
+}
+
+.item > b {
+  margin-left: auto;
+}
+
+.Cart > span {
+  border: 0.5px solid lightgray;
+}
+
+.cost {
+  display: flex;
+  justify-content: space-between;
+}
+
+.totalcost {
+  display: flex;
+  justify-content: space-between;
 }
