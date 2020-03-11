@@ -20,11 +20,5 @@ border-color: red;
 font-weight: bold;
 `};
 `;
-// const P = styled.p`
-// color:red;
-// `;
-// const Text = styled.p`
-// font-weight:bold
-// `;
 
 export {Input};

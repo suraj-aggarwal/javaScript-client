@@ -1,0 +1,6 @@
+export const PUBLIC_IMAGE_CLOUD = 'images/cloud.jpg'
+export const PUBLIC_IMAGE_DEFAULT = 'images/default.png'
+export const PUBLIC_IMAGE_DNS = 'images/dns-server.png'
+export const PUBLIC_IMAGE_FULL_STACK = 'images/full-stack-web-development.jpg'
+export const PUBLIC_JS = 'images/js.jpg'
+export const PUBLIC_LOAD_BALANCER = 'images/load-balancer.png'

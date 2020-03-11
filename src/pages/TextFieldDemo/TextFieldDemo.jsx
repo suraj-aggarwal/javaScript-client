@@ -1,15 +1,13 @@
 import React from "react";
-import { TextField } from "../../components/index";
+import { TextField, Slider } from "../../components/index";
 
 class TextFieldDemo extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     
     return (
       <>
+        <Slider/>
         <p> The disabled input</p>
         <br />
         <TextField
