@@ -16,15 +16,8 @@ font-weight: bold;
 `};
 ${(props) => props.value === '101'
 && css`
-border-color: red;
 font-weight: bold;
 `};
 `;
-// const P = styled.p`
-// color:red;
-// `;
-// const Text = styled.p`
-// font-weight:bold
-// `;
 
-export {Input};
+export { Input };

@@ -7,10 +7,13 @@
     "@testing-library/react": "^9.4.1",
     "@testing-library/user-event": "^7.2.1",
     "commitizen": "^4.0.3",
+    "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-scripts": "3.4.0",
-    "styled-components": "^5.0.1"
+    "roundround": "^0.2.0",
+    "styled-components": "^5.0.1",
+    "yup": "^0.28.3"
   },
   "husky": {
     "hooks": {
@@ -19,7 +22,7 @@
     }
   },
   "scripts": {
-    "lint": "npm run lint",
+    "lint": "eslint --ext .jsx --ext .js ./src",
     "lint:fix": "npm run lint --fix",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -46,32 +49,5 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "husky": "^4.2.3"
-  },
-  "parser": "babel-eslint",
-  "env": {
-    "browser": true,
-    "node": true,
-    "jest": true
-  },
-  "extends": [
-    "airbnb"
-  ],
-  "rules": {
-    "indent": [
-      2,
-      2
-    ],
-    "react/jsx-indent": [
-      "error",
-      2
-    ],
-    "import/prefer-default-export": "off"
-  },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "ecmaFeatures": {
-      "jsx": true,
-      "classes": true
-    }
   }
 }

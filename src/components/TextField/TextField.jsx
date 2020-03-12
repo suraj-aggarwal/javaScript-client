@@ -1,26 +1,28 @@
-import React from "react";
-import {Input} from './style';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Input } from './style';
 
-class TextField extends React.Component {
-  constructor(props) {
-    console.log("--------Inside TextField Constructor---------");
-    super(props);
-  }
-
-  render() {
-    console.log("--------Inside TextField Constructor---------", this.props);
-    const { value, disabled, error } = this.props;
-    return (
-      <div>
-        <Input
-          type="text"
-          value={value}
-          disabled = {disabled}
-        />
-        {error}
-      </div>
-    );
-  }
+function TextField(props) {
+  console.log('--------Inside TextField Constructor---------', props);
+  const { value, disabled, error } = props;
+  return (
+    <div>
+      <Input type="text" value={value} disabled={disabled} />
+      <p style={{ color: 'red' }}>{error}</p>
+    </div>
+  );
 }
+
+TextField.propTypes = {
+  value: PropTypes.string,
+  disabled: PropTypes.bool,
+  error: PropTypes.string,
+};
+
+TextField.defaultProps = {
+  value: '',
+  disabled: false,
+  error: '',
+};
 
 export { TextField };
