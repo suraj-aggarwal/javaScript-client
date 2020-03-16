@@ -1,2 +1,2 @@
-export  { default as TextField } from './TextField/index';
-export {default as Slider } from './Slider/index';
+export { default as TextField } from './TextField';
+export { default as Slider } from './Slider';

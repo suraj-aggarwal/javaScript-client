@@ -1,81 +1,66 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getNextRoundRobin, getRandomNumber } from "../../libs/utils/math";
-import Img from  './style';
-import {
-  PUBLIC_IMAGE_CLOUD,
-  PUBLIC_IMAGE_DEFAULT,
-  PUBLIC_IMAGE_DNS,
-  PUBLIC_IMAGE_FULL_STACK,
-  PUBLIC_JS,
-  PUBLIC_LOAD_BALANCER
-} from "../../config/constants";
+import { DEFAULT_BANNER_IMAGE } from "../../config/constants";
+import { getRandomNumber, getRoundRobin } from "../../libs/utils/math";
+import Img from "./style";
 
-class Slider extends React.Component {
+class Slider extends Component {
   constructor(props) {
     console.log("Inside Slider");
     super(props);
     this.state = {
-      path: "images/default.png",
-      current: 0
+      index: 0
     };
   }
 
-  static defaultProps = {
-    path: "images/default.png",
-    altText: "default Banner",
-    defaultBanner: "default.png",
-    duration: 2000,
-    height: 200,
-    random: false,
-  };
-
   componentDidMount() {
-    console.log("Inside componentDidMount");
-    this.timerID = setInterval(() => {
+    const { duration } = this.props;
+    this.timerId = setInterval(() => {
       this.tick();
-    }, 2000);
+    }, duration);
   }
 
-  componentWillMount() {
-    clearInterval(this.timerID);
+  componentWillUnmount() {
+    clearInterval(this.timerId);
   }
 
   tick() {
-    const banner = [
-      PUBLIC_IMAGE_CLOUD,
-      PUBLIC_IMAGE_DEFAULT,
-      PUBLIC_IMAGE_DNS,
-      PUBLIC_IMAGE_FULL_STACK,
-      PUBLIC_JS,
-      PUBLIC_LOAD_BALANCER
-    ];
-    let index = this.props.random
-      ? parseInt(getRandomNumber(7))
-      : getNextRoundRobin(banner.length, this.state.current);
-    if (!this.props.random) {
-      this.setState({
-        current: index
-      });
-    }
+    const { random, banners } = this.props;
+    const index = random
+      ? getRandomNumber(banners.length)
+      : getRoundRobin(this.state.index, banners.length);
     this.setState({
-      path: banner[index]
+      index: index
     });
   }
 
   render() {
+    const { height, banners } = this.props;
+    const { index } = this.state;
     return (
-      <>
-        <div>
-          <Img
-            src={this.state.path}
-            alt={this.props.altText}
-            height={this.props.height}
-          />
-        </div>
-      </>
+      <div>
+        <Img src={banners[index]} alt="" height={height} />
+      </div>
     );
   }
 }
+
+Slider.propTypes = {
+  altText: PropTypes.string,
+  defaultBanner: PropTypes.string,
+  banners: PropTypes.array,
+  duration: PropTypes.number,
+  height: PropTypes.number,
+  random: PropTypes.bool
+};
+
+Slider.defaultProps = {
+  altText: "Default Banner",
+  defaultBanner: DEFAULT_BANNER_IMAGE,
+  banners: [DEFAULT_BANNER_IMAGE],
+  duration: 2000,
+  height: 200,
+  random: false
+};
 
 export { Slider };

@@ -16,9 +16,8 @@ font-weight: bold;
 `};
 ${(props) => props.value === '101'
 && css`
-border-color: red;
 font-weight: bold;
 `};
 `;
 
-export {Input};
+export { Input };
