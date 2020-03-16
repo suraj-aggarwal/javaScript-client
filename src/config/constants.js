@@ -13,3 +13,11 @@ export const banners  = [
     JS,
     FULL_STACK,
 ]
+export const selectOptions = [
+    {label: 'select', value: 'select'},
+    {label: 'football', value: 'football'},
+    {label: 'cricket', value: 'cricket'}
+]
+
+export const cricketRoles = []
+export const footballRoles = []
