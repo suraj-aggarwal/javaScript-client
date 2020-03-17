@@ -19,5 +19,23 @@ export const selectOptions = [
     {label: 'cricket', value: 'cricket'}
 ]
 
-export const cricketRoles = []
-export const footballRoles = []
+export const cricketRoles = [
+    {label: 'wicket keeper', value: 'wicket keeper'},
+    {label: 'bowler', value: 'bowler'},
+    {label: 'batsman', value: 'batsman'},
+    {label: 'All rounder' , value: 'All rounder'}
+]
+export const footballRoles = [
+    {label: 'striker', value: 'striker'},
+    {label: 'goal keeper', value: 'goal keeper'}
+]
+
+const sportsRoles = new Map();
+
+sportsRoles.set('cricket', cricketRoles);
+sportsRoles.set('football', footballRoles);
+
+export const cricket = 'cricket'
+export const football = 'football'
+export const select = 'select'
+export {sportsRoles};
