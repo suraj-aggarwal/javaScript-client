@@ -11,6 +11,7 @@ export function SelectField(props) {
                     return <option value={value}>{label}</option>
                 })}
             </Select>
+            <p style={{ color: 'red' }}>{error}</p>
         </div>
     );
 }

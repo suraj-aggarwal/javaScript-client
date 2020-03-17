@@ -20,6 +20,7 @@ function RadioGroup(props) {
           </>
         );
       })}
+      <p style={{ color: 'red' }}>{error}</p>
     </>
   );
 }

@@ -1,3 +1,5 @@
+import * as yup from 'yup';
+
 export const PUBLIC_IMAGE_FOLDER = '/images/';
 export const DEFAULT_BANNER_IMAGE = 'images/default.png';
 export const DNS_SERVER = 'images/dns-server.png';
@@ -38,4 +40,10 @@ sportsRoles.set('football', footballRoles);
 export const cricket = 'cricket'
 export const football = 'football'
 export const select = 'select'
-export {sportsRoles};
+
+const validateForm = yup.object().shape({
+    name: yup.string().min(3).required(),
+    sport: yup.string().required()
+})
+
+export {sportsRoles, validateForm};
