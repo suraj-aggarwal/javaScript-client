@@ -1,15 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { DEFAULT_BANNER_IMAGE } from "../../config/constants";
-import { getRandomNumber, getRoundRobin } from "../../libs/utils/math";
-import Img from "./style";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { DEFAULT_BANNER_IMAGE } from '../../config/constants';
+import { getRandomNumber, getRoundRobin } from '../../libs/utils/math';
+import Img from './style';
 
 class Slider extends Component {
   constructor(props) {
-    console.log("Inside Slider");
     super(props);
     this.state = {
-      index: 0
+      index: 0,
     };
   }
 
@@ -30,7 +29,7 @@ class Slider extends Component {
       ? getRandomNumber(banners.length)
       : getRoundRobin(this.state.index, banners.length);
     this.setState({
-      index: index
+      index,
     });
   }
 
@@ -51,16 +50,16 @@ Slider.propTypes = {
   banners: PropTypes.array,
   duration: PropTypes.number,
   height: PropTypes.number,
-  random: PropTypes.bool
+  random: PropTypes.bool,
 };
 
 Slider.defaultProps = {
-  altText: "Default Banner",
+  altText: 'Default Banner',
   defaultBanner: DEFAULT_BANNER_IMAGE,
   banners: [DEFAULT_BANNER_IMAGE],
   duration: 2000,
   height: 200,
-  random: false
+  random: false,
 };
 
 export { Slider };
