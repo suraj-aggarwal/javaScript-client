@@ -21,6 +21,7 @@ function RadioGroup(props) {
           <br />
         </>
       ))}
+      <p style={{ color: 'red' }}>{error}</p>
     </>
   );
 }
@@ -29,7 +30,7 @@ RadioGroup.propTypes = {
   error: propTypes.string,
   value: propTypes.string.isRequired,
   onChange: propTypes.func.isRequired,
-  options: propTypes.array,
+  options: propTypes.arrayOf,
 };
 
 RadioGroup.defaultProps = {
