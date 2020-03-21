@@ -29,7 +29,6 @@ class InputDemo extends Component {
       this.setState({
         allErrors: {},
       });
-      console.log(result);
     } catch (err) {
       const parsedErrors = {};
       err.inner.forEach((ValidationError) => {
@@ -105,8 +104,7 @@ class InputDemo extends Component {
           error={allErrors.role}
         />
         <Button style={this.hasErros() ? {} : { 'background-color': 'green' }} disabled={!!this.hasErros()} value="submit"> </Button>
-        <Button disabled={!!this.hasErros()} value="cancel"> </Button>
-
+        <Button disabled={!this.hasErros()} value="cancel"> </Button>
       </form>
     );
   }
