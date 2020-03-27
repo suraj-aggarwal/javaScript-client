@@ -1,0 +1,56 @@
+.co--main {
+  display: flex;
+  margin: 2%;
+  flex-direction: column;
+  background-color: white;
+  box-shadow: 10px 10px 13px -6px rgba(0, 0, 0, 0.75);
+}
+
+.menu__element {
+  padding: 1%;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid lightgray;
+}
+
+.option__element {
+  display: flex;
+  flex-direction: row;
+}
+
+.Checkout {
+  font-weight: bold;
+  width: 30%;
+}
+
+.Shipping {
+}
+
+.Payment__Method::after {
+  content: " / ";
+}
+
+.Payment__Method {
+  font-weight: bold;
+}
+
+.Payment__Method::before {
+  content: " / ";
+}
+
+.Confirmation {
+    width: 50%;
+}
+
+.Payment__Block {
+  border: 1px solid lightgray;
+  border-top: 1px solid white;
+  width: 60%;
+  padding: 1%;
+}
+
+.Cart__Block {
+  width: 40%;
+  background-color: lightgray;
+  padding: 1%;
+}
