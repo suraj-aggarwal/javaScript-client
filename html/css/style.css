@@ -1,56 +1,185 @@
+
 .co--main {
   display: flex;
-  margin: 2%;
   flex-direction: column;
+  margin-left: 100px;
+  margin-right: 100px;
+  box-shadow: 10px 10px 20px -7px rgba(0,0,0,0.75);
   background-color: white;
-  box-shadow: 10px 10px 13px -6px rgba(0, 0, 0, 0.75);
 }
 
-.menu__element {
-  padding: 1%;
+body {
+  background-image: url(../../images/background.jpg);
+}
+.menu-box {
   display: flex;
-  flex-direction: row;
-  border: 1px solid lightgray;
+  background-color: white;
+  border: 1px solid black;
 }
 
-.option__element {
+.option-box {
   display: flex;
-  flex-direction: row;
+  float: 5;
+  background-color: white;
 }
-
 .Checkout {
-  font-weight: bold;
   width: 30%;
-}
-
-.Shipping {
-}
-
-.Payment__Method::after {
-  content: " / ";
-}
-
-.Payment__Method {
   font-weight: bold;
 }
-
-.Payment__Method::before {
-  content: " / ";
+.Payment-Method::after {
+  content: "/";
 }
 
-.Confirmation {
-    width: 50%;
+.Payment-Method {
+  font-weight: bold;
+}
+.Payment-Method::before{
+  content: "/";
 }
 
-.Payment__Block {
-  border: 1px solid lightgray;
+.closeWindow {
+  padding: 0.5%;
+  margin-left: auto;
+}
+
+.option-box {
+  display: flex;
+  border: 1px solid black;
   border-top: 1px solid white;
-  width: 60%;
-  padding: 1%;
+  background-color: white;
 }
 
-.Cart__Block {
-  width: 40%;
-  background-color: lightgray;
-  padding: 1%;
+.cards {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly ;
 }
+
+.cards > img {
+  height: 25%;
+  width: 25%;
+}
+
+.Payment > .addCards {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30%;
+  margin-top: 8%;
+  width: 40%;
+  height: 35%;
+}
+
+.addCards > input {
+  height: 22%;
+  border-radius: 6%;
+}
+
+.addCards > button {
+  background-color: green;
+  height: 22%;
+  border-radius: 6%;
+}
+
+.addCards > span  {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 22%;
+}
+
+.addCards > span > input{
+  width: 45%;
+  border-radius: 6%;
+}
+
+.Cart {
+  display: flex;
+  flex-direction: column;
+  background-color: lightgray;
+  flex: 2;
+}
+.Cart > .item {
+  display: flex;
+  flex-direction: row ;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  flex: 1;
+}
+.item > img {
+  width: 12%;
+  height: 88%;
+  padding: 1%;
+  background-color: lightgray;
+}
+
+.item > b {
+  margin-left: auto;
+}
+
+.Cart > span {
+  border: 0.5px solid black;
+}
+
+.cost {
+  display: flex;
+  justify-content: space-between;
+}
+
+.totalcost {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Payment {
+  flex: 3;
+}
+
+@media only screen and (max-width: 922px) {
+  .co--main {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+@media (max-width: 922px) and (min-width:768px) {
+  .Payment {
+    flex: 1;
+  }
+  .Cart {
+    flex: 1;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .Shipping {
+    display: none;
+  }
+  .Payment-Method{
+    display: none;
+  }
+
+  .Confirmation{
+    display: none;
+
+  }
+}
+
+@media (max-width: 400px) {
+  .Payment > img {
+    widows: 100%;
+  }
+  .option-box {
+    flex-direction: column-reverse;
+  }
+  .cards {
+    flex-direction: column;
+    padding: 2%;
+  }
+  .cards > img {
+    width: 100%;
+    padding-top: 2%;
+  }
+}
+
+
