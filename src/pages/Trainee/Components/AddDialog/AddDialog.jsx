@@ -5,8 +5,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid } from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import MailIcon from '@material-ui/icons/Mail';
+import PersonIcon from '@material-ui/icons/Person';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 
 export default class AddDialog extends Component {
@@ -46,7 +48,7 @@ export default class AddDialog extends Component {
 
   render() {
     const { userName, password, email } = this.state;
-    const { open, onClose, onSubmit } = this.props;
+    const { open, onClose } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
         <DialogContent>
@@ -61,6 +63,13 @@ export default class AddDialog extends Component {
             label="Name"
             type="text"
             variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon />
+                </InputAdornment>
+              ),
+            }}
             value={userName}
             fullWidth
           />
@@ -72,6 +81,13 @@ export default class AddDialog extends Component {
             label="Email Address"
             type="email"
             variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailIcon />
+                </InputAdornment>
+              ),
+            }}
             value={email}
             fullWidth
           />
@@ -84,6 +100,13 @@ export default class AddDialog extends Component {
             id="name"
             label="Password"
             type="Password"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="end">
+                  <VisibilityOffIcon />
+                </InputAdornment>
+              ),
+            }}
             value={password}
             variant="outlined"
           />
@@ -93,6 +116,13 @@ export default class AddDialog extends Component {
             margin="dense"
             id="name"
             label="Confirm Password"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <VisibilityOffIcon />
+                </InputAdornment>
+              ),
+            }}
             type="Password"
             value={password}
             variant="outlined"
