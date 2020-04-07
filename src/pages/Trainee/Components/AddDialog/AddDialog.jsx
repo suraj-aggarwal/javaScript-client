@@ -15,34 +15,48 @@ export default class AddDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: '',
-      email: '',
-      password: '',
-      touched: [],
+      touched: {},
+      error: {},
     };
   }
-
-  handlerOnChangeUserName = (e) => {
+  handleOnChange = (field) => ({ target: { value } }) => {
     this.setState({
-      userName: e.target.value,
+      [field]: value,
+    });
+    this.getError(field);
+  }
+
+  isTouched = (field) => {
+    const { touched } = this.state;
+    touched[field] = true;
+    this.setState({
+      touched,
     });
   }
 
-  handlerOnChangeEmail = (e) => {
-    this.setState({
-      email: e.target.value,
-    });
+  getError = (field) => {
+    const { touched, error } = this.state;
+    if (touched[field]) {
+      validateTrainee.validateAt(field, this.state)
+        .then(() => {
+          delete error[field];
+          this.setState({
+            error,
+          });
+        })
+        .catch((err) => {
+          error[field] = err.message;
+          this.setState({
+            error,
+          });
+        });
+    }
   }
 
-
-  handlerOnChangePassword = (e) => {
-    this.setState({
-      password: e.target.value,
-    });
+  hasError = () => {
+    const { error, touched } = this.state;
+    return (Object.keys(error).length !== 0) && (Object.keys(touched).length > 3);
   }
-
-  isTouched = () => {
-
   }
 
 
