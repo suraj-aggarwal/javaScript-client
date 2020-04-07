@@ -5,48 +5,64 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid } from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import MailIcon from '@material-ui/icons/Mail';
+import PersonIcon from '@material-ui/icons/Person';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { validateTrainee } from '../../../../config/constants';
 
 
 export default class AddDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: '',
-      email: '',
-      password: '',
-      touched: [],
+      touched: {},
+      error: {},
     };
   }
 
-  handlerOnChangeUserName = (e) => {
+  handleOnChange = (field) => ({ target: { value } }) => {
     this.setState({
-      userName: e.target.value,
+      [field]: value,
+    });
+    this.getError(field);
+  }
+
+  isTouched = (field) => {
+    const { touched } = this.state;
+    touched[field] = true;
+    this.setState({
+      touched,
     });
   }
 
-  handlerOnChangeEmail = (e) => {
-    this.setState({
-      email: e.target.value,
-    });
+  getError = (field) => {
+    const { touched, error } = this.state;
+    if (touched[field]) {
+      validateTrainee.validateAt(field, this.state)
+        .then(() => {
+          delete error[field];
+          this.setState({
+            error,
+          });
+        })
+        .catch((err) => {
+          error[field] = err.message;
+          this.setState({
+            error,
+          });
+        });
+    }
   }
 
-
-  handlerOnChangePassword = (e) => {
-    this.setState({
-      password: e.target.value,
-    });
+  hasError = () => {
+    const { error, touched } = this.state;
+    return (Object.keys(error).length !== 0) && (Object.keys(touched).length > 3);
   }
-
-  isTouched = () => {
-
-  }
-
 
   render() {
-    const { userName, password, email } = this.state;
-    const { open, onClose, onSubmit } = this.props;
+    const { error, name, email, password, confirmPassword } = this.state;
+    const { open, onClose } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
         <DialogContent>
@@ -54,55 +70,95 @@ export default class AddDialog extends Component {
             Add Trainee
           </DialogContentText>
           <TextField
-            onChange={this.handlerOnChangeUserName}
+            onChange={this.handleOnChange('name')}
+            onClick={() => this.isTouched('name')}
             autoFocus
+            error={error.name}
+            helperText={error.name}
             margin="dense"
             id="name"
             label="Name"
             type="text"
             variant="outlined"
-            value={userName}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon />
+                </InputAdornment>
+              ),
+            }}
+            value={name}
             fullWidth
           />
           <TextField
-            onChange={this.handlerOnChangeEmail}
+            onChange={this.handleOnChange('email')}
+            onBlur={() => this.isTouched('email')}
+            error={error.email}
+            helperText={error.email}
             autoFocus
             margin="dense"
             id="name"
             label="Email Address"
             type="email"
             variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailIcon />
+                </InputAdornment>
+              ),
+            }}
             value={email}
             fullWidth
           />
         </DialogContent>
         <DialogContent spacing={2}>
           <TextField
-            onChange={this.handlerOnChangePassword}
+            onChange={this.handleOnChange('password')}
+            onBlur={() => this.isTouched('password')}
             autoFocus
+            error={error.password}
+            helperText={error.password}
             margin="dense"
             id="name"
             label="Password"
             type="Password"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="end">
+                  <VisibilityOffIcon />
+                </InputAdornment>
+              ),
+            }}
             value={password}
             variant="outlined"
           />
           <TextField
-            onChange={this.handlerOnChangePassword}
+            onChange={this.handleOnChange('confirmPassword')}
+            onBlur={() => this.isTouched('confirmPassword')}
             autoFocus
+            error={error.confirmPassword}
+            helperText={error.confirmPassword}
             margin="dense"
             id="name"
             label="Confirm Password"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <VisibilityOffIcon />
+                </InputAdornment>
+              ),
+            }}
             type="Password"
-            value={password}
+            value={confirmPassword}
             variant="outlined"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handlerOnChangeEmail} color="primary" variant="outlined">
+          <Button onClick={onClose} color="primary" variant="outlined">
             Cancel
           </Button>
-          <Button onClick={this.handlerOnChangePassword} color="primary" variant="outlined">
+          <Button color="primary" variant="outlined" disabled={this.hasError()}>
             Submit
           </Button>
         </DialogActions>
