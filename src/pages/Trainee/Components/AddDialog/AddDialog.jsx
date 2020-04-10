@@ -9,6 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { validateTrainee } from '../../../../config/constants';
 
 
 export default class AddDialog extends Component {
@@ -19,6 +20,7 @@ export default class AddDialog extends Component {
       error: {},
     };
   }
+
   handleOnChange = (field) => ({ target: { value } }) => {
     this.setState({
       [field]: value,
@@ -57,11 +59,9 @@ export default class AddDialog extends Component {
     const { error, touched } = this.state;
     return (Object.keys(error).length !== 0) && (Object.keys(touched).length > 3);
   }
-  }
-
 
   render() {
-    const { userName, password, email } = this.state;
+    const { error, name, email, password, confirmPassword } = this.state;
     const { open, onClose } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
@@ -70,8 +70,11 @@ export default class AddDialog extends Component {
             Add Trainee
           </DialogContentText>
           <TextField
-            onChange={this.handlerOnChangeUserName}
+            onChange={this.handleOnChange('name')}
+            onClick={() => this.isTouched('name')}
             autoFocus
+            error={error.name}
+            helperText={error.name}
             margin="dense"
             id="name"
             label="Name"
@@ -84,11 +87,14 @@ export default class AddDialog extends Component {
                 </InputAdornment>
               ),
             }}
-            value={userName}
+            value={name}
             fullWidth
           />
           <TextField
-            onChange={this.handlerOnChangeEmail}
+            onChange={this.handleOnChange('email')}
+            onBlur={() => this.isTouched('email')}
+            error={error.email}
+            helperText={error.email}
             autoFocus
             margin="dense"
             id="name"
@@ -108,8 +114,11 @@ export default class AddDialog extends Component {
         </DialogContent>
         <DialogContent spacing={2}>
           <TextField
-            onChange={this.handlerOnChangePassword}
+            onChange={this.handleOnChange('password')}
+            onBlur={() => this.isTouched('password')}
             autoFocus
+            error={error.password}
+            helperText={error.password}
             margin="dense"
             id="name"
             label="Password"
@@ -125,8 +134,11 @@ export default class AddDialog extends Component {
             variant="outlined"
           />
           <TextField
-            onChange={this.handlerOnChangePassword}
+            onChange={this.handleOnChange('confirmPassword')}
+            onBlur={() => this.isTouched('confirmPassword')}
             autoFocus
+            error={error.confirmPassword}
+            helperText={error.confirmPassword}
             margin="dense"
             id="name"
             label="Confirm Password"
@@ -138,15 +150,15 @@ export default class AddDialog extends Component {
               ),
             }}
             type="Password"
-            value={password}
+            value={confirmPassword}
             variant="outlined"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handlerOnChangeEmail} color="primary" variant="outlined">
+          <Button onClick={onClose} color="primary" variant="outlined">
             Cancel
           </Button>
-          <Button onClick={this.handlerOnChangePassword} color="primary" variant="outlined">
+          <Button color="primary" variant="contained" disabled={this.hasError()}>
             Submit
           </Button>
         </DialogActions>

@@ -47,4 +47,25 @@ const validateForm = yup.object().shape({
   role: yup.string().required().label('what you do is Required.'),
 });
 
-export { sportsRoles, validateForm };
+const validateTrainee = yup.object().shape({
+  name: yup.string().min(3).required('Name is required'),
+  email: yup.string().required('email is required').email('enter valid email'),
+  password: yup.string().min(8).required('password must be atleast 8 character'),
+  confirmPassword: yup.string().required('must match password'),
+});
+
+export const validateLogin = yup.object().shape({
+  email: yup
+    .string()
+    .email()
+    .required('Email is required'),
+  password: yup
+    .string()
+    .required('password is required')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
+      'must contain 8 characters at least one \n uppercase one lowercase and one number',
+    ),
+});
+
+export { sportsRoles, validateForm, validateTrainee };
