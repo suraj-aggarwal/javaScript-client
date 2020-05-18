@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import propTypes from 'prop-types';
 import { Button } from '@material-ui/core';
 import { AddDialog } from './Components';
-import { Navbar } from '../components';
 
 class Trainee extends Component {
   constructor(props) {
@@ -28,7 +26,6 @@ class Trainee extends Component {
     const { open } = this.state;
     return (
       <div>
-        <Navbar />
         <br />
         <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
           Add Trainee
