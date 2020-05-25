@@ -15,8 +15,9 @@ function App() {
         <PrivateRoute exact path="/TextFieldDemo" component={TextFieldDemo} />
         <PrivateRoute exact path="/TextFiled" component={InputDemo} />
         <PrivateRoute exact path="/ChildernDemo" component={ChildernDemo} />
-        <PrivateRoute exact path="/Trainee" component={Trainee} />
+        <PrivateRoute path="/Trainee" component={Trainee} />
         <AuthRoute exact path="/login" component={Login} />
+        <PrivateRoute component={NotFound} />
         <Route path="/">
           <Redirect to="/login" />
           <NotFound />
