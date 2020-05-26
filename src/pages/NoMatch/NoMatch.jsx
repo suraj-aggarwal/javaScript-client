@@ -3,9 +3,10 @@ import React from 'react';
 function NotFound() {
   return (
     <div>
-      <p>
+      <h1>
         Not Found
-      </p>
+      </h1>
+      <p>seems like the page you are looking for does not exits.</p>
     </div>
   );
 }

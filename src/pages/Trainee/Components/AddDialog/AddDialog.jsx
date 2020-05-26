@@ -61,7 +61,9 @@ export default class AddDialog extends Component {
   }
 
   render() {
-    const { error, name, email, password, confirmPassword } = this.state;
+    const {
+      error, name, email, password, confirmPassword,
+    } = this.state;
     const { open, onClose } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
@@ -162,7 +164,6 @@ export default class AddDialog extends Component {
             Submit
           </Button>
         </DialogActions>
-
       </Dialog>
     );
   }
