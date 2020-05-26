@@ -5,11 +5,11 @@ export const LOAD_BALANCER = 'images/load-balancer.png  ';
 export const CLOUD = 'images/cloud.jpg';
 export const JS = 'images/js.jpg';
 export const FULL_STACK = 'images/full-stack-web-development.jpg';
-export const banners  = [
-    DEFAULT_BANNER_IMAGE,
-    DNS_SERVER,
-    LOAD_BALANCER,
-    CLOUD,
-    JS,
-    FULL_STACK,
-]
+export const banners = [
+  DEFAULT_BANNER_IMAGE,
+  DNS_SERVER,
+  LOAD_BALANCER,
+  CLOUD,
+  JS,
+  FULL_STACK,
+];

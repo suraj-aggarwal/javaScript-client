@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Input } from './style';
 
 function TextField(props) {
-  console.log('--------Inside TextField Constructor---------', props);
   const { value, disabled, error } = props;
   return (
     <div>
