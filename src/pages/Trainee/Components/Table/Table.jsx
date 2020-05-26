@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   table: {
@@ -40,3 +41,9 @@ export default function SimpleTable(props) {
     </TableContainer>
   );
 }
+
+SimpleTable.propTypes = {
+  id: PropTypes.string.isRequired,
+  data: PropTypes.objectOf(PropTypes.object).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
