@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField } from '../../components/index';
+import { TextField } from '../../components';
 
 function TextFieldDemo() {
   return (
@@ -17,5 +17,4 @@ function TextFieldDemo() {
     </div>
   );
 }
-
 export default TextFieldDemo;

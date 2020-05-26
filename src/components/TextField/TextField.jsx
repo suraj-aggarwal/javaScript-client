@@ -7,7 +7,7 @@ function TextField(props) {
   return (
     <div>
       <Input type="text" value={value} disabled={disabled} />
-      <p style={style}>{error}</p>
+      {error ? <p style={style}>{error}</p> : ''}
     </div>
   );
 }
