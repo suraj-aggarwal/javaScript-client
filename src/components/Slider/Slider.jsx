@@ -34,11 +34,11 @@ class Slider extends Component {
   }
 
   render() {
-    const { height, banners, altText } = this.props;
+    const { height, banners } = this.props;
     const { index } = this.state;
     return (
       <div>
-        banners ? <Img src={banners[index]} alt={altText} height={height} : defaultBanner />
+        <Img src={banners[index]} alt="" height={height} />
       </div>
     );
   }
@@ -62,5 +62,4 @@ Slider.defaultProps = {
   random: false,
 };
 
-export default  Slider;
-
+export default Slider;
