@@ -4,12 +4,16 @@ import { Link } from 'react-router-dom';
 import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
+import { getDateFormat } from '../../libs/utils/formatDate';
 
 class TraineeList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
+      orderBy: '',
+      order: '',
+      data: null,
     };
   }
 
@@ -25,9 +29,24 @@ class TraineeList extends Component {
     });
   }
 
+  handleSort = (field) => (event) => {
+    const { order } = this.state;
+    this.setState({
+      orderBy: field,
+      order: order === 'asc' ? 'desc' : 'asc',
+    });
+  }
+
+  handleSelect = (element) => (event) => {
+    this.setState({
+      data: element,
+    });
+  }
+
   render() {
-    const { open } = this.state;
+    const { open, orderBy, order, data } = this.state;
     const { match: { url } } = this.props;
+    console.log(data);
     return (
       <div>
         <br />
@@ -42,15 +61,25 @@ class TraineeList extends Component {
             {
               field: 'name',
               label: 'Name',
-              align: 'center',
             },
             {
               field: 'email',
               label: 'Email Address',
+              format: (value) => value && value.toUpperCase(),
+            },
+            {
+              field: 'createdAt',
+              label: 'Date',
+              align: 'right',
+              format: getDateFormat,
             },
           ]}
+          onSort={this.handleSort}
+          orderBy={orderBy}
+          order={order}
+          onSelect={this.handleSelect}
         />
-        {
+        {/* {
           trainees.map((elements) => (
             <React.Fragment key={elements.id}>
               <li>
@@ -58,7 +87,7 @@ class TraineeList extends Component {
               </li>
             </React.Fragment>
           ))
-        }
+        } */}
       </div>
     );
   }
