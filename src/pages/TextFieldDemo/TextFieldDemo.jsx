@@ -5,7 +5,7 @@ import { banners } from '../../config/constants';
 function TextFieldDemo() {
   return (
     <div>
-      <Slider random={false} banners={banners} />
+      <Slider random banners={banners} />
       <p> The disabled input</p>
       <TextField value="Disabled Input" disabled />
       <p> A valid Input</p>

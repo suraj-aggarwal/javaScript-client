@@ -1,7 +1,6 @@
 export const imagePath = '/images/';
-export const DEFAULT_BANNER_IMAGE = 'default.png';
+export const DEFAULT_BANNER_IMAGE = '/images/default.png';
 export const banners = [
-  'default.png',
   'dns-server.png',
   'load-balancer.png',
   'cloud.jpg',

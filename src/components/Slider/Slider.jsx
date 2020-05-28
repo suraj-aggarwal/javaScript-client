@@ -14,16 +14,16 @@ class Slider extends Component {
 
   componentDidMount() {
     const { duration } = this.props;
-    this.updateImage = setInterval(() => {
-      this.forEachDuration();
+    this.sliderDuration = setInterval(() => {
+      this.setImagePathIndex();
     }, duration);
   }
 
   componentWillUnmount() {
-    clearInterval(this.updateImage);
+    clearInterval(this.sliderDuration);
   }
 
-  forEachDuration() {
+  setImagePathIndex() {
     const { random, banners } = this.props;
     const { index } = this.state;
     const currentIndex = random
@@ -36,12 +36,13 @@ class Slider extends Component {
 
   render() {
     const {
-      height, banners, altText,
+      height, banners, altText, defaultBanner,
     } = this.props;
     const { index } = this.state;
+    const currentImagePath = banners.length ? `${imagePath}${banners[index]}` : defaultBanner;
     return (
       <div>
-        <Img src={`${imagePath}${banners[index]}`} alt={altText} height={height} />
+        <Img src={currentImagePath} alt={altText} height={height} />
       </div>
     );
   }
@@ -59,7 +60,7 @@ Slider.propTypes = {
 Slider.defaultProps = {
   altText: 'Default Banner',
   defaultBanner: DEFAULT_BANNER_IMAGE,
-  banners: [DEFAULT_BANNER_IMAGE],
+  banners: [],
   duration: 2000,
   height: 200,
   random: false,
