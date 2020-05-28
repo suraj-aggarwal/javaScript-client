@@ -1,9 +1,11 @@
 import React from 'react';
-import { TextField } from '../../components';
+import { TextField, Slider } from '../../components';
+import { banners } from '../../config/constants';
 
 function TextFieldDemo() {
   return (
     <div>
+      <Slider random banners={banners} />
       <p> The disabled input</p>
       <TextField value="Disabled Input" disabled />
       <p> A valid Input</p>
