@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
@@ -26,7 +27,8 @@ const useStyles = (theme) => ({
 
 function SimpleTable(props) {
   const {
-    id, data, columns, orderBy, order, onSort, onSelect, classes,
+    id, data, columns, orderBy, order, onSort, onSelect, classes, actions,rowsPerPage,
+    page, onChangePage, count, handleChangeRowsPerPage,
   } = props;
   return (
     <TableContainer component={Paper}>
@@ -52,16 +54,30 @@ function SimpleTable(props) {
         </TableHead>
         <TableBody>
           {data.map((element) => (
-            <TableRow key={element.id} className={classes.row} hover onMouseEnter={onSelect(element)}>
+            <TableRow key={element.id} className={classes.row} hover onClick={onSelect(element)}>
               {columns.map(({ field, align, format }) => (
                 <TableCell align={align}>
                   {format !== undefined ? format(element[field]) : element[field]}
+                </TableCell>
+              ))}
+              {actions.map(({ Icon, handler }) => (
+                <TableCell onClick={handler()}>
+                  {Icon}
                 </TableCell>
               ))}
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={count}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onChangePage={onChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </TableContainer>
   );
 }
@@ -75,6 +91,7 @@ SimpleTable.propTypes = {
   onSort: PropTypes.func,
   onSelect: PropTypes.func,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  actions: PropTypes.arrayOf(PropTypes.object),
 };
 
 SimpleTable.defaultProps = {
@@ -82,6 +99,7 @@ SimpleTable.defaultProps = {
   order: 'asc',
   onSort: () => { },
   onSelect: () => { },
+  actions: [],
 };
 
 export default withStyles(useStyles)(SimpleTable);
