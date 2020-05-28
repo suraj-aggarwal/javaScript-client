@@ -53,6 +53,7 @@ export default class EditDialog extends Component {
             label="Name"
             type="text"
             variant="outlined"
+            defaultValue={data}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -97,4 +98,6 @@ export default class EditDialog extends Component {
 
 EditDialog.propTypes = {
   openEditDialog: PropTypes.bool.isRequired,
+  handleEditClose: PropTypes.func.isRequired,
+  handleEdit: PropTypes.func.isRequired,
 };

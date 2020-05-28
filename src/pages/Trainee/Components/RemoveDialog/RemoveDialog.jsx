@@ -5,9 +5,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import PropTypes from 'prop-types';
 
 export default function RemoveDialog(props) {
-  const {openRemoveDialog, handleRemoveClose, handleRemove} = props;
+  const { openRemoveDialog, handleRemoveClose, handleRemove } = props;
   return (
     <div>
       <Dialog
@@ -33,3 +34,9 @@ export default function RemoveDialog(props) {
     </div>
   );
 }
+
+RemoveDialog.propTypes = {
+  openRemoveDialog: PropTypes.bool.isRequired,
+  handleRemoveClose: PropTypes.func.isRequired,
+  handleRemove: PropTypes.func.isRequired,
+};
