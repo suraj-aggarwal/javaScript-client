@@ -59,7 +59,7 @@ Slider.propTypes = {
 Slider.defaultProps = {
   altText: 'Default Banner',
   defaultBanner: DEFAULT_BANNER_IMAGE,
-  banners: [DEFAULT_BANNER_IMAGE],
+  banners: [],
   duration: 2000,
   height: 200,
   random: false,
