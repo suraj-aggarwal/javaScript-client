@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import * as moment from 'moment';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
@@ -27,12 +28,6 @@ class TraineeList extends Component {
   handlerOnClick = () => {
     this.setState({
       open: true,
-    });
-  }
-
-  handlerOnClose = () => {
-    this.setState({
-      open: false,
     });
   }
 
@@ -67,11 +62,17 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = () => {
+  handleRemove = (value) => {
+    const compareTo = '2019-02-14T18:15:11.778Z';
     const { data } = this.state;
+    const { createdAt } = data;
+    const isAfter = moment(createdAt).isAfter(compareTo);
     this.setState({
       openRemoveDialog: false,
     });
+    const message = isAfter ? 'This is Error Message' : 'This is Success Message';
+    const status = isAfter ? 'error' : 'success';
+    value(message, status);
     console.log('DELETE ITEM');
     console.log(data);
   }

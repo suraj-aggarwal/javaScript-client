@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
+import { alert } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
   const { openRemoveDialog, handleRemoveClose, handleRemove } = props;
@@ -26,9 +27,13 @@ export default function RemoveDialog(props) {
           <Button onClick={handleRemoveClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleRemove} color="primary" autoFocus>
-            Delete
-          </Button>
+          <alert.Consumer>
+            {(value) => (
+              <Button onClick={() => { handleRemove(value); }} color="primary" autoFocus>
+                       Delete
+              </Button>
+            )}
+          </alert.Consumer>
         </DialogActions>
       </Dialog>
     </div>
