@@ -69,4 +69,4 @@ class InputDemo extends Component {
   }
 }
 
-export { InputDemo };
+export default InputDemo;

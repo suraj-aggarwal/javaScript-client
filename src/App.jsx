@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputDemo } from './pages/index';
+import { InputDemo } from './pages';
 
 function App() {
   return (

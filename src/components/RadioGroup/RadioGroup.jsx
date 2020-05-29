@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-function RadioGroup(props) {
+export default function RadioGroup(props) {
   const {
     error, value, onChange, options, label,
   } = props;
@@ -29,12 +29,10 @@ RadioGroup.propTypes = {
   error: propTypes.string,
   value: propTypes.string.isRequired,
   onChange: propTypes.func.isRequired,
-  options: propTypes.array,
+  options: propTypes.arrayOf,
 };
 
 RadioGroup.defaultProps = {
   error: '',
   options: [],
 };
-
-export { RadioGroup };
