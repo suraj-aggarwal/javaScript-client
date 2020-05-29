@@ -27,7 +27,7 @@ const useStyles = (theme) => ({
 
 function SimpleTable(props) {
   const {
-    id, data, columns, orderBy, order, onSort, onSelect, classes, actions,rowsPerPage,
+    id, data, columns, orderBy, order, onSort, onSelect, classes, actions, rowsPerPage,
     page, onChangePage, count, handleChangeRowsPerPage,
   } = props;
   return (
@@ -92,6 +92,11 @@ SimpleTable.propTypes = {
   onSelect: PropTypes.func,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   actions: PropTypes.arrayOf(PropTypes.object),
+  rowsPerPage: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  count: PropTypes.number.isRequired,
+  handleChangeRowsPerPage: PropTypes.func.isRequired,
 };
 
 SimpleTable.defaultProps = {

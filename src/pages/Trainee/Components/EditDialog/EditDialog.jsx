@@ -11,93 +11,72 @@ import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
 
 
-export default class EditDialog extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      email: '',
-    };
-  }
-
-  handleOnChangeEmail = (event) => {
-    this.setState({
-      email: event.target.value,
-    });
-  }
-
-  handleOnChangeName = (event) => {
-    this.setState({
-      name: event.target.value,
-    });
-  }
-
-  render() {
-    const {
-      name, email,
-    } = this.state;
-    const {
-      openEditDialog, handleEditClose, handleEdit, data
-    } = this.props;
-    return (
-      <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
-        <DialogContent>
-          <DialogContentText>
+export default function EditDialog(props) {
+  const {
+    openEditDialog, handleEditClose, handleEdit, name, email, handleOnChangeEmail,
+    handleOnChangeName,
+  } = props;
+  return (
+    <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
+      <DialogContent>
+        <DialogContentText>
             Edit Trainee
-          </DialogContentText>
-          <TextField
-            onChange={this.handleOnChangeName}
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="text"
-            variant="outlined"
-            defaultValue={data}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon />
-                </InputAdornment>
-              ),
-            }}
-            value={name}
-            fullWidth
-          />
-          <TextField
-            onChange={this.handleOnChangeEmail}
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <MailIcon />
-                </InputAdornment>
-              ),
-            }}
-            value={email}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleEditClose} color="primary" variant="outlined">
+        </DialogContentText>
+        <TextField
+          onChange={handleOnChangeName()}
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Name"
+          type="text"
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <PersonIcon />
+              </InputAdornment>
+            ),
+          }}
+          value={name}
+          fullWidth
+        />
+        <TextField
+          onChange={handleOnChangeEmail()}
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <MailIcon />
+              </InputAdornment>
+            ),
+          }}
+          value={email}
+          fullWidth
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleEditClose} color="primary" variant="outlined">
             Cancel
-          </Button>
-          <Button onClick={() => { handleEdit(name, email); }} color="primary" variant="contained">
+        </Button>
+        <Button onClick={() => { handleEdit(); }} color="primary" variant="contained">
             Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 EditDialog.propTypes = {
   openEditDialog: PropTypes.bool.isRequired,
   handleEditClose: PropTypes.func.isRequired,
   handleEdit: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  handleOnChangeEmail: PropTypes.func.isRequired,
+  handleOnChangeName: PropTypes.func.isRequired,
 };

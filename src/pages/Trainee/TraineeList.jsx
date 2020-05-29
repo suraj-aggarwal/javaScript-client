@@ -19,6 +19,8 @@ class TraineeList extends Component {
       openEditDialog: false,
       page: 0,
       rowsPerPage: 10,
+      email: '',
+      name: '',
     };
   }
 
@@ -43,13 +45,17 @@ class TraineeList extends Component {
   }
 
   handleSelect = (element) => (event) => {
+    const { name, email } = element;
     this.setState({
       data: element,
     });
+    this.setState({
+      email,
+      name,
+    });
   }
 
-  handleRemoveOpen = (element) => (event) => {
-    console.log('-----------Remove------------');
+  handleRemoveOpen = () => (event) => {
     this.setState({
       openRemoveDialog: true,
     });
@@ -70,8 +76,7 @@ class TraineeList extends Component {
     console.log(data);
   }
 
-  handleEditOpen = (element) => (event) => {
-    console.log('-----------Remove------------');
+  handleEditOpen = () => (event) => {
     this.setState({
       openEditDialog: true,
     });
@@ -83,12 +88,13 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = (name, email) => {
+  handleEdit = () => {
+    const { email, name } = this.state;
     this.setState({
       openEditDialog: false,
     });
     console.log('Edit Data');
-    console.log({ name, email });
+    console.log({ email, name });
   }
 
 
@@ -105,9 +111,22 @@ class TraineeList extends Component {
     });
   };
 
+  handleOnChangeEmail = () => (event) => {
+    this.setState({
+      email: event.target.value,
+    });
+  }
+
+  handleOnChangeName = () => (event) => {
+    this.setState({
+      name: event.target.value,
+    });
+  }
+
   render() {
     const {
-      open, orderBy, order, data, openRemoveDialog, page, rowsPerPage, openEditDialog,
+      open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
+      email, name,
     } = this.state;
     const { match: { url } } = this.props;
     return (
@@ -121,7 +140,10 @@ class TraineeList extends Component {
           openEditDialog={openEditDialog}
           handleEditClose={this.handleEditClose}
           handleEdit={this.handleEdit}
-          data={data}
+          email={email}
+          name={name}
+          handleOnChangeEmail={this.handleOnChangeEmail}
+          handleOnChangeName={this.handleOnChangeName}
         />
         <RemoveDialog
           openRemoveDialog={openRemoveDialog}
