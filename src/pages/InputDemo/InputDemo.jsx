@@ -44,9 +44,9 @@ class InputDemo extends Component {
     const { name, sport } = this.state;
     return (
       <div>
-        <label htmlFor="textField">Name</label>
+        <label htmlFor="name">Name</label>
         <br />
-        <TextField value={name} onChange={this.handleNameChange} />
+        <TextField name="name" value={name} onChange={this.handleNameChange} />
         <br />
         <label htmlFor="">Select the game you play?</label>
         <br />
@@ -58,10 +58,9 @@ class InputDemo extends Component {
         <br />
         <br />
         <RadioGroup
-          value={sport}
+          value={sport === cricket || sport === football ? 'what you do?' : ''}
           onChange={this.handleRoleChange}
           options={sportsRoles.get(sport)}
-          label={sport === cricket || sport === football ? 'what you do?' : ''}
         />
         {console.log(this.state)}
       </div>

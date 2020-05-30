@@ -3,24 +3,25 @@ import propTypes from 'prop-types';
 
 export default function RadioGroup(props) {
   const {
-    error, value, onChange, options, label,
+    error, value, onChange, options,
   } = props;
   return (
     <>
-      <label htmlFor="">{label}</label>
+      <label for="selectField">{value}</label>
       <br />
-      {options.map(({ label, value }) => (
+      {options.map(({ tag, role }) => (
         <>
           <input
             type="radio"
-            value={value}
+            value={role}
             name="group"
             onChange={onChange}
           />
-          {label}
+          {tag}
           <br />
         </>
       ))}
+      {error ? <p style={{ color: 'red' }}>{error}</p> : ''}
     </>
   );
 }
@@ -29,7 +30,7 @@ RadioGroup.propTypes = {
   error: propTypes.string,
   value: propTypes.string.isRequired,
   onChange: propTypes.func.isRequired,
-  options: propTypes.arrayOf,
+  options: propTypes.arrayOf(propTypes.object),
 };
 
 RadioGroup.defaultProps = {

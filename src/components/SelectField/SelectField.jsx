@@ -9,9 +9,9 @@ export default function SelectField(props) {
   return (
     <div>
       <Select name={value} id={defaultText} onChange={onChange}>
-        {options.map(({ label, value }) => <option value={value}>{label}</option>)}
+        {options.map(({ label, sport }) => <option value={sport}>{label}</option>)}
       </Select>
-      <p style={{ color: 'red' }}>{error}</p>
+      {error ? <p style={{ color: 'red' }}>{error}</p> : ''}
     </div>
   );
 }
@@ -20,7 +20,7 @@ SelectField.propTypes = {
   error: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf,
+  options: PropTypes.arrayOf(PropTypes.object),
   defaultText: PropTypes.string,
 };
 
