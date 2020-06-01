@@ -11,6 +11,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import PropTypes from 'prop-types';
 import { validateTrainee } from '../../../../config/constants';
+import { alert } from '../../../../contexts';
 
 
 export default class AddDialog extends Component {
@@ -60,6 +61,7 @@ export default class AddDialog extends Component {
     const { error, touched } = this.state;
     return (Object.keys(error).length !== 0) && (Object.keys(touched).length > 3);
   }
+
 
   render() {
     const {
@@ -161,9 +163,13 @@ export default class AddDialog extends Component {
           <Button onClick={onClose} color="primary" variant="outlined">
             Cancel
           </Button>
-          <Button color="primary" variant="contained" disabled={this.hasError()}>
-            Submit
-          </Button>
+          <alert.Consumer>
+            {(value) => (
+              <Button onClick={() => { value('This is success message', 'success'); }} color="primary" variant="contained" disabled={this.hasError()}>
+                        Submit
+              </Button>
+            )}
+          </alert.Consumer>
         </DialogActions>
       </Dialog>
     );

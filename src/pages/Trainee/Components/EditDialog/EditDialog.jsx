@@ -9,7 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
-
+import { alert } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
@@ -63,9 +63,13 @@ export default function EditDialog(props) {
         <Button onClick={handleEditClose} color="primary" variant="outlined">
             Cancel
         </Button>
-        <Button onClick={() => { handleEdit(); }} color="primary" variant="contained">
-            Submit
-        </Button>
+        <alert.Consumer>
+          {(value) => (
+            <Button onClick={() => { handleEdit(value); }} color="primary" variant="contained">
+                        Submit
+            </Button>
+          )}
+        </alert.Consumer>
       </DialogActions>
     </Dialog>
   );

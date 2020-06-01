@@ -31,6 +31,12 @@ class TraineeList extends Component {
     });
   }
 
+  handlerOnClose = () => {
+    this.setState({
+      open: false,
+    });
+  }
+
   handleSort = (field) => (event) => {
     const { order } = this.state;
     this.setState({
@@ -89,11 +95,12 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = () => {
+  handleEdit = (value) => {
     const { email, name } = this.state;
     this.setState({
       openEditDialog: false,
     });
+    value('This is success message', 'success');
     console.log('Edit Data');
     console.log({ email, name });
   }
