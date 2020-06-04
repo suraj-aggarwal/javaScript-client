@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TextField, SelectField, RadioGroup } from '../../components';
 import {
-  selectOptions, sportsRoles,
+  selectOptions, sportsRoles, defaultSelect,
 } from '../../config/constants';
 
 class InputDemo extends Component {
@@ -24,6 +24,8 @@ class InputDemo extends Component {
   handleSportChange = (e) => {
     this.setState({
       sport: e.target.value,
+      cricket: '',
+      football: '',
     });
   };
 
@@ -48,7 +50,7 @@ class InputDemo extends Component {
           onChange={this.handleSportChange}
           options={selectOptions}
         />
-        {sport !== 'select' && sport.length ? <p> What you want to play? </p> : ''}
+        {sport !== defaultSelect && sport ? <p> What you want to play? </p> : ''}
         <RadioGroup
           value={sport === 'cricket' ? cricket : football}
           onChange={this.handleRoleChange}

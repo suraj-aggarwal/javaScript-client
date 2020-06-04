@@ -10,6 +10,7 @@ export default function RadioGroup(props) {
   const radioGroup = options.map(({ label, role }) => (
     <div>
       <input
+        key={label}
         type="radio"
         value={role}
         name={value}

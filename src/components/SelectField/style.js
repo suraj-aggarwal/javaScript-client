@@ -10,4 +10,8 @@ border-radius: 0.4em;
 `}
 `;
 
-export { Select };
+const style = {
+  color: 'red',
+};
+
+export { Select, style };

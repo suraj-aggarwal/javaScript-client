@@ -17,12 +17,8 @@ export const footballRoles = [
 
 const sportsRoles = { cricket: cricketRoles, football: footballRoles };
 
-// sportsRoles.set('cricket', cricketRoles);
-// sportsRoles.set('football', footballRoles);
+export const defaultSelect = 'select';
 
-export const cricket = 'cricket';
-export const football = 'football';
-export const select = 'select';
 export { sportsRoles };
 
 export const imagePath = '/images/';

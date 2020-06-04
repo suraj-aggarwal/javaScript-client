@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select } from './style';
+import { Select, style } from './style';
 
 export default function SelectField(props) {
   const {
@@ -18,7 +18,7 @@ export default function SelectField(props) {
       <Select name={value} id={defaultText} onChange={onChange}>
         {selectOptions}
       </Select>
-      {error ? <p style={{ color: 'red' }}>{error}</p> : ''}
+      {error ? <p style={style}>{error}</p> : ''}
     </div>
   );
 }
