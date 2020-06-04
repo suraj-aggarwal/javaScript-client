@@ -13,6 +13,11 @@ const useStyles = makeStyles(() => ({
 
 function Navbar() {
   const classes = useStyles();
+
+  const handleOnClick = () => {
+    localStorage.removeItem('token');
+  };
+
   return (
     <Box justifyItems="center">
       <AppBar position="static">
@@ -25,7 +30,7 @@ function Navbar() {
             <Button color="inherit" component={Link} to="TextFieldDemo">TEXT Field Demo</Button>
             <Button color="inherit" component={Link} to="TextFiled">INPUT DEMO</Button>
             <Button color="inherit" component={Link} to="ChildernDemo">CHILDERN DEMO</Button>
-            <Button color="inherit">Logout</Button>
+            <Button color="inherit" component={Link} to="login" onClick={handleOnClick}>Logout</Button>
           </div>
         </Toolbar>
       </AppBar>

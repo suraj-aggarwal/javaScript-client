@@ -53,7 +53,7 @@ const validateTrainee = yup.object().shape({
   password: yup.string().min(8).required('password must be atleast 8 character'),
   confirmPassword: yup.string().required('must match password'),
 });
-
+const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 export const validateLogin = yup.object().shape({
   email: yup
     .string()
@@ -63,7 +63,7 @@ export const validateLogin = yup.object().shape({
     .string()
     .required('password is required')
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
+      strongRegex,
       'must contain 8 characters at least one \n uppercase one lowercase and one number',
     ),
 });

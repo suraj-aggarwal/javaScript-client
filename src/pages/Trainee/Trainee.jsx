@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouteMatch, Route, Switch } from 'react-router-dom';
-import { TraineeList } from './TraineeList';
+import TraineeList from './TraineeList';
 import TraineeDetail from './TraineeDetails';
 
 const Trainee = () => {

@@ -9,17 +9,31 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
 import { validateTrainee } from '../../../../config/constants';
 import { alert } from '../../../../contexts';
+import { callApi } from '../../../../libs/utils/api';
 
+const useStyles = (theme) => ({
+  buttonProgress: {
+    position: 'absolute',
+    top: '70%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+});
 
-export default class AddDialog extends Component {
+class AddDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
       touched: {},
       error: {},
+      disabled: true,
+      loading: false,
     };
   }
 
@@ -62,12 +76,32 @@ export default class AddDialog extends Component {
     return (Object.keys(error).length !== 0) && (Object.keys(touched).length > 3);
   }
 
+  handleOnSubmit = (value) => {
+    const { email, name, password } = this.state;
+    const { onClose } = this.props;
+    this.setState({
+      loading: true,
+    });
+    callApi('post', '/api/trainee', { email, name, password })
+      .then((res) => {
+        value('This is success message', 'success');
+        console.log(res);
+      })
+      .catch((err) => { console.log(err); })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
+        onClose();
+      });
+  }
+
 
   render() {
     const {
-      error, name, email, password, confirmPassword,
+      error, name, email, password, confirmPassword, loading,
     } = this.state;
-    const { open, onClose } = this.props;
+    const { open, onClose, classes } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
         <DialogContent>
@@ -163,9 +197,10 @@ export default class AddDialog extends Component {
           <Button onClick={onClose} color="primary" variant="outlined">
             Cancel
           </Button>
+          {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
           <alert.Consumer>
             {(value) => (
-              <Button onClick={() => { value('This is success message', 'success'); }} color="primary" variant="contained" disabled={this.hasError()}>
+              <Button onClick={() => { this.handleOnSubmit(value); }} color="primary" variant="contained" disabled={this.hasError()}>
                         Submit
               </Button>
             )}
@@ -176,7 +211,10 @@ export default class AddDialog extends Component {
   }
 }
 
+export default withStyles(useStyles)(AddDialog);
+
 AddDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.bool.isRequired,
+  classes: PropTypes.objectOf(PropTypes.objectOf).isRequired,
 };

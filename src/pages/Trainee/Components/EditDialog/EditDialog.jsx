@@ -8,13 +8,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { alert } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
     openEditDialog, handleEditClose, handleEdit, name, email, handleOnChangeEmail,
-    handleOnChangeName,
+    handleOnChangeName, loading,
   } = props;
   return (
     <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
@@ -65,8 +66,9 @@ export default function EditDialog(props) {
         </Button>
         <alert.Consumer>
           {(value) => (
-            <Button onClick={() => { handleEdit(value); }} color="primary" variant="contained">
+            <Button onClick={() => { handleEdit(value); }} color="primary" variant="contained" disabled={loading}>
                         Submit
+              {loading && <CircularProgress size={24} />}
             </Button>
           )}
         </alert.Consumer>

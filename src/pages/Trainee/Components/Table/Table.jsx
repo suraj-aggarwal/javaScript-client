@@ -10,6 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
+import { withLoaderAndMessage } from '../../../../components';
 
 const useStyles = (theme) => ({
   table: {
@@ -31,44 +32,46 @@ function SimpleTable(props) {
     page, onChangePage, count, handleChangeRowsPerPage,
   } = props;
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow key={id}>
-            {columns.map((col) => (
-              <TableCell
-                className={classes.header}
-                align={col.align}
-                sortDirection={orderBy === col.field ? order : false}
-              >
-                <TableSortLabel
-                  active={orderBy === col.field}
-                  direction={orderBy === col.field ? order : 'asc'}
-                  onClick={onSort(col.field)}
+    <Paper>
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow key={id}>
+              {columns.map((col) => (
+                <TableCell
+                  className={classes.header}
+                  align={col.align}
+                  sortDirection={orderBy === col.field ? order : false}
                 >
-                  {col.label}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((element) => (
-            <TableRow key={element.id} className={classes.row} hover onClick={onSelect(element)}>
-              {columns.map(({ field, align, format }) => (
-                <TableCell align={align}>
-                  {format !== undefined ? format(element[field]) : element[field]}
-                </TableCell>
-              ))}
-              {actions.map(({ Icon, handler }) => (
-                <TableCell onClick={handler()}>
-                  {Icon}
+                  <TableSortLabel
+                    active={orderBy === col.field}
+                    direction={orderBy === col.field ? order : 'asc'}
+                    onClick={onSort(col.field)}
+                  >
+                    {col.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element) => (
+              <TableRow key={element.id} className={classes.row} hover onClick={onSelect(element)}>
+                {columns.map(({ field, align, format }) => (
+                  <TableCell align={align}>
+                    {format !== undefined ? format(element[field]) : element[field]}
+                  </TableCell>
+                ))}
+                {actions.map(({ Icon, handler }) => (
+                  <TableCell onClick={handler()}>
+                    {Icon}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -78,7 +81,7 @@ function SimpleTable(props) {
         onChangePage={onChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-    </TableContainer>
+    </Paper>
   );
 }
 
@@ -107,4 +110,4 @@ SimpleTable.defaultProps = {
   actions: [],
 };
 
-export default withStyles(useStyles)(SimpleTable);
+export default withStyles(useStyles)(withLoaderAndMessage(SimpleTable));

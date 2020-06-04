@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import * as moment from 'moment';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
-import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/formatDate';
+import { callApi } from '../../libs/utils/api';
+import { alert } from '../../contexts';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -22,7 +22,31 @@ class TraineeList extends Component {
       rowsPerPage: 10,
       email: '',
       name: '',
+      trainees: [],
+      loading: true,
+      dataLength: 0,
+      load: false,
     };
+  }
+
+  componentDidMount() {
+    const value = this.context;
+    callApi('get', '/api/trainee')
+      .then((res) => {
+        const response = res.records;
+        this.setState({
+          trainees: response,
+          dataLength: response.length,
+        });
+      })
+      .catch((err) => {
+        value(err.message, 'error');
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
+      });
   }
 
   handlerOnClick = () => {
@@ -69,18 +93,28 @@ class TraineeList extends Component {
   }
 
   handleRemove = (value) => {
-    const compareTo = '2019-02-14T18:15:11.778Z';
-    const { data } = this.state;
-    const { createdAt } = data;
-    const isAfter = moment(createdAt).isAfter(compareTo);
+    const { data, trainees } = this.state;
     this.setState({
-      openRemoveDialog: false,
+      load: true,
     });
-    const message = isAfter ? 'This is Error Message' : 'This is Success Message';
-    const status = isAfter ? 'error' : 'success';
-    value(message, status);
-    console.log('DELETE ITEM');
-    console.log(data);
+    callApi('delete', `/api/trainee/${data.originalId}`)
+      .then(() => {
+        value('Trainee Deleted Successfully', 'success');
+        const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
+        trainees.splice(removeIndex, 1);
+        this.setState({
+          trainees,
+        });
+      })
+      .catch((err) => {
+        value(err.message, 'error');
+      })
+      .finally(() => {
+        this.setState({
+          openRemoveDialog: false,
+          load: false,
+        });
+      });
   }
 
   handleEditOpen = () => (event) => {
@@ -96,13 +130,37 @@ class TraineeList extends Component {
   }
 
   handleEdit = (value) => {
-    const { email, name } = this.state;
+    const {
+      email, name, data, trainees,
+    } = this.state;
     this.setState({
-      openEditDialog: false,
+      load: true,
     });
-    value('This is success message', 'success');
-    console.log('Edit Data');
-    console.log({ email, name });
+    callApi('put', '/api/trainee', { id: data.originalId, email, name })
+      .then(
+        () => {
+          value('This is success message', 'success');
+          const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
+            if (_id === data._id) {
+              return {
+                _id, ...rest, name, email,
+              };
+            }
+            return { _id, ...rest };
+          });
+          this.setState({
+            trainees: updatedList,
+          });
+        },
+      )
+      .catch((err) => {
+        value(err.message, 'error');
+      }).finally(() => {
+        this.setState({
+          openEditDialog: false,
+          load: false,
+        });
+      });
   }
 
 
@@ -114,7 +172,7 @@ class TraineeList extends Component {
 
   handleChangeRowsPerPage = (event) => {
     this.setState({
-      rowsPerPage: event.target.value,
+      rowsPerPage: parseInt(event.target.value, 10),
       page: 0,
     });
   };
@@ -125,6 +183,7 @@ class TraineeList extends Component {
     });
   }
 
+
   handleOnChangeName = () => (event) => {
     this.setState({
       name: event.target.value,
@@ -134,9 +193,9 @@ class TraineeList extends Component {
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name,
+      email, name, trainees, loading, dataLength, load,
     } = this.state;
-    const { match: { url } } = this.props;
+    const { match: { url }, classes } = this.props;
     return (
       <div>
         <br />
@@ -152,11 +211,13 @@ class TraineeList extends Component {
           name={name}
           handleOnChangeEmail={this.handleOnChangeEmail}
           handleOnChangeName={this.handleOnChangeName}
+          loading={load}
         />
         <RemoveDialog
           openRemoveDialog={openRemoveDialog}
           handleRemoveClose={this.handleRemoveClose}
           handleRemove={this.handleRemove}
+          loading={load}
         />
         <Table
           id="id"
@@ -194,10 +255,14 @@ class TraineeList extends Component {
           onChangePage={this.handleChangePage}
           rowsPerPage={rowsPerPage}
           handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+          loader={loading}
+          dataLength={dataLength}
         />
       </div>
     );
   }
 }
 
-export { TraineeList };
+export default TraineeList;
+
+TraineeList.contextType = alert;

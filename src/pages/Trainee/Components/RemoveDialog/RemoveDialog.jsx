@@ -3,13 +3,16 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import { alert } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
-  const { openRemoveDialog, handleRemoveClose, handleRemove } = props;
+  const {
+    openRemoveDialog, handleRemoveClose, handleRemove, loading,
+  } = props;
   return (
     <div>
       <Dialog
@@ -29,7 +32,8 @@ export default function RemoveDialog(props) {
           </Button>
           <alert.Consumer>
             {(value) => (
-              <Button onClick={() => { handleRemove(value); }} color="primary" autoFocus>
+              <Button onClick={() => { handleRemove(value); }} color="primary" variant="contained" autoFocus disabled={loading}>
+                {loading && <CircularProgress size={24} />}
                        Delete
               </Button>
             )}
