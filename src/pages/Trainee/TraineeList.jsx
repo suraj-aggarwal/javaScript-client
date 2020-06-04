@@ -92,7 +92,7 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = (value) => {
+  handleRemove = (value, event) => {
     const { data, trainees } = this.state;
     this.setState({
       load: true,
@@ -250,7 +250,7 @@ class TraineeList extends Component {
             Icon: <DeleteIcon />,
             handler: this.handleRemoveOpen,
           }]}
-          count={100}
+          count={trainees.length}
           page={page}
           onChangePage={this.handleChangePage}
           rowsPerPage={rowsPerPage}
