@@ -5,20 +5,20 @@ export const selectOptions = [
 ];
 
 export const cricketRoles = [
-  { tag: 'wicket keeper', role: 'wicket keeper' },
-  { tag: 'bowler', role: 'bowler' },
-  { tag: 'batsman', role: 'batsman' },
-  { tag: 'All rounder', role: 'All rounder' },
+  { label: 'wicket keeper', role: 'wicket keeper' },
+  { label: 'bowler', role: 'bowler' },
+  { label: 'batsman', role: 'batsman' },
+  { label: 'All rounder', role: 'All rounder' },
 ];
 export const footballRoles = [
-  { tag: 'striker', role: 'striker' },
-  { tag: 'goal keeper', role: 'goal keeper' },
+  { label: 'striker', role: 'striker' },
+  { label: 'goal keeper', role: 'goal keeper' },
 ];
 
-const sportsRoles = new Map();
+const sportsRoles = { cricket: cricketRoles, football: footballRoles };
 
-sportsRoles.set('cricket', cricketRoles);
-sportsRoles.set('football', footballRoles);
+// sportsRoles.set('cricket', cricketRoles);
+// sportsRoles.set('football', footballRoles);
 
 export const cricket = 'cricket';
 export const football = 'football';

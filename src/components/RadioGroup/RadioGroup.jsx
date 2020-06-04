@@ -1,28 +1,29 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { style } from './style';
 
 export default function RadioGroup(props) {
   const {
     error, value, onChange, options,
   } = props;
+
+  const radioGroup = options.map(({ label, role }) => (
+    <div>
+      <input
+        type="radio"
+        value={role}
+        name={value}
+        onChange={onChange}
+      />
+      {label}
+    </div>
+  ));
+
   return (
-    <>
-      <label for="selectField">{value}</label>
-      <br />
-      {options.map(({ tag, role }) => (
-        <>
-          <input
-            type="radio"
-            value={role}
-            name="group"
-            onChange={onChange}
-          />
-          {tag}
-          <br />
-        </>
-      ))}
-      {error ? <p style={{ color: 'red' }}>{error}</p> : ''}
-    </>
+    <div>
+      {radioGroup}
+      {error ? <p style={style}>{error}</p> : ''}
+    </div>
   );
 }
 

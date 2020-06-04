@@ -6,10 +6,17 @@ export default function SelectField(props) {
   const {
     error, value, onChange, options, defaultText,
   } = props;
+
+  const selectOptions = options.map(({ label, sport }) => (
+    <option key={label} value={sport}>
+      {label}
+    </option>
+  ));
+
   return (
     <div>
       <Select name={value} id={defaultText} onChange={onChange}>
-        {options.map(({ label, sport }) => <option value={sport}>{label}</option>)}
+        {selectOptions}
       </Select>
       {error ? <p style={{ color: 'red' }}>{error}</p> : ''}
     </div>

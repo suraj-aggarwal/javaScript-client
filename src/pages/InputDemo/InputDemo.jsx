@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TextField, SelectField, RadioGroup } from '../../components';
 import {
-  selectOptions, sportsRoles, cricket, football,
+  selectOptions, sportsRoles,
 } from '../../config/constants';
 
 class InputDemo extends Component {
@@ -29,38 +29,30 @@ class InputDemo extends Component {
 
   handleRoleChange = (e) => {
     const { sport } = this.state;
-    if (sport === cricket) {
-      this.setState({
-        cricket: e.target.value,
-      });
-    } else {
-      this.setState({
-        football: e.target.value,
-      });
-    }
-  };
+    this.setState({
+      [sport]: e.target.value,
+    });
+  }
 
   render() {
-    const { name, sport } = this.state;
+    const {
+      name, sport, cricket, football,
+    } = this.state;
     return (
       <div>
-        <label htmlFor="name">Name</label>
-        <br />
+        <p> Name </p>
         <TextField name="name" value={name} onChange={this.handleNameChange} />
-        <br />
-        <label htmlFor="">Select the game you play?</label>
-        <br />
+        <p>Select the game you play?</p>
         <SelectField
           value={sport}
           onChange={this.handleSportChange}
           options={selectOptions}
         />
-        <br />
-        <br />
+        {sport !== 'select' && sport.length ? <p> What you want to play? </p> : ''}
         <RadioGroup
-          value={sport === cricket || sport === football ? 'what you do?' : ''}
+          value={sport === 'cricket' ? cricket : football}
           onChange={this.handleRoleChange}
-          options={sportsRoles.get(sport)}
+          options={sportsRoles[sport]}
         />
         {console.log(this.state)}
       </div>
