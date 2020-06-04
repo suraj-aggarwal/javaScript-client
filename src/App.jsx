@@ -1,11 +1,13 @@
 import React from 'react';
-import { TextFieldDemo } from './pages';
+import { InputDemo } from './pages';
 
 function App() {
   return (
-    <div className="App">
-      <TextFieldDemo />
-    </div>
+    <>
+      <div className="App">
+        <InputDemo />
+      </div>
+    </>
   );
 }
 

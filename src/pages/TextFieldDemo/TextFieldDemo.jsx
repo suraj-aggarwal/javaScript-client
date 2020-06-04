@@ -4,19 +4,18 @@ import { banners } from '../../config/constants';
 
 function TextFieldDemo() {
   return (
-    <div>
-      <Slider random banners={banners} />
+    <>
+      <Slider random={false} banners={banners} />
       <p> The disabled input</p>
+      <br />
       <TextField value="Disabled Input" disabled />
+      <br />
       <p> A valid Input</p>
       <TextField value="Accessiable" disabled={false} />
       <p> An input with Error</p>
-      <TextField
-        value="101"
-        error="Could not be greater than"
-        disabled={false}
-      />
-    </div>
+      <br />
+      <TextField value="101" error="Could not be greater than" />
+    </>
   );
 }
 export default TextFieldDemo;
