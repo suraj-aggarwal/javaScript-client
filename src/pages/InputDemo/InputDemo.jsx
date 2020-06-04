@@ -50,7 +50,7 @@ class InputDemo extends Component {
           onChange={this.handleSportChange}
           options={selectOptions}
         />
-        {sport !== defaultSelect && sport ? <p> What you want to play? </p> : ''}
+        {sport && sport !== defaultSelect ? <p> What you want to play? </p> : ''}
         <RadioGroup
           value={sport === 'cricket' ? cricket : football}
           onChange={this.handleRoleChange}
