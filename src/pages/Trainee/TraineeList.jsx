@@ -19,24 +19,28 @@ class TraineeList extends Component {
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 5,
       email: '',
       name: '',
       trainees: [],
       loading: true,
       dataLength: 0,
+      count: 0,
       load: false,
     };
   }
 
   componentDidMount() {
     const value = this.context;
-    callApi('get', '/api/trainee')
+    const params = { skip: 0, limit: 20 };
+    callApi('get', '/api/trainee', {}, params)
       .then((res) => {
-        const response = res.records;
+        console.log(res);
+        const { records } = res;
         this.setState({
-          trainees: response,
-          dataLength: response.length,
+          trainees: records,
+          dataLength: records.length,
+          count: records.length,
         });
       })
       .catch((err) => {
@@ -102,8 +106,16 @@ class TraineeList extends Component {
         value('Trainee Deleted Successfully', 'success');
         const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
         trainees.splice(removeIndex, 1);
+        const { page, count, rowsPerPage } = this.state;
+        const mod = count % rowsPerPage;
+        if (mod === 1) {
+          this.setState({
+            page: page - 1,
+          });
+        }
         this.setState({
           trainees,
+          count: count - 1,
         });
       })
       .catch((err) => {
@@ -138,7 +150,8 @@ class TraineeList extends Component {
     });
     callApi('put', '/api/trainee', { id: data.originalId, email, name })
       .then(
-        () => {
+        (res) => {
+          console.log(res);
           value('This is success message', 'success');
           const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
             if (_id === data._id) {
@@ -193,7 +206,7 @@ class TraineeList extends Component {
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name, trainees, loading, dataLength, load,
+      email, name, trainees, loading, dataLength, load, count,
     } = this.state;
     const { match: { url }, classes } = this.props;
     return (
@@ -250,7 +263,7 @@ class TraineeList extends Component {
             Icon: <DeleteIcon />,
             handler: this.handleRemoveOpen,
           }]}
-          count={trainees.length}
+          count={count}
           page={page}
           onChangePage={this.handleChangePage}
           rowsPerPage={rowsPerPage}

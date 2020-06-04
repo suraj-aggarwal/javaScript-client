@@ -16,7 +16,7 @@ import { validateTrainee } from '../../../../config/constants';
 import { alert } from '../../../../contexts';
 import { callApi } from '../../../../libs/utils/api';
 
-const useStyles = (theme) => ({
+const useStyles = () => ({
   buttonProgress: {
     position: 'absolute',
     top: '70%',
@@ -84,10 +84,12 @@ class AddDialog extends Component {
     });
     callApi('post', '/api/trainee', { email, name, password })
       .then((res) => {
-        value('This is success message', 'success');
+        value('Trainee Added sucessfully', 'success');
         console.log(res);
       })
-      .catch((err) => { console.log(err); })
+      .catch((err) => {
+        value(err.message, 'error');
+      })
       .finally(() => {
         this.setState({
           loading: false,

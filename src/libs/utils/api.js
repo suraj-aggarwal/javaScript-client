@@ -5,7 +5,7 @@ import queryString from 'querystring';
 dotenv.config();
 const baseurl = process.env.REACT_APP_API_URL;
 
-const callApi = (reqType, url, query) => {
+const callApi = (reqType, url, query, params) => {
   const res = axios({
     method: reqType,
     url: `${baseurl}${url}`,
@@ -13,10 +13,7 @@ const callApi = (reqType, url, query) => {
       'content-type': 'application/x-www-form-urlencoded',
       Authorization: localStorage.getItem('token'),
     },
-    params: {
-      limit: 0,
-      skip: 20,
-    },
+    params,
     data: queryString.stringify(query),
   }).then(({ data: { data } }) => data);
   return res;
