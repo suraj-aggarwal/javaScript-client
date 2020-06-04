@@ -176,7 +176,6 @@ class TraineeList extends Component {
       });
   }
 
-
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage,
