@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Button = styled.button`
+const CustomButton = styled.button`
 font-size: 1em;
 margin: 1em;
 float: right;
@@ -13,4 +13,4 @@ const style = {
   color: 'red',
 };
 
-export { Button, style };
+export { CustomButton, style };

@@ -4,7 +4,6 @@ import {
 } from '../../components';
 import {
   selectOptions, sportsRoles, defaultSelect, validateForm,
-  nameField, sportField, cricketField, footballField,
 } from '../../config/constants';
 
 class InputDemo extends Component {
@@ -17,47 +16,53 @@ class InputDemo extends Component {
       football: '',
       role: '',
       allErrors: {},
+      touched: {},
       disabled: true,
     };
   }
 
   hasError = () => {
-    const { name, role, sport } = this.state;
+    const {
+      name, role, sport,
+    } = this.state;
+    const error = {};
     validateForm.validate({ name, sport, role }, { abortEarly: false }).then(() => {
-      this.setState({
-        disabled: false,
-      });
+      this.setState({ disabled: false });
     })
-      .catch(() => {
+      .catch((err) => {
+        const values = Object.values(err.inner);
+        values.forEach((val) => {
+          error[val.path] = val.message;
+        });
+      })
+      .finally(() => {
         this.setState({
-          disabled: true,
+          allErrors: error,
         });
       });
   }
 
-  isTouched = (field, func) => {
-    const { allErrors } = this.state;
-    const fieldValue = this.state[field];
-    func.validate({ [field]: fieldValue }).then(() => {
-      allErrors[field] = '';
-      this.setState({
-        allErrors,
-      });
-    }).catch(
-      (err) => {
-        allErrors[field] = err.errors;
-        this.setState({
-          allErrors,
-        });
-      },
-    );
+  getError = (field) => {
+    const { touched, allErrors } = this.state;
+    if (touched[field]) {
+      return allErrors[field];
+    }
+    return '';
+  }
+
+  isTouched = (field) => {
+    const { touched } = this.state;
+    touched[field] = true;
+    this.setState({
+      touched,
+    });
+    this.hasError();
   }
 
   handleNameChange = (e) => {
     this.setState({
       name: e.target.value,
     });
-    this.isTouched('name', nameField);
     this.hasError();
   };
 
@@ -68,7 +73,6 @@ class InputDemo extends Component {
       football: '',
       role: '',
     });
-    this.isTouched('sport', sportField);
     this.hasError();
   };
 
@@ -78,33 +82,39 @@ class InputDemo extends Component {
       [sport]: e.target.value,
       role: e.target.value,
     });
-    if (sport === 'cricket') { this.isTouched('cricket', cricketField); } else { this.isTouched('football', footballField); }
     this.hasError();
   }
 
   render() {
     const {
-      name, sport, cricket, football, allErrors, disabled,
+      name, sport, cricket, football, disabled,
     } = this.state;
     return (
       <div>
         <p> Name </p>
-        <TextField name="name" value={name} onChange={this.handleNameChange} error={allErrors.name} />
+        <TextField
+          name="name"
+          value={name}
+          onChange={this.handleNameChange}
+          error={this.getError('name')}
+          onblur={() => { this.isTouched('name'); }}
+        />
         <p>Select the game you play?</p>
         <SelectField
           value={sport}
           onChange={this.handleSportChange}
           options={selectOptions}
-          error={allErrors.sport}
+          error={this.getError('sport')}
+          onblur={() => { this.isTouched('sport'); }}
         />
         {sport && sport !== defaultSelect ? <p> What you want to play? </p> : ''}
         <RadioGroup
           value={sport === 'cricket' ? cricket : football}
           onChange={this.handleRoleChange}
           options={sportsRoles[sport]}
-          error={sport === 'cricket' ? allErrors.cricket : allErrors.football}
+          error={this.getError('role')}
+          onblur={() => { this.isTouched('role'); }}
         />
-        {console.log(this.state)}
         <Button style={disabled ? {} : { 'background-color': 'green' }} disabled={disabled} value="submit"> </Button>
         <Button disabled={disabled} value="cancel"> </Button>
       </div>

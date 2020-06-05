@@ -39,20 +39,4 @@ const validateForm = yup.object().shape({
   role: yup.string().required().label('what you do is Required.'),
 });
 
-export const nameField = yup.object().shape({
-  name: yup.string().min(3).required(),
-});
-
-export const sportField = yup.object().shape({
-  sport: yup.string().required(),
-});
-
-export const cricketField = yup.object().shape({
-  cricket: yup.string().required().label('what you do is Required.'),
-});
-
-export const footballField = yup.object().shape({
-  football: yup.string().required().label('what you do is Required.'),
-});
-
 export { validateForm };

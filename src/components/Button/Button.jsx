@@ -1,13 +1,13 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import { Button } from './style';
+import { CustomButton } from './style';
 
-export default function customButton(props) {
+export default function Button(props) {
   const {
     color, disabled, value, onClick, style,
   } = props;
   return (
-    <Button
+    <CustomButton
       color={color}
       vlaue={value}
       disabled={disabled}
@@ -15,11 +15,11 @@ export default function customButton(props) {
       style={style}
     >
       {value}
-    </Button>
+    </CustomButton>
   );
 }
 
-customButton.propTypes = {
+Button.propTypes = {
   color: propTypes.string,
   disabled: propTypes.bool,
   style: propTypes.objectOf,
@@ -27,7 +27,7 @@ customButton.propTypes = {
   onClick: propTypes.func.isRequired,
 };
 
-customButton.defaultProps = {
+Button.defaultProps = {
   color: 'green',
   disabled: false,
   style: {},
