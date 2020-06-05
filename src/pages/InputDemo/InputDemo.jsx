@@ -3,7 +3,8 @@ import {
   TextField, SelectField, RadioGroup, Button,
 } from '../../components';
 import {
-  selectOptions, sportsRoles, defaultSelect, validateForm, nameField, sportField, cricketField, footballField,
+  selectOptions, sportsRoles, defaultSelect, validateForm,
+  nameField, sportField, cricketField, footballField,
 } from '../../config/constants';
 
 class InputDemo extends Component {
