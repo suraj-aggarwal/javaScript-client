@@ -1,27 +1,25 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import {buttonStyle} from './style';
+import { Button } from './style';
 
-function Button(props) {
+export default function customButton(props) {
   const {
     color, disabled, value, onClick, style,
   } = props;
   return (
-    <>
-      <button
-        color={color}
-        vlaue={value}
-        disabled={disabled}
-        onClick={onClick}
-        style={style}
-      >
-        {value}
-      </button>
-    </>
+    <Button
+      color={color}
+      vlaue={value}
+      disabled={disabled}
+      onClick={onClick}
+      style={style}
+    >
+      {value}
+    </Button>
   );
 }
 
-Button.propTypes = {
+customButton.propTypes = {
   color: propTypes.string,
   disabled: propTypes.bool,
   style: propTypes.objectOf,
@@ -29,10 +27,8 @@ Button.propTypes = {
   onClick: propTypes.func.isRequired,
 };
 
-Button.defaultProps = {
+customButton.defaultProps = {
   color: 'green',
   disabled: false,
   style: {},
 };
-
-export { Button };
