@@ -1,3 +1,5 @@
+import * as yup from 'yup';
+
 export const selectOptions = [
   { label: 'select', sport: 'select' },
   { label: 'football', sport: 'football' },
@@ -30,3 +32,11 @@ export const banners = [
   'js.jpg',
   'full-stack-web-development.jpg',
 ];
+
+const validateForm = yup.object().shape({
+  name: yup.string().min(3).required(),
+  sport: yup.string().required(),
+  role: yup.string().required().label('what you do is Required.'),
+});
+
+export { validateForm };

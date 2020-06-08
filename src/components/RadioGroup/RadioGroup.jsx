@@ -4,7 +4,7 @@ import { style } from './style';
 
 export default function RadioGroup(props) {
   const {
-    error, value, onChange, options,
+    error, value, onChange, options, onblur,
   } = props;
 
   const radioGroup = options.map(({ label, role }) => (
@@ -15,6 +15,7 @@ export default function RadioGroup(props) {
         value={role}
         name={value}
         onChange={onChange}
+        onBlur={onblur}
       />
       {label}
     </div>
@@ -33,6 +34,7 @@ RadioGroup.propTypes = {
   value: propTypes.string.isRequired,
   onChange: propTypes.func.isRequired,
   options: propTypes.arrayOf(propTypes.object),
+  onblur: propTypes.func.isRequired,
 };
 
 RadioGroup.defaultProps = {
