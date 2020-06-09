@@ -1,12 +1,12 @@
 import React from 'react';
-import { Math } from '../../components';
 import { Typography } from '@material-ui/core';
+import { Math } from '../../components';
 
 function ChildernDemo() {
   return (
     <div className="math">
-      <Typography variant="h6" >
-        <Math first={10} second={20} operator="*">
+      <Typography variant="h6">
+        <Math first={10} second={20} operator="/">
           {
             ({
               first, second, operator, result,
@@ -72,4 +72,4 @@ is
   );
 }
 
-export { ChildernDemo };
+export default ChildernDemo;

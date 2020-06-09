@@ -5,7 +5,6 @@ function Math(props) {
   const {
     first, second, operator, children,
   } = props;
-  console.log(first, second, operator);
   let result;
   return (
     <div>
@@ -20,7 +19,7 @@ Math.propTypes = {
   first: propTypes.number.isRequired,
   second: propTypes.number.isRequired,
   operator: propTypes.number.isRequired,
-  children: propTypes.func,
+  children: propTypes.objectOf(propTypes.object),
 };
 
 Math.defaultProps = {
@@ -68,4 +67,4 @@ Math.defaultProps = {
   },
 };
 
-export { Math };
+export default Math;
