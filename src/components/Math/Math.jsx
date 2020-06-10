@@ -1,16 +1,51 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
+
 function Math(props) {
   const {
     first, second, operator, children,
   } = props;
-  let result;
+  const getResult = () => {
+    switch (operator) {
+    case '+':
+      return (`${first + second}`);
+    case '*':
+      return (`${first * second}`);
+    case '-':
+      return (`${first - second}`);
+    case '/':
+      return (`${first / second}`);
+    default: return ('Invalid Operation');
+    }
+  };
+
+  const result = getResult();
+
+  const calculator = (
+    <div>
+      <div>
+        {` ${first}  + ${second} = ${first + second} `}
+      </div>
+      <div>
+        {` ${first} - ${second} = ${first - second} ` }
+      </div>
+      <div>
+        {` ${first} * ${second} = ${first * second} ` }
+      </div>
+      <div>
+        {` ${first} / ${second} = `}
+        {second ? `${first / second}` : 'Infinity'}
+      </div>
+    </div>
+  );
+
+
   return (
     <div>
-      {children({
+      { children ? children({
         first, second, operator, result,
-      })}
+      }) : calculator }
     </div>
   );
 }
@@ -19,18 +54,7 @@ Math.propTypes = {
   first: propTypes.number.isRequired,
   second: propTypes.number.isRequired,
   operator: propTypes.number.isRequired,
-  children: propTypes.objectOf(propTypes.object),
-};
-
-Math.defaultProps = {
-  children: () => (
-    <div>
-      <p> 7 + 4 = 11 </p>
-      <p> 7 - 3  = 4 </p>
-      <p> 7 / 4 = infinity </p>
-      <p> 7 ^ 8 = invalid operation </p>
-    </div>
-  ),
+  children: propTypes.func,
 };
 
 export default Math;
