@@ -6,7 +6,7 @@ function ChildernDemo() {
   return (
     <div className="math">
       <Typography variant="h6">
-        <Math first={10} second={20} operator="/">
+        <Math first={10} second={20} operator="+">
           {
             ({
               first, second, operator,
@@ -24,12 +24,14 @@ function ChildernDemo() {
                     {` multiplication of ${first}  ${operator} ${second} is ${first * second}`}
                   </div>
                 );
-              default:
+              case '/':
                 return (
                   <div>
-                    {` division of ${first}  ${operator} ${second} is ${first / second}`}
+                    {` division of ${first}  ${operator} ${second} is `}
+                    {second ? `${first / second}` : 'Infinity'}
                   </div>
                 );
+              default: return ('Invalid Operation');
               }
             }
           }
