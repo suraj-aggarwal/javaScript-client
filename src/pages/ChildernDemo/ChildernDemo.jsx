@@ -9,58 +9,25 @@ function ChildernDemo() {
         <Math first={10} second={20} operator="/">
           {
             ({
-              first, second, operator, result,
+              first, second, operator,
             }) => {
               switch (operator) {
               case '+':
-                result = first + second;
                 return (
                   <div>
-                    {' '}
-sum of
-                    {first}
-                    {' '}
-                    {operator}
-                    {' '}
-                    {second}
-                    {' '}
-is
-                    {' '}
-                    {result}
+                    {` sum of ${first}  ${operator} ${second} is ${first + second}`}
                   </div>
                 );
               case '*':
-                result = first * second;
                 return (
                   <div>
-                    {' '}
-mutliplication of
-                    {first}
-                    {' '}
-                    {operator}
-                    {' '}
-                    {second}
-                    {' '}
-is
-                    {' '}
-                    {result}
+                    {` multiplication of ${first}  ${operator} ${second} is ${first * second}`}
                   </div>
                 );
               default:
-                result = first / second;
                 return (
                   <div>
-                    {' '}
-division of
-                    {first}
-                    {' '}
-                    {operator}
-                    {' '}
-                    {second}
-                    {' '}
-is
-                    {' '}
-                    {result}
+                    {` division of ${first}  ${operator} ${second} is ${first / second}`}
                   </div>
                 );
               }

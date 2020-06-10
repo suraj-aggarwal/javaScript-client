@@ -23,48 +23,14 @@ Math.propTypes = {
 };
 
 Math.defaultProps = {
-  children: ({
-    first, second, operator, result,
-  }) => {
-    switch (operator) {
-    case '+':
-      result = first + second;
-      return (
-        <div>
-          {first}
-          {operator}
-          {second}
-          {' '}
-=
-          {result}
-        </div>
-      );
-    case '*':
-      result = first * second;
-      return (
-        <div>
-          {first}
-          {operator}
-          {second}
-          {' '}
-=
-          {result}
-        </div>
-      );
-    default:
-      result = first / second;
-      return (
-        <div>
-          {first}
-          {operator}
-          {second}
-          {' '}
-=
-          {result}
-        </div>
-      );
-    }
-  },
+  children: () => (
+    <div>
+      <p> 7 + 4 = 11 </p>
+      <p> 7 - 3  = 4 </p>
+      <p> 7 / 4 = infinity </p>
+      <p> 7 ^ 8 = invalid operation </p>
+    </div>
+  ),
 };
 
 export default Math;
