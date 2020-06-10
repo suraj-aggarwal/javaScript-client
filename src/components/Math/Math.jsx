@@ -34,8 +34,7 @@ function Math(props) {
         {` ${first} * ${second} = ${first * second} ` }
       </div>
       <div>
-        {` ${first} / ${second} = `}
-        {second ? `${first / second}` : 'Infinity'}
+        {` ${first} / ${second} = ${first / second} `}
       </div>
     </div>
   );

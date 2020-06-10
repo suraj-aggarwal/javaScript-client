@@ -6,7 +6,7 @@ function ChildernDemo() {
   return (
     <div className="math">
       <Typography variant="h6">
-        <Math first={10} second={0} operator="*">
+        <Math first={10} second={1000} operator="=">
           {
             ({
               first, second, operator, result,
@@ -30,13 +30,13 @@ function ChildernDemo() {
                     {` division of ${first}  and ${second} is ${result}`}
                   </div>
                 );
-              default: return `${result}`;
+              default: return result;
               }
             }
           }
         </Math>
-        <Math first={10} second={20} operator="+" />
-        <Math first={10} second={0} operator="/">
+        <Math first={10} second={0} operator="+" />
+        <Math first={10} second={20} operator="/">
           {
             ({
               first, second, operator, result,
@@ -60,7 +60,7 @@ function ChildernDemo() {
                     {` when we divide ${first}  and ${second} then we will get result ${result}` }
                   </div>
                 );
-              default: return ('Invalid Operation');
+              default: return result;
               }
             }
           }
