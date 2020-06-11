@@ -1,7 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-
 function Math(props) {
   const {
     first, second, operator, children,
@@ -19,32 +18,12 @@ function Math(props) {
     default: return ('Invalid Operation');
     }
   };
-
   const result = getResult();
-
-  const calculator = (
-    <div>
-      <div>
-        {` ${first}  + ${second} = ${first + second} `}
-      </div>
-      <div>
-        {` ${first} - ${second} = ${first - second} ` }
-      </div>
-      <div>
-        {` ${first} * ${second} = ${first * second} ` }
-      </div>
-      <div>
-        {` ${first} / ${second} = ${first / second} `}
-      </div>
-    </div>
-  );
-
-
   return (
     <div>
-      { children ? children({
+      { children({
         first, second, operator, result,
-      }) : calculator }
+      })}
     </div>
   );
 }
@@ -55,5 +34,12 @@ Math.propTypes = {
   operator: propTypes.number.isRequired,
   children: propTypes.func,
 };
+
+Math.defaultProps = {
+  children: ({
+    first, second, operator, result,
+  }) => `${first} ${operator} ${second} = ${result}`,
+};
+
 
 export default Math;
