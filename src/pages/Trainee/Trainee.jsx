@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import propTypes from 'prop-types';
 import { Button } from '@material-ui/core';
 import { AddDialog } from './Components';
 
