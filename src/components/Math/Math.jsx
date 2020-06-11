@@ -8,14 +8,14 @@ function Math(props) {
   const getResult = () => {
     switch (operator) {
     case '+':
-      return (`${first + second}`);
+      return first + second;
     case '*':
-      return (`${first * second}`);
+      return first * second;
     case '-':
-      return (`${first - second}`);
+      return first - second;
     case '/':
-      return (`${first / second}`);
-    default: return ('Invalid Operation');
+      return first / second;
+    default: return 'Invalid Operation';
     }
   };
   const result = getResult();

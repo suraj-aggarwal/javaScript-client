@@ -39,6 +39,7 @@ function ChildernDemo() {
         <Math first={10} second={10} operator="-" />
         <Math first={10} second={20} operator="*" />
         <Math first={10} second={40} operator="/" />
+        <Math first={10} second={0} operator="/" />
       </Typography>
     </div>
   );
