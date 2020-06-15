@@ -16,6 +16,6 @@ export const theme = createMuiTheme({
       '"Comic Sans MS"',
       'cursive',
     ].join(','),
-    htmlFontSize: 10,
+    htmlFontSize: 13,
   },
 });

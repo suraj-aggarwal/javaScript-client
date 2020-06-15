@@ -39,4 +39,16 @@ const validateForm = yup.object().shape({
   role: yup.string().required().label('what you do is Required.'),
 });
 
-export { validateForm };
+const validateTrainee = yup.object().shape({
+  name: yup.string().min(3).required('Name is Required'),
+  email: yup.string().required('email is required').email('enter valid email address'),
+  password: yup.string().min(8).required('password must be at least 8 character'),
+  confirmPassword: yup.string()
+    .required()
+    .label('confirm password')
+    .test('password match', 'password must match', function (value) {
+      return this.parent.password === value;
+    }),
+});
+
+export { validateForm, validateTrainee };
