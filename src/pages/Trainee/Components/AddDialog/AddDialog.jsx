@@ -13,14 +13,36 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import propTypes from 'prop-types';
 import { validateTrainee } from '../../../../config/constants';
 
+const initialState = {
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  touched: {},
+  allErrors: {},
+  disabled: true,
+};
+
 class AddDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
       touched: {},
       allErrors: {},
-      disabled: false,
+      disabled: true,
     };
+  }
+
+  handleOnSubmit = () => {
+    const { toggleOpenState } = this.props;
+    this.setState(initialState);
+    toggleOpenState();
+  }
+
+  handleOnCancel = () => {
+    const { toggleOpenState } = this.props;
+    this.setState(initialState);
+    toggleOpenState();
   }
 
   handleOnChange = (event) => {
@@ -75,10 +97,10 @@ class AddDialog extends Component {
     const {
       name, email, password, confirmPassword, disabled,
     } = this.state;
-    const { open, onClose } = this.props;
+    const { open, toggleOpenState } = this.props;
     return (
-      <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-        <DialogContent>
+      <Dialog open={open} onClose={toggleOpenState} aria-labelledby="form-dialog-title">
+        <DialogContent spacing={2}>
           <DialogContentText>
             Add Trainee
           </DialogContentText>
@@ -178,10 +200,20 @@ class AddDialog extends Component {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="primary" variant="outlined" disabled={disabled}>
+          <Button
+            onClick={(event) => this.handleOnCancel(event)}
+            color="primary"
+            variant="outlined"
+            disabled={disabled}
+          >
             Cancel
           </Button>
-          <Button color="primary" variant="outlined" disabled={disabled}>
+          <Button
+            color="primary"
+            variant="outlined"
+            disabled={disabled}
+            onClick={(event) => this.handleOnSubmit(event)}
+          >
             Submit
           </Button>
         </DialogActions>
@@ -192,7 +224,7 @@ class AddDialog extends Component {
 
 AddDialog.propTypes = {
   open: propTypes.bool.isRequired,
-  onClose: propTypes.func.isRequired,
+  toggleOpenState: propTypes.func.isRequired,
 };
 
 export default AddDialog;

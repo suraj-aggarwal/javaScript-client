@@ -10,15 +10,10 @@ class Trainee extends Component {
     };
   }
 
-    handlerOnClick = () => {
+    toggleOpenState = () => {
+      const { open } = this.state;
       this.setState({
-        open: true,
-      });
-    }
-
-    handlerOnClose = () => {
-      this.setState({
-        open: false,
+        open: !open,
       });
     }
 
@@ -26,12 +21,11 @@ class Trainee extends Component {
       const { open } = this.state;
       return (
         <div>
-          <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
+          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
                     Add Trainee
           </Button>
-          <AddDialog open={open} onClose={this.handlerOnClose} />
+          <AddDialog open={open} toggleOpenState={this.toggleOpenState} />
         </div>
-
       );
     }
 }
