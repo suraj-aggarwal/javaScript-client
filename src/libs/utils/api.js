@@ -1,9 +1,9 @@
 import * as axios from 'axios';
-import * as dotenv from 'dotenv';
+import { config } from 'dotenv';
 import queryString from 'querystring';
 
-dotenv.config();
-const baseurl = process.env.REACT_APP_API_URL;
+config();
+const baseurl = process.env.REACT_APP__API_URL;
 
 const callApi = (reqType, url, query, params) => {
   const res = axios({

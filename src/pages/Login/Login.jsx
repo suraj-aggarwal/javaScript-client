@@ -13,7 +13,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { validateLogin } from '../../config/constants';
-import { callApi } from '../../libs/utils/api';
 import { alert } from '../../contexts';
 
 const useStyles = (theme) => ({
@@ -93,20 +92,22 @@ class Login extends Component {
     return (Object.keys(error).length !== 0);
   }
 
-  handleOnSubmit = (value) => {
-    const { history } = this.props;
+  handleOnSubmit = async (value) => {
+    const { history, loginuser } = this.props;
     const { email, password } = this.state;
     this.setState({
       loading: true,
     });
-    callApi('post', '/api/user/login', { email, password }).then((token) => {
-      localStorage.setItem('token', token);
+    loginuser({ variables: { email, password } }).then((data) => {
+      const { data: { loginUser } } = data;
+      localStorage.setItem('token', loginUser);
       this.setState({
         redirect: true,
       });
       history.push('/Trainee');
-    }).catch(() => {
+    }).catch((err) => {
       value('Login failed', 'error');
+      throw new Error(err);
     }).finally(() => {
       this.setState({
         loading: false,
@@ -196,6 +197,7 @@ class Login extends Component {
 Login.propTypes = {
   classes: PropTypes.objectOf.isRequired,
   history: PropTypes.func.isRequired,
+  loginuser: PropTypes.func.isRequired,
 };
 
 export default withStyles(useStyles)(Login);
