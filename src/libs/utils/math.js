@@ -1,8 +1,2 @@
-export const getRandomNumber = (number) =>  {
-    return parseInt((number-1) * Math.random());
-}
-
-export const getRoundRobin = (current , maximum) => {
-    maximum--;
-    return current < maximum ? ++current : 0;
-}
+export const getRandomNumber = (number) => parseInt((number - 1) * Math.random());
+export const getRoundRobin = (current, maximum) => (current < maximum - 1 ? current + 1 : 0);

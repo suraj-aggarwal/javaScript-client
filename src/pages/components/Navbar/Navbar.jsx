@@ -21,7 +21,7 @@ function Navbar() {
                     Trainee
           </Typography>
           <div className={classes.root}>
-            <Button color="inherit">Trainee</Button>
+            <Button color="inherit">Trainee Portal</Button>
             <Button color="inherit">TEXTFieldDemo</Button>
             <Button color="inherit">INPUT DEMO</Button>
             <Button color="inherit">CHILDERN DEMO</Button>

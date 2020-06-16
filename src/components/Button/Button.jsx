@@ -1,23 +1,21 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import {buttonStyle} from './style';
+import { CustomButton } from './style';
 
-function Button(props) {
+export default function Button(props) {
   const {
     color, disabled, value, onClick, style,
   } = props;
   return (
-    <>
-      <button
-        color={color}
-        vlaue={value}
-        disabled={disabled}
-        onClick={onClick}
-        style={style}
-      >
-        {value}
-      </button>
-    </>
+    <CustomButton
+      color={color}
+      vlaue={value}
+      disabled={disabled}
+      onClick={onClick}
+      style={style}
+    >
+      {value}
+    </CustomButton>
   );
 }
 
@@ -34,5 +32,3 @@ Button.defaultProps = {
   disabled: false,
   style: {},
 };
-
-export { Button };

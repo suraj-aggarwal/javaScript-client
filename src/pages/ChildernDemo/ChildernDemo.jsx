@@ -1,75 +1,48 @@
 import React from 'react';
-import { Math } from '../../components';
 import { Typography } from '@material-ui/core';
+import { Math } from '../../components';
 
 function ChildernDemo() {
+  const customMathTemplate = ({
+    first, second, operator, result,
+  }) => {
+    switch (operator) {
+    case '+':
+      return (
+        <div>
+          {` sum of ${first}  and ${second} is ${result}`}
+        </div>
+      );
+    case '*':
+      return (
+        <div>
+          {` multiplication of ${first}  and ${second} is ${result}`}
+        </div>
+      );
+    case '/':
+      return (
+        <div>
+          {` division of ${first}  and ${second} is ${result}`}
+        </div>
+      );
+    default: return result;
+    }
+  };
+
   return (
     <div className="math">
-      <Typography variant="h6" >
-        <Math first={10} second={20} operator="*">
-          {
-            ({
-              first, second, operator, result,
-            }) => {
-              switch (operator) {
-              case '+':
-                result = first + second;
-                return (
-                  <div>
-                    {' '}
-sum of
-                    {first}
-                    {' '}
-                    {operator}
-                    {' '}
-                    {second}
-                    {' '}
-is
-                    {' '}
-                    {result}
-                  </div>
-                );
-              case '*':
-                result = first * second;
-                return (
-                  <div>
-                    {' '}
-mutliplication of
-                    {first}
-                    {' '}
-                    {operator}
-                    {' '}
-                    {second}
-                    {' '}
-is
-                    {' '}
-                    {result}
-                  </div>
-                );
-              default:
-                result = first / second;
-                return (
-                  <div>
-                    {' '}
-division of
-                    {first}
-                    {' '}
-                    {operator}
-                    {' '}
-                    {second}
-                    {' '}
-is
-                    {' '}
-                    {result}
-                  </div>
-                );
-              }
-            }
-          }
+      <Typography variant="h6">
+        <Math first={10} second={1000} operator="*">
+          {customMathTemplate}
         </Math>
+        <Math first={10} second={0} operator="^" />
+        <Math first={10} second={10} operator="-" />
+        <Math first={10} second={20} operator="*" />
+        <Math first={10} second={40} operator="/" />
+        <Math first={10} second={0} operator="/" />
       </Typography>
     </div>
   );
 }
 
-export { ChildernDemo };
+export default ChildernDemo;
