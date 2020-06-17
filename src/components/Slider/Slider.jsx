@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DEFAULT_BANNER_IMAGE, imagePath } from '../../config/constants';
+import { DEFAULT_BANNER_IMAGE } from '../../config/constants';
 import { getRandomNumber, getRoundRobin } from '../../libs/utils/math';
 import Img from './style';
 
@@ -14,35 +14,31 @@ class Slider extends Component {
 
   componentDidMount() {
     const { duration } = this.props;
-    this.sliderDuration = setInterval(() => {
-      this.setImagePathIndex();
+    this.timerId = setInterval(() => {
+      this.tick();
     }, duration);
   }
 
   componentWillUnmount() {
-    clearInterval(this.sliderDuration);
+    clearInterval(this.timerId);
   }
 
-  setImagePathIndex() {
+  tick() {
     const { random, banners } = this.props;
-    const { index } = this.state;
-    const currentIndex = random
+    const index = random
       ? getRandomNumber(banners.length)
-      : getRoundRobin(index, banners.length);
+      : getRoundRobin(this.state.index, banners.length);
     this.setState({
-      index: currentIndex,
+      index,
     });
   }
 
   render() {
-    const {
-      height, banners, altText, defaultBanner,
-    } = this.props;
+    const { height, banners } = this.props;
     const { index } = this.state;
-    const currentImagePath = banners.length ? `${imagePath}${banners[index]}` : defaultBanner;
     return (
       <div>
-        <Img src={currentImagePath} alt={altText} height={height} />
+        <Img src={banners[index]} alt="" height={height} />
       </div>
     );
   }
@@ -51,7 +47,7 @@ class Slider extends Component {
 Slider.propTypes = {
   altText: PropTypes.string,
   defaultBanner: PropTypes.string,
-  banners: PropTypes.arrayOf,
+  banners: PropTypes.array,
   duration: PropTypes.number,
   height: PropTypes.number,
   random: PropTypes.bool,
@@ -60,10 +56,10 @@ Slider.propTypes = {
 Slider.defaultProps = {
   altText: 'Default Banner',
   defaultBanner: DEFAULT_BANNER_IMAGE,
-  banners: [],
+  banners: [DEFAULT_BANNER_IMAGE],
   duration: 2000,
   height: 200,
   random: false,
 };
 
-export default Slider;
+export { Slider };

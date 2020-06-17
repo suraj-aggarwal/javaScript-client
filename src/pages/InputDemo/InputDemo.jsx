@@ -3,7 +3,8 @@ import {
   TextField, SelectField, RadioGroup, Button,
 } from '../../components';
 import {
-  selectOptions, sportsRoles, defaultSelect, validateForm,
+  selectOptions, sportsRoles, cricket, football,
+  validateForm,
 } from '../../config/constants';
 
 class InputDemo extends Component {
@@ -16,110 +17,97 @@ class InputDemo extends Component {
       football: '',
       role: '',
       allErrors: {},
-      touched: {},
-      disabled: true,
     };
   }
 
-  hasError = () => {
+  getErrors = async () => {
     const {
-      name, role, sport,
+      name, sport, role,
     } = this.state;
-    const error = {};
-    validateForm.validate({ name, sport, role }, { abortEarly: false }).then(() => {
-      this.setState({ disabled: false });
-    })
-      .catch((err) => {
-        const values = Object.values(err.inner);
-        values.forEach((val) => {
-          error[val.path] = val.message;
-        });
-      })
-      .finally(() => {
-        this.setState({
-          allErrors: error,
-        });
+    try {
+      const result = await validateForm.validate({ name, sport, role }, { abortEarly: false });
+      this.setState({
+        allErrors: {},
       });
-  }
-
-  getError = (field) => {
-    const { touched, allErrors } = this.state;
-    if (touched[field]) {
-      return allErrors[field];
+    } catch (err) {
+      const parsedErrors = {};
+      err.inner.forEach((ValidationError) => {
+        const { path, message } = ValidationError;
+        parsedErrors[path] = message;
+      });
+      this.setState({
+        allErrors: parsedErrors,
+      });
     }
-    return '';
   }
 
-  isTouched = (field) => {
-    const { touched } = this.state;
-    touched[field] = true;
-    this.setState({
-      touched,
-    });
-    this.hasError();
+  hasErros = () => {
+    const { allErrors } = this.state;
+    return Object.keys(allErrors).length !== 0;
   }
+
 
   handleNameChange = (e) => {
     this.setState({
       name: e.target.value,
     });
-    this.hasError();
+    this.getErrors();
   };
 
   handleSportChange = (e) => {
     this.setState({
       sport: e.target.value,
-      cricket: '',
-      football: '',
-      role: '',
     });
-    this.hasError();
+    this.getErrors();
   };
 
   handleRoleChange = (e) => {
     const { sport } = this.state;
+    if (sport === cricket) {
+      this.setState({
+        cricket: e.target.value,
+        role: e.target.value,
+      });
+    }
     this.setState({
-      [sport]: e.target.value,
+      football: e.target.value,
       role: e.target.value,
     });
-    this.hasError();
-  }
+    this.getErrors();
+  };
 
   render() {
     const {
-      name, sport, cricket, football, disabled,
+      name, sport, allErrors,
     } = this.state;
     return (
-      <div>
-        <p> Name </p>
-        <TextField
-          name="name"
-          value={name}
-          onChange={this.handleNameChange}
-          error={this.getError('name')}
-          onblur={() => { this.isTouched('name'); }}
-        />
-        <p>Select the game you play?</p>
+      <form>
+        <label htmlFor="textField">Name</label>
+        <br />
+        <TextField value={name} onChange={this.handleNameChange} error={allErrors.name} />
+        <br />
+        <label htmlFor="">Select the game you play?</label>
+        <br />
         <SelectField
           value={sport}
           onChange={this.handleSportChange}
           options={selectOptions}
-          error={this.getError('sport')}
-          onblur={() => { this.isTouched('sport'); }}
+          error={allErrors.sport}
         />
-        {sport && sport !== defaultSelect ? <p> What you want to play? </p> : ''}
+        <br />
+        <br />
         <RadioGroup
-          value={sport === 'cricket' ? cricket : football}
+          value={sport}
           onChange={this.handleRoleChange}
-          options={sportsRoles[sport]}
-          error={this.getError('role')}
-          onblur={() => { this.isTouched('role'); }}
+          options={sportsRoles.get(sport)}
+          label={sport === cricket || sport === football ? 'what you do?' : ''}
+          error={allErrors.role}
         />
-        <Button style={disabled ? {} : { 'background-color': 'green' }} disabled={disabled} value="submit"> </Button>
-        <Button disabled={disabled} value="cancel"> </Button>
-      </div>
+        <Button style={this.hasErros() ? {} : { 'background-color': 'green' }} disabled={!!this.hasErros()} value="submit"> </Button>
+        <Button disabled={!this.hasErros()} value="cancel"> </Button>
+      </form>
     );
   }
 }
 
-export default InputDemo;
+export { InputDemo };

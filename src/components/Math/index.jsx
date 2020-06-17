@@ -1,1 +1,1 @@
-export { default as Math } from './Math';
+export { Math as default } from './Math';

@@ -1,35 +1,45 @@
 import * as yup from 'yup';
 
+export const PUBLIC_IMAGE_FOLDER = '/images/';
+export const DEFAULT_BANNER_IMAGE = 'images/default.png';
+export const DNS_SERVER = 'images/dns-server.png';
+export const LOAD_BALANCER = 'images/load-balancer.png  ';
+export const CLOUD = 'images/cloud.jpg';
+export const JS = 'images/js.jpg';
+export const FULL_STACK = 'images/full-stack-web-development.jpg';
+export const banners = [
+  DEFAULT_BANNER_IMAGE,
+  DNS_SERVER,
+  LOAD_BALANCER,
+  CLOUD,
+  JS,
+  FULL_STACK,
+];
 export const selectOptions = [
-  { label: 'select', sport: 'select' },
-  { label: 'football', sport: 'football' },
-  { label: 'cricket', sport: 'cricket' },
+  { label: 'select', value: 'select' },
+  { label: 'football', value: 'football' },
+  { label: 'cricket', value: 'cricket' },
 ];
 
 export const cricketRoles = [
-  { label: 'wicket keeper', role: 'wicket keeper' },
-  { label: 'bowler', role: 'bowler' },
-  { label: 'batsman', role: 'batsman' },
-  { label: 'All rounder', role: 'All rounder' },
+  { label: 'wicket keeper', value: 'wicket keeper' },
+  { label: 'bowler', value: 'bowler' },
+  { label: 'batsman', value: 'batsman' },
+  { label: 'All rounder', value: 'All rounder' },
 ];
 export const footballRoles = [
-  { label: 'striker', role: 'striker' },
-  { label: 'goal keeper', role: 'goal keeper' },
+  { label: 'striker', value: 'striker' },
+  { label: 'goal keeper', value: 'goal keeper' },
 ];
 
-export const sportsRoles = { cricket: cricketRoles, football: footballRoles };
+const sportsRoles = new Map();
 
-export const defaultSelect = 'select';
+sportsRoles.set('cricket', cricketRoles);
+sportsRoles.set('football', footballRoles);
 
-export const imagePath = '/images/';
-export const DEFAULT_BANNER_IMAGE = '/images/default.png';
-export const banners = [
-  'dns-server.png',
-  'load-balancer.png',
-  'cloud.jpg',
-  'js.jpg',
-  'full-stack-web-development.jpg',
-];
+export const cricket = 'cricket';
+export const football = 'football';
+export const select = 'select';
 
 const validateForm = yup.object().shape({
   name: yup.string().min(3).required(),
@@ -38,25 +48,12 @@ const validateForm = yup.object().shape({
 });
 
 const validateTrainee = yup.object().shape({
-  name: yup.string().min(3).required('Name is Required'),
-  email: yup.string().required('email is required').email('enter valid email address'),
-  password: yup.string().min(8)
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
-      'must contain 8 characters at least one \n uppercase one lowercase and one number',
-    ).required('password must be at least 8 character'),
-  confirmPassword: yup.string()
-    .required()
-    .label('confirm password')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
-      'must contain 8 characters at least one \n uppercase one lowercase and one number',
-    )
-    .test('password match', 'password must match', function (value) {
-      return this.parent.password === value;
-    }),
+  name: yup.string().min(3).required('Name is required'),
+  email: yup.string().required('email is required').email('enter valid email'),
+  password: yup.string().min(8).required('password must be atleast 8 character'),
+  confirmPassword: yup.string().required('must match password'),
 });
-
+const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 export const validateLogin = yup.object().shape({
   email: yup
     .string()
@@ -64,7 +61,11 @@ export const validateLogin = yup.object().shape({
     .required('Email is required'),
   password: yup
     .string()
-    .required('password is required'),
+    .required('password is required')
+    .matches(
+      strongRegex,
+      'must contain 8 characters at least one \n uppercase one lowercase and one number',
+    ),
 });
 
-export { validateForm, validateTrainee };
+export { sportsRoles, validateForm, validateTrainee };

@@ -5,23 +5,11 @@ function Math(props) {
   const {
     first, second, operator, children,
   } = props;
-  const getResult = () => {
-    switch (operator) {
-    case '+':
-      return first + second;
-    case '*':
-      return first * second;
-    case '-':
-      return first - second;
-    case '/':
-      return first / second;
-    default: return 'Invalid Operation';
-    }
-  };
-  const result = getResult();
+  console.log(first, second, operator);
+  let result;
   return (
     <div>
-      { children({
+      {children({
         first, second, operator, result,
       })}
     </div>
@@ -38,8 +26,46 @@ Math.propTypes = {
 Math.defaultProps = {
   children: ({
     first, second, operator, result,
-  }) => `${first} ${operator} ${second} = ${result}`,
+  }) => {
+    switch (operator) {
+    case '+':
+      result = first + second;
+      return (
+        <div>
+          {first}
+          {operator}
+          {second}
+          {' '}
+=
+          {result}
+        </div>
+      );
+    case '*':
+      result = first * second;
+      return (
+        <div>
+          {first}
+          {operator}
+          {second}
+          {' '}
+=
+          {result}
+        </div>
+      );
+    default:
+      result = first / second;
+      return (
+        <div>
+          {first}
+          {operator}
+          {second}
+          {' '}
+=
+          {result}
+        </div>
+      );
+    }
+  },
 };
 
-
-export default Math;
+export { Math };

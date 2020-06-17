@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, style } from './style';
+import { Input } from './style';
 
 function TextField(props) {
   const {
-    value, disabled, error, onChange, onblur,
+    value, disabled, error, onChange,
   } = props;
   return (
     <div>
-      <Input type="text" value={value} disabled={disabled} onChange={onChange} onBlur={onblur} />
-      {error ? <p style={style}>{error}</p> : ''}
+      <Input type="text" value={value} disabled={disabled} onChange={onChange} />
+      <p style={{ color: 'red' }}>{error}</p>
     </div>
   );
 }
@@ -19,7 +19,6 @@ TextField.propTypes = {
   disabled: PropTypes.bool,
   error: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  onblur: PropTypes.func.isRequired,
 };
 
 TextField.defaultProps = {
@@ -27,4 +26,4 @@ TextField.defaultProps = {
   error: '',
 };
 
-export default TextField;
+export { TextField };
