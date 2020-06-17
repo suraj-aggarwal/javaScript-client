@@ -10,7 +10,7 @@ import { getDateFormat } from '../../libs/utils/formatDate';
 import { callApi } from '../../libs/utils/api';
 import { alert } from '../../contexts';
 import GET_ALL_TRAINEE from './query';
-import DELETE_TRAINEE from './mutation';
+import { DELETE_TRAINEE, EDIT_TRAINEE } from './mutation';
 
 
 class TraineeList extends Component {
@@ -131,31 +131,17 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = (value) => {
+  handleEdit = (editTrainee, value) => {
     const {
-      email, name, data, trainees,
+      email, name, data,
     } = this.state;
     this.setState({
       load: true,
     });
-    callApi('put', '/api/trainee', { id: data.originalId, email, name })
-      .then(
-        (res) => {
-          console.log(res);
-          value('This is success message', 'success');
-          const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
-            if (_id === data._id) {
-              return {
-                _id, ...rest, name, email,
-              };
-            }
-            return { _id, ...rest };
-          });
-          this.setState({
-            trainees: updatedList,
-          });
-        },
-      )
+    editTrainee({ variables: { id: data.originalId, name, email } })
+      .then(() => {
+        value('This is success message', 'success');
+      })
       .catch((err) => {
         value(err.message, 'error');
       }).finally(() => {
@@ -214,16 +200,21 @@ class TraineeList extends Component {
           Add Trainee
         </Button>
         <AddDialog open={open} onClose={this.handlerOnClose} />
-        <EditDialog
-          openEditDialog={openEditDialog}
-          handleEditClose={this.handleEditClose}
-          handleEdit={this.handleEdit}
-          email={email}
-          name={name}
-          handleOnChangeEmail={this.handleOnChangeEmail}
-          handleOnChangeName={this.handleOnChangeName}
-          loading={load}
-        />
+        <Mutation mutation={EDIT_TRAINEE}>
+          { (editTrainee) => (
+            <EditDialog
+              openEditDialog={openEditDialog}
+              handleEditClose={this.handleEditClose}
+              handleEdit={this.handleEdit}
+              email={email}
+              name={name}
+              handleOnChangeEmail={this.handleOnChangeEmail}
+              handleOnChangeName={this.handleOnChangeName}
+              loading={load}
+              editTrainee={editTrainee}
+            />
+          )}
+        </Mutation>
         <Mutation mutation={DELETE_TRAINEE}>
           {(deleteTrainee) => (
             <RemoveDialog

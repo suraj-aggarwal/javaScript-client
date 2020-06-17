@@ -15,7 +15,7 @@ import { alert } from '../../../../contexts';
 export default function EditDialog(props) {
   const {
     openEditDialog, handleEditClose, handleEdit, name, email, handleOnChangeEmail,
-    handleOnChangeName, loading,
+    handleOnChangeName, loading, editTrainee,
   } = props;
   return (
     <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
@@ -66,7 +66,7 @@ export default function EditDialog(props) {
         </Button>
         <alert.Consumer>
           {(value) => (
-            <Button onClick={() => { handleEdit(value); }} color="primary" variant="contained" disabled={loading}>
+            <Button onClick={() => { handleEdit(editTrainee, value); }} color="primary" variant="contained" disabled={loading}>
                         Submit
               {loading && <CircularProgress size={24} />}
             </Button>
