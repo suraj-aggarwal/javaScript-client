@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <p>@SUCCESSIVE TECH</p>
+    <p style={{ color: 'black', fontFamily: 'sans-serif' }}>@SUCCESSIVE TECH</p>
   );
 }
 
