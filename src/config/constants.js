@@ -48,10 +48,6 @@ const validateTrainee = yup.object().shape({
   confirmPassword: yup.string()
     .required()
     .label('confirm password')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
-      'must contain 8 characters at least one \n uppercase one lowercase and one number',
-    )
     .test('password match', 'password must match', function (value) {
       return this.parent.password === value;
     }),
