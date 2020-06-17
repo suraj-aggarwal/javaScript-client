@@ -26,23 +26,19 @@ const initialState = {
 class AddDialog extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      touched: {},
-      allErrors: {},
-      disabled: true,
-    };
+    this.state = { ...initialState };
   }
 
   handleOnSubmit = () => {
-    const { toggleOpenState } = this.props;
+    const { toggleDialogBox } = this.props;
     this.setState(initialState);
-    toggleOpenState();
+    toggleDialogBox();
   }
 
   handleOnCancel = () => {
-    const { toggleOpenState } = this.props;
+    const { toggleDialogBox } = this.props;
     this.setState(initialState);
-    toggleOpenState();
+    toggleDialogBox();
   }
 
   handleOnChange = (event) => {
@@ -97,9 +93,9 @@ class AddDialog extends Component {
     const {
       name, email, password, confirmPassword, disabled,
     } = this.state;
-    const { open, toggleOpenState } = this.props;
+    const { open, toggleDialogBox } = this.props;
     return (
-      <Dialog open={open} onClose={toggleOpenState} aria-labelledby="form-dialog-title">
+      <Dialog open={open} onClose={toggleDialogBox} aria-labelledby="form-dialog-title">
         <DialogContent spacing={2}>
           <DialogContentText>
             Add Trainee
@@ -224,7 +220,7 @@ class AddDialog extends Component {
 
 AddDialog.propTypes = {
   open: propTypes.bool.isRequired,
-  toggleOpenState: propTypes.func.isRequired,
+  toggleDialogBox: propTypes.func.isRequired,
 };
 
 export default AddDialog;

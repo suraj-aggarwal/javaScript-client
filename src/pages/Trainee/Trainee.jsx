@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 import { AddDialog } from './Components';
+import { Navbar } from '../components';
 
 class Trainee extends Component {
   constructor(props) {
@@ -20,12 +21,13 @@ class Trainee extends Component {
     render() {
       const { open } = this.state;
       return (
-        <div>
+        <Box justifyContent="row" lineHeight={4}>
+          <Navbar />
           <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
-                    Add Trainee
+            Add Trainee
           </Button>
-          <AddDialog open={open} toggleOpenState={this.toggleOpenState} />
-        </div>
+          <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+        </Box>
       );
     }
 }

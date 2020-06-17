@@ -17,11 +17,9 @@ export const footballRoles = [
   { label: 'goal keeper', role: 'goal keeper' },
 ];
 
-const sportsRoles = { cricket: cricketRoles, football: footballRoles };
+export const sportsRoles = { cricket: cricketRoles, football: footballRoles };
 
 export const defaultSelect = 'select';
-
-export { sportsRoles };
 
 export const imagePath = '/images/';
 export const DEFAULT_BANNER_IMAGE = '/images/default.png';
@@ -42,13 +40,27 @@ const validateForm = yup.object().shape({
 const validateTrainee = yup.object().shape({
   name: yup.string().min(3).required('Name is Required'),
   email: yup.string().required('email is required').email('enter valid email address'),
-  password: yup.string().min(8).required('password must be at least 8 character'),
+  password: yup.string().min(8)
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
+      'must contain 8 characters at least one \n uppercase one lowercase and one number',
+    ).required('password must be at least 8 character'),
   confirmPassword: yup.string()
     .required()
     .label('confirm password')
     .test('password match', 'password must match', function (value) {
       return this.parent.password === value;
     }),
+});
+
+export const validateLogin = yup.object().shape({
+  email: yup
+    .string()
+    .email()
+    .required('Email is required'),
+  password: yup
+    .string()
+    .required('password is required'),
 });
 
 export { validateForm, validateTrainee };

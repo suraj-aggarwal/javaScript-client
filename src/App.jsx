@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { Trainee } from './pages';
+import { Login, Trainee } from './pages';
 import { theme } from './theme';
 
 function App() {
