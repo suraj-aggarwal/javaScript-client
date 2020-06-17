@@ -3,7 +3,7 @@ import {
   AppBar, Toolbar, Typography, Button, Box,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -18,13 +18,13 @@ function Navbar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">
-                    Trainee
+            Trainee
           </Typography>
           <div className={classes.root}>
-            <Button color="inherit">Trainee Portal</Button>
-            <Button color="inherit">TEXTFieldDemo</Button>
-            <Button color="inherit">INPUT DEMO</Button>
-            <Button color="inherit">CHILDERN DEMO</Button>
+            <Button color="inherit" component={Link} to="Trainee">Trainee</Button>
+            <Button color="inherit" component={Link} to="TextFieldDemo">TEXT Field Demo</Button>
+            <Button color="inherit" component={Link} to="TextFiled">INPUT DEMO</Button>
+            <Button color="inherit" component={Link} to="ChildernDemo">CHILDERN DEMO</Button>
             <Button color="inherit">Logout</Button>
           </div>
         </Toolbar>
