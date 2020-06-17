@@ -3,12 +3,14 @@ import { Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { graphql } from '@apollo/react-hoc';
+import { Mutation } from '@apollo/react-components';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/formatDate';
 import { callApi } from '../../libs/utils/api';
 import { alert } from '../../contexts';
 import GET_ALL_TRAINEE from './query';
+import DELETE_TRAINEE from './mutation';
 
 
 class TraineeList extends Component {
@@ -95,29 +97,18 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = (value, event) => {
+  handleRemove = (deleteTrainee, value) => {
     const { data, trainees } = this.state;
     this.setState({
       load: true,
     });
-    callApi('delete', `/api/trainee/${data.originalId}`)
+    console.log('original id', data);
+    deleteTrainee({ variables: { id: data.originalId } })
       .then(() => {
         value('Trainee Deleted Successfully', 'success');
-        const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
-        trainees.splice(removeIndex, 1);
-        const { page, count, rowsPerPage } = this.state;
-        const mod = count % rowsPerPage;
-        if (mod === 1) {
-          this.setState({
-            page: page - 1,
-          });
-        }
-        this.setState({
-          trainees,
-          count: count - 1,
-        });
       })
       .catch((err) => {
+        console.log(err);
         value(err.message, 'error');
       })
       .finally(() => {
@@ -209,11 +200,11 @@ class TraineeList extends Component {
     } = this.state;
     const {
       match: { url }, classes,
-      data: {getAllTrainee: {records=[] , count=0 } = {},
-      refetch,
-      loading,
-    },
-
+      data: {
+        getAllTrainee: { records = [], count = 0 } = {},
+        refetch,
+        loading,
+      },
     } = this.props;
     return (
       <div>
@@ -233,12 +224,17 @@ class TraineeList extends Component {
           handleOnChangeName={this.handleOnChangeName}
           loading={load}
         />
-        <RemoveDialog
-          openRemoveDialog={openRemoveDialog}
-          handleRemoveClose={this.handleRemoveClose}
-          handleRemove={this.handleRemove}
-          loading={load}
-        />
+        <Mutation mutation={DELETE_TRAINEE}>
+          {(deleteTrainee) => (
+            <RemoveDialog
+              openRemoveDialog={openRemoveDialog}
+              handleRemoveClose={this.handleRemoveClose}
+              handleRemove={this.handleRemove}
+              deleteTrainee={deleteTrainee}
+              loading={load}
+            />
+          )}
+        </Mutation>
         <Table
           id="id"
           data={records}
@@ -284,8 +280,9 @@ class TraineeList extends Component {
 }
 
 export default graphql(
-  GET_ALL_TRAINEE,
-  { variables: { skip: 5, limit: 10 } },
+  GET_ALL_TRAINEE, {
+    options: { variables: { skip: 0, limit: 5 } },
+  },
 )(TraineeList);
 
 TraineeList.contextType = alert;

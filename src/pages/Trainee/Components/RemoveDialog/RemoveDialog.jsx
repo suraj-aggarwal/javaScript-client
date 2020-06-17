@@ -11,7 +11,7 @@ import { alert } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
   const {
-    openRemoveDialog, handleRemoveClose, handleRemove, loading,
+    openRemoveDialog, handleRemoveClose, handleRemove, loading, deleteTrainee,
   } = props;
   return (
     <div>
@@ -32,7 +32,7 @@ export default function RemoveDialog(props) {
           </Button>
           <alert.Consumer>
             {(value) => (
-              <Button onClick={() => { handleRemove(value); }} color="primary" variant="contained" autoFocus disabled={loading}>
+              <Button onClick={() => handleRemove(deleteTrainee, value)} color="primary" variant="contained" autoFocus disabled={loading}>
                 {loading && <CircularProgress size={24} />}
                        Delete
               </Button>
