@@ -14,7 +14,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import { validateTrainee } from '../../../../config/constants';
 import { alert } from '../../../../contexts';
-import { callApi } from '../../../../libs/utils/api';
 
 const useStyles = () => ({
   buttonProgress: {
@@ -78,11 +77,11 @@ class AddDialog extends Component {
 
   handleOnSubmit = (value) => {
     const { email, name, password } = this.state;
-    const { onClose } = this.props;
+    const { onClose, createTrainee } = this.props;
     this.setState({
       loading: true,
     });
-    callApi('post', '/api/trainee', { email, name, password })
+    createTrainee({ variables: { email, name, password } })
       .then((res) => {
         value('Trainee Added sucessfully', 'success');
         console.log(res);
@@ -98,12 +97,13 @@ class AddDialog extends Component {
       });
   }
 
-
   render() {
     const {
       error, name, email, password, confirmPassword, loading,
     } = this.state;
-    const { open, onClose, classes } = this.props;
+    const {
+      open, onClose, classes, handleCreate,
+    } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
         <DialogContent>

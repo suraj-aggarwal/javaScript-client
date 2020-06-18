@@ -23,4 +23,23 @@ mutation EDIT_TRAINEE(
 }
 `;
 
-export { DELETE_TRAINEE, EDIT_TRAINEE };
+const CREATE_TRAINEE = gql`
+mutation CREATE_TRAINEE(
+  $name: String!,
+  $email: String!,
+  $role: String,
+  $password: String!,
+) {
+  createUser(user: {
+    name: $name,
+    email: $email,
+    role: $role,
+    password: $password,
+  }) {
+    name
+    email
+  }
+}
+`;
+
+export { DELETE_TRAINEE, EDIT_TRAINEE, CREATE_TRAINEE };

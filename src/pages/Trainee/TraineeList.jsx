@@ -7,11 +7,9 @@ import { Mutation } from '@apollo/react-components';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/formatDate';
-import { callApi } from '../../libs/utils/api';
 import { alert } from '../../contexts';
 import GET_ALL_TRAINEE from './query';
-import { DELETE_TRAINEE, EDIT_TRAINEE } from './mutation';
-
+import { DELETE_TRAINEE, EDIT_TRAINEE, CREATE_TRAINEE } from './mutation';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -52,6 +50,21 @@ class TraineeList extends Component {
   //         loading: false,
   //       });
   //     });
+  // }
+
+  // handleCreate = (createTrainee, value) => {
+  //   this.setState({ load: true });
+  //   createTrainee().then(() => {
+  //     value('Trainee created successfully', 'success');
+  //   }).catch((err) => {
+  //     value(err.message, 'error');
+  //   }).finally(
+  //     () => {
+  //       this.setState(
+  //         { load: false },
+  //       );
+  //     },
+  //   );
   // }
 
   handlerOnClick = () => {
@@ -172,7 +185,6 @@ class TraineeList extends Component {
     });
   }
 
-
   handleOnChangeName = () => (event) => {
     this.setState({
       name: event.target.value,
@@ -192,6 +204,7 @@ class TraineeList extends Component {
         loading,
       },
     } = this.props;
+    const variables = { skip: rowsPerPage * page, limit: rowsPerPage };
     return (
       <div>
         {console.log('--------------get all trainee -----------', this.props)}
@@ -199,8 +212,16 @@ class TraineeList extends Component {
         <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
           Add Trainee
         </Button>
-        <AddDialog open={open} onClose={this.handlerOnClose} />
-        <Mutation mutation={EDIT_TRAINEE}>
+        <Mutation mutation={CREATE_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
+          {(createTrainee) => (
+            <AddDialog
+              open={open}
+              onClose={this.handlerOnClose}
+              createTrainee={createTrainee}
+            />
+          )}
+        </Mutation>
+        <Mutation mutation={EDIT_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
           { (editTrainee) => (
             <EditDialog
               openEditDialog={openEditDialog}
@@ -215,7 +236,7 @@ class TraineeList extends Component {
             />
           )}
         </Mutation>
-        <Mutation mutation={DELETE_TRAINEE}>
+        <Mutation mutation={DELETE_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
           {(deleteTrainee) => (
             <RemoveDialog
               openRemoveDialog={openRemoveDialog}
