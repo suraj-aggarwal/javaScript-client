@@ -1,11 +1,11 @@
 import React from 'react';
 import { TextField, Slider } from '../../components';
-import { imagePath } from '../../config/constants';
+import { banners } from '../../config/constants';
 
 function TextFieldDemo() {
   return (
     <>
-      <Slider random={false} banners={imagePath} />
+      <Slider random={false} banners={banners} />
       <p> The disabled input</p>
       <br />
       <TextField value="Disabled Input" disabled />
