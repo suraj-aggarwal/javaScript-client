@@ -22,7 +22,7 @@ class TraineeList extends Component {
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
-      rowsPerPage: 5,
+      rowsPerPage: 25,
       email: '',
       name: '',
       load: false,
