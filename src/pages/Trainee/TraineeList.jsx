@@ -22,7 +22,7 @@ class TraineeList extends Component {
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
-      rowsPerPage: 25,
+      rowsPerPage: 5,
       email: '',
       name: '',
       load: false,
@@ -52,20 +52,20 @@ class TraineeList extends Component {
   //     });
   // }
 
-  // handleCreate = (createTrainee, value) => {
-  //   this.setState({ load: true });
-  //   createTrainee().then(() => {
-  //     value('Trainee created successfully', 'success');
-  //   }).catch((err) => {
-  //     value(err.message, 'error');
-  //   }).finally(
-  //     () => {
-  //       this.setState(
-  //         { load: false },
-  //       );
-  //     },
-  //   );
-  // }
+  handleCreate = (createTrainee, value) => {
+    this.setState({ load: true });
+    createTrainee().then(() => {
+      value('Trainee created successfully', 'success');
+    }).catch((err) => {
+      value(err.message, 'error');
+    }).finally(
+      () => {
+        this.setState(
+          { load: false },
+        );
+      },
+    );
+  }
 
   handlerOnClick = () => {
     this.setState({
@@ -111,18 +111,20 @@ class TraineeList extends Component {
   }
 
   handleRemove = async (deleteTrainee, value) => {
-    const { data, trainees } = this.state;
+    const { data, page } = this.state;
+    const { data: { getAllTrainee: { records } } } = this.props;
     this.setState({
       load: true,
     });
-    console.log('original id', data);
-
-    deleteTrainee({ variables: { id: data.originalId } }).then(({ data }) => {
-      console.log(data);
+    deleteTrainee({ variables: { id: data.originalId } }).then(() => {
       value('Trainee Deleted Successfully', 'success');
+      if (records.length === 1) {
+        this.setState({
+          page: page - 1,
+        });
+      }
     })
       .catch((err) => {
-        console.log(err);
         value(err.message, 'error');
       })
       .finally(() => {
@@ -294,7 +296,7 @@ class TraineeList extends Component {
 
 export default graphql(
   GET_ALL_TRAINEE, {
-    options: { variables: { skip: 0, limit: 5 } },
+    options: { variables: { skip: 0, limit: 10 } },
   },
 )(TraineeList);
 
