@@ -1,13 +1,11 @@
 import React from 'react';
-import CopyrightIcon from '@material-ui/icons/Copyright';
 import { style } from './style';
 
 function Footer() {
   return (
-    <div style={{ 'margin-top': '10%' }}>
+    <div style={{ 'margin-top': '5%' }}>
       <span style={style}>
-        <CopyrightIcon />
-      SUCCESSIVE TECHNOLOGIES
+      &#9400; SUCCESSIVE TECHNOLOGIES
       </span>
     </div>
   );

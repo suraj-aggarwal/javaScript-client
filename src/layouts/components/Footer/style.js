@@ -3,7 +3,7 @@ const style = {
   'text-align': 'center',
   'font-family': 'Times New Roman',
   'font-size': 15,
-  'margin-left': '20%',
+  'margin-left': '40%',
 };
 
 export { style };
