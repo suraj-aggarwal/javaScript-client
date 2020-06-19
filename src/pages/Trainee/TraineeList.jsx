@@ -110,16 +110,17 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = (deleteTrainee, value) => {
+  handleRemove = async (deleteTrainee, value) => {
     const { data, trainees } = this.state;
     this.setState({
       load: true,
     });
     console.log('original id', data);
-    deleteTrainee({ variables: { id: data.originalId } })
-      .then(() => {
-        value('Trainee Deleted Successfully', 'success');
-      })
+
+    deleteTrainee({ variables: { id: data.originalId } }).then(({ data }) => {
+      console.log(data);
+      value('Trainee Deleted Successfully', 'success');
+    })
       .catch((err) => {
         console.log(err);
         value(err.message, 'error');
@@ -207,7 +208,7 @@ class TraineeList extends Component {
     const variables = { skip: rowsPerPage * page, limit: rowsPerPage };
     return (
       <div>
-        {console.log('--------------get all trainee -----------', this.props)}
+        {console.log('--------------get all trainee -----------', records)}
         <br />
         <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
           Add Trainee
