@@ -12,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { validateLogin } from '../../config/constants';
+import { Footer } from '../../layouts/components/Footer';
 
 const useStyles = (theme) => ({
   paper: {
@@ -172,6 +173,7 @@ class Login extends Component {
             </form>
           </Box>
         </Paper>
+        <Footer />
       </Container>
     );
   }

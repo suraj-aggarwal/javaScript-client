@@ -1,8 +1,9 @@
 import React from 'react';
+import { style } from './style';
 
 function NotFound() {
   return (
-    <div>
+    <div style={style}>
       <h1>
         Not Found
       </h1>

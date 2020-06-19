@@ -17,9 +17,9 @@ function App() {
         <PrivateRoute exact path="/ChildernDemo" component={ChildernDemo} />
         <PrivateRoute exact path="/Trainee" component={Trainee} />
         <AuthRoute exact path="/login" component={Login} />
+        <PrivateRoute component={NotFound} />
         <Route path="/">
           <Redirect to="/login" />
-          <NotFound />
         </Route>
       </Switch>
     </Router>
