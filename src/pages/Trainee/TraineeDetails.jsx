@@ -10,7 +10,6 @@ import * as moment from 'moment';
 import { NotFound } from '../NoMatch';
 import trainees from './data/Trainee';
 
-
 const Styles = (theme) => ({
   root: {
     display: 'flex',
@@ -42,7 +41,6 @@ const Styles = (theme) => ({
     marginLeft: theme.spacing(70),
   },
 });
-
 
 function TraineeDetail(props) {
   const { id: traineeId } = useParams();

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { AddDialog } from './Components';
 import { Button, Box } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 
@@ -60,5 +61,9 @@ class TraineeList extends Component {
     );
   }
 }
+
+TraineeList.propTypes = {
+  match: PropTypes.objectOf(PropTypes.object).isRequired,
+};
 
 export { TraineeList };

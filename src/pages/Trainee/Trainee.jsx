@@ -14,4 +14,3 @@ const Trainee = () => {
 };
 
 export { Trainee };
-  
