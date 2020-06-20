@@ -1,1 +1,1 @@
-export { ChildernDemo as default } from './ChildernDemo';
+export { default as ChildernDemo } from './ChildernDemo';

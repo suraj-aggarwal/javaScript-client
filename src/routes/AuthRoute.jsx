@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
 
-function AuthRoute({ children, ...rest }) {
+function AuthRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}

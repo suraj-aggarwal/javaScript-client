@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { AddDialog } from './Components';
+import { Button, Box } from '@material-ui/core';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 
@@ -13,15 +13,10 @@ class TraineeList extends Component {
     };
   }
 
-  handlerOnClick = () => {
+  toggleOpenState = () => {
+    const { open } = this.state;
     this.setState({
-      open: true,
-    });
-  }
-
-  handlerOnClose = () => {
-    this.setState({
-      open: false,
+      open: !open,
     });
   }
 
@@ -31,10 +26,12 @@ class TraineeList extends Component {
     return (
       <div>
         <br />
-        <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
-          Add Trainee
-        </Button>
-        <AddDialog open={open} onClose={this.handlerOnClose} />
+        <Box justifyContent="row" lineHeight={4}>
+          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+            Add Trainee
+          </Button>
+          <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+        </Box>
         <Table
           id="id"
           data={trainees}

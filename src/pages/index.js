@@ -1,6 +1,6 @@
+export { ChildernDemo } from './ChildernDemo';
 export { TextFieldDemo } from './TextFieldDemo';
-export { default as InputDemo } from './InputDemo';
-export { default as ChildernDemo } from './ChildernDemo';
+export { InputDemo } from './InputDemo';
 export { Trainee } from './Trainee';
 export { Login } from './Login';
 export { NotFound } from './NoMatch';

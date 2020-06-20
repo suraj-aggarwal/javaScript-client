@@ -3,8 +3,7 @@ import {
   TextField, SelectField, RadioGroup, Button,
 } from '../../components';
 import {
-  selectOptions, sportsRoles, cricket, football,
-  validateForm,
+  selectOptions, sportsRoles, defaultSelect, validateForm,
 } from '../../config/constants';
 
 class InputDemo extends Component {
@@ -17,97 +16,110 @@ class InputDemo extends Component {
       football: '',
       role: '',
       allErrors: {},
+      touched: {},
+      disabled: true,
     };
   }
 
-  getErrors = async () => {
+  hasError = () => {
     const {
-      name, sport, role,
+      name, role, sport,
     } = this.state;
-    try {
-      const result = await validateForm.validate({ name, sport, role }, { abortEarly: false });
-      this.setState({
-        allErrors: {},
+    const error = {};
+    validateForm.validate({ name, sport, role }, { abortEarly: false }).then(() => {
+      this.setState({ disabled: false });
+    })
+      .catch((err) => {
+        const values = Object.values(err.inner);
+        values.forEach((val) => {
+          error[val.path] = val.message;
+        });
+      })
+      .finally(() => {
+        this.setState({
+          allErrors: error,
+        });
       });
-    } catch (err) {
-      const parsedErrors = {};
-      err.inner.forEach((ValidationError) => {
-        const { path, message } = ValidationError;
-        parsedErrors[path] = message;
-      });
-      this.setState({
-        allErrors: parsedErrors,
-      });
+  }
+
+  getError = (field) => {
+    const { touched, allErrors } = this.state;
+    if (touched[field]) {
+      return allErrors[field];
     }
+    return '';
   }
 
-  hasErros = () => {
-    const { allErrors } = this.state;
-    return Object.keys(allErrors).length !== 0;
+  isTouched = (field) => {
+    const { touched } = this.state;
+    touched[field] = true;
+    this.setState({
+      touched,
+    });
+    this.hasError();
   }
-
 
   handleNameChange = (e) => {
     this.setState({
       name: e.target.value,
     });
-    this.getErrors();
+    this.hasError();
   };
 
   handleSportChange = (e) => {
     this.setState({
       sport: e.target.value,
+      cricket: '',
+      football: '',
+      role: '',
     });
-    this.getErrors();
+    this.hasError();
   };
 
   handleRoleChange = (e) => {
     const { sport } = this.state;
-    if (sport === cricket) {
-      this.setState({
-        cricket: e.target.value,
-        role: e.target.value,
-      });
-    }
     this.setState({
-      football: e.target.value,
+      [sport]: e.target.value,
       role: e.target.value,
     });
-    this.getErrors();
-  };
+    this.hasError();
+  }
 
   render() {
     const {
-      name, sport, allErrors,
+      name, sport, cricket, football, disabled,
     } = this.state;
     return (
-      <form>
-        <label htmlFor="textField">Name</label>
-        <br />
-        <TextField value={name} onChange={this.handleNameChange} error={allErrors.name} />
-        <br />
-        <label htmlFor="">Select the game you play?</label>
-        <br />
+      <div>
+        <p> Name </p>
+        <TextField
+          name="name"
+          value={name}
+          onChange={this.handleNameChange}
+          error={this.getError('name')}
+          onblur={() => { this.isTouched('name'); }}
+        />
+        <p>Select the game you play?</p>
         <SelectField
           value={sport}
           onChange={this.handleSportChange}
           options={selectOptions}
-          error={allErrors.sport}
+          error={this.getError('sport')}
+          onblur={() => { this.isTouched('sport'); }}
         />
-        <br />
-        <br />
+        {sport && sport !== defaultSelect ? <p> What you want to play? </p> : ''}
         <RadioGroup
-          value={sport}
+          value={sport === 'cricket' ? cricket : football}
           onChange={this.handleRoleChange}
-          options={sportsRoles.get(sport)}
-          label={sport === cricket || sport === football ? 'what you do?' : ''}
-          error={allErrors.role}
+          options={sportsRoles[sport]}
+          error={this.getError('role')}
+          onblur={() => { this.isTouched('role'); }}
         />
-        <Button style={this.hasErros() ? {} : { 'background-color': 'green' }} disabled={!!this.hasErros()} value="submit"> </Button>
-        <Button disabled={!this.hasErros()} value="cancel"> </Button>
-      </form>
+        <Button style={disabled ? {} : { 'background-color': 'green' }} disabled={disabled} value="submit"> </Button>
+        <Button disabled={disabled} value="cancel"> </Button>
+      </div>
     );
   }
 }
 
-export { InputDemo };
+export default InputDemo;

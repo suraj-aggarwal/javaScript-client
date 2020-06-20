@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter as Router, Switch, Route, Redirect,
+  BrowserRouter as Router, Switch,
 } from 'react-router-dom';
 import {
   InputDemo, ChildernDemo, Trainee, Login, NotFound, TextFieldDemo,
@@ -11,17 +11,13 @@ function App() {
   return (
     <Router>
       <Switch>
-        <PrivateRoute exact path="/account" component={Trainee} />
+        <AuthRoute exact path="/" component={Login} />
+        <AuthRoute exact path="/login" component={Login} />
         <PrivateRoute exact path="/TextFieldDemo" component={TextFieldDemo} />
-        <PrivateRoute exact path="/TextFiled" component={InputDemo} />
+        <PrivateRoute exact path="/InputDemo" component={InputDemo} />
         <PrivateRoute exact path="/ChildernDemo" component={ChildernDemo} />
         <PrivateRoute path="/Trainee" component={Trainee} />
-        <AuthRoute exact path="/login" component={Login} />
-        <PrivateRoute component={NotFound} />
-        <Route path="/">
-          <Redirect to="/login" />
-          <NotFound />
-        </Route>
+        <PrivateRoute path="/" component={NotFound} />
       </Switch>
     </Router>
   );
