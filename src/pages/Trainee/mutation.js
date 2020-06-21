@@ -19,7 +19,11 @@ mutation EDIT_TRAINEE(
     name: $name,
     email:$email,
     role: $role
-  })
+  }) {
+    name
+    email
+    originalId
+  }
 }
 `;
 
