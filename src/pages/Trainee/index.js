@@ -1,1 +1,2 @@
-export { default as Trainee } from './Trainee';
+export { default as TraineeDetails } from './TraineeDetails';
+export { TraineeList } from './TraineeList';

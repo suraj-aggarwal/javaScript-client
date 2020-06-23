@@ -41,5 +41,4 @@ Math.defaultProps = {
   }) => `${first} ${operator} ${second} = ${result}`,
 };
 
-
 export default Math;

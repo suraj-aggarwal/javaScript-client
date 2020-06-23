@@ -24,5 +24,4 @@ const style = {
   color: 'red',
 };
 
-
 export { Input, style };
