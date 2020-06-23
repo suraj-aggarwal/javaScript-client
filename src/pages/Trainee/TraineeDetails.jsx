@@ -18,7 +18,10 @@ function TraineeDetail(props) {
     moment(value).format('dddd,MMMM Do YYYY, h:mm:ss a')
   );
 
-  const traineeDetail = (
+  if (!trainee) {
+    return <NotFound />;
+  }
+  return (
     <>
       <Card className={classes.root}>
         <CardMedia className={classes.cover}>
@@ -44,8 +47,6 @@ function TraineeDetail(props) {
       </Button>
     </>
   );
-
-  return !trainee ? <NotFound /> : traineeDetail;
 }
 TraineeDetail.propTypes = {
   classes: PropType.objectOf(PropType.string).isRequired,

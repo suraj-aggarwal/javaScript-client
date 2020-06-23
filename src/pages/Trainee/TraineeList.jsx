@@ -6,22 +6,23 @@ import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 
-const traineeLinks = (url) => (
-  trainees.map((elements) => (
-    <ul key={elements.id}>
-      <li>
-        <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
-      </li>
-    </ul>
-  ))
-);
-
 class TraineeList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
     };
+  }
+
+  traineeLinks = () => {
+    const { match: { url } } = this.props;
+    return trainees.map((elements) => (
+      <ul key={elements.id}>
+        <li>
+          <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
+        </li>
+      </ul>
+    ));
   }
 
   toggleOpenState = () => {
@@ -33,7 +34,6 @@ class TraineeList extends Component {
 
   render() {
     const { open } = this.state;
-    const { match: { url } } = this.props;
     return (
       <div>
         <br />
@@ -58,7 +58,7 @@ class TraineeList extends Component {
             },
           ]}
         />
-        {trainees && traineeLinks(url)}
+        {trainees && this.traineeLinks()}
       </div>
     );
   }

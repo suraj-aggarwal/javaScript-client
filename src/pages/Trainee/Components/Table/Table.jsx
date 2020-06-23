@@ -57,6 +57,6 @@ SimpleTable.propTypes = {
 };
 
 SimpleTable.defaultProps = {
-  data: {},
+  data: [],
   columns: [],
 };
