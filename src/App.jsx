@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
-  InputDemo, ChildernDemo, Trainee, Login, NotFound, TextFieldDemo,
+  InputDemo, ChildernDemo, Login, NotFound, TextFieldDemo, TraineeDetails, TraineeList,
 } from './pages';
 import { PrivateRoute, AuthRoute } from './routes';
 
@@ -19,7 +19,8 @@ function App() {
           <PrivateRoute exact path="/TextFieldDemo" component={TextFieldDemo} />
           <PrivateRoute exact path="/InputDemo" component={InputDemo} />
           <PrivateRoute exact path="/ChildernDemo" component={ChildernDemo} />
-          <PrivateRoute path="/Trainee" component={Trainee} />
+          <PrivateRoute exact path="/Trainee" component={TraineeList} />
+          <PrivateRoute exact path="/Trainee/:id" component={TraineeDetails} />
           <PrivateRoute path="/" component={NotFound} />
         </Switch>
       </Router>
