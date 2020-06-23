@@ -15,6 +15,9 @@ const useStyles = makeStyles({
     minWidth: 600,
     spacing: 8,
   },
+  tableCell: {
+    color: 'darkgray',
+  },
 });
 
 export default function SimpleTable(props) {
@@ -29,7 +32,7 @@ export default function SimpleTable(props) {
           <TableHead>
             <TableRow key={id}>
               {columns.map((column = {}) => (
-                <TableCell align={column.align}>{column.label}</TableCell>
+                <TableCell align={column.align} className={classes.tableCell}>{column.label}</TableCell>
               ))}
             </TableRow>
           </TableHead>
