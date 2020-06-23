@@ -8,42 +8,55 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 650,
+    minWidth: 600,
+    spacing: 8,
   },
 });
 
 export default function SimpleTable(props) {
   const classes = useStyles();
-  const { id, data, columns } = props;
+  const {
+    id, data, columns,
+  } = props;
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow key={id}>
-            {columns.map((col) => (
-              <TableCell align={col.align}>{col.label}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((element) => (
-            <TableRow key={element.id}>
-              { columns.map(({ field, align }) => (
-                <TableCell align={align}>{element[field]}</TableCell>
+    <Box margin="2%">
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow key={id}>
+              {columns.map((column = {}) => (
+                <TableCell align={column.align}>{column.label}</TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {data.map((element = {}) => (
+              <TableRow key={element.id}>
+                { columns.map(({ field, align }) => (
+                  <TableCell align={align}>
+                    {element[field]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
 
 SimpleTable.propTypes = {
   id: PropTypes.string.isRequired,
-  data: PropTypes.objectOf(PropTypes.object).isRequired,
-  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.objectOf(PropTypes.object),
+  columns: PropTypes.arrayOf(PropTypes.array),
+};
+
+SimpleTable.defaultProps = {
+  data: {},
+  columns: [],
 };

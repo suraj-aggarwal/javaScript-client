@@ -6,6 +6,16 @@ import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 
+const traineeLinks = (url) => (
+  trainees.map((elements) => (
+    <ul key={elements.id}>
+      <li>
+        <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
+      </li>
+    </ul>
+  ))
+);
+
 class TraineeList extends Component {
   constructor(props) {
     super(props);
@@ -48,15 +58,7 @@ class TraineeList extends Component {
             },
           ]}
         />
-        {
-          trainees.map((elements) => (
-            <React.Fragment key={elements.id}>
-              <li>
-                <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
-              </li>
-            </React.Fragment>
-          ))
-        }
+        {trainees && traineeLinks(url)}
       </div>
     );
   }
