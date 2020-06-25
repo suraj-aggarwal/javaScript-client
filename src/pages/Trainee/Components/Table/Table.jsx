@@ -10,32 +10,15 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
-
-const useStyles = (theme) => ({
-  table: {
-    minWidth: 600,
-    spacing: 8,
-  },
-  tableCell: {
-    color: 'darkgray',
-  },
-  header: {
-    color: 'grey',
-  },
-  row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-});
+import { useStyles } from './tableStyle';
 
 function SimpleTable(props) {
   const {
     id, data, columns, orderBy, order, onSort, onSelect, classes,
   } = props;
   return (
-    <TableContainer component={Paper}>
-      <Box margin="2%">
+    <Box margin="2%">
+      <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow key={id}>
@@ -46,7 +29,9 @@ function SimpleTable(props) {
                   sortDirection={orderBy === col.field ? order : false}
                 >
                   <TableSortLabel
+                    className={classes.tableCell}
                     active={orderBy === col.field}
+                    hideSortIcon
                     direction={orderBy === col.field ? order : 'asc'}
                     onClick={onSort(col.field)}
                   >
@@ -68,8 +53,8 @@ function SimpleTable(props) {
             ))}
           </TableBody>
         </Table>
-      </Box>
-    </TableContainer>
+      </TableContainer>
+    </Box>
   );
 }
 
