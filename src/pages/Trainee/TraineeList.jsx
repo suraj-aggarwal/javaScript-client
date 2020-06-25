@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { Button, Box } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
@@ -17,15 +18,21 @@ class TraineeList extends Component {
     };
   }
 
-  handlerOnClick = () => {
-    this.setState({
-      open: true,
-    });
+  traineeLinks = () => {
+    const { match: { url } } = this.props;
+    return trainees.map((elements) => (
+      <ul key={elements.id}>
+        <li>
+          <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
+        </li>
+      </ul>
+    ));
   }
 
-  handlerOnClose = () => {
+  toggleOpenState = () => {
+    const { open } = this.state;
     this.setState({
-      open: false,
+      open: !open,
     });
   }
 
@@ -44,16 +51,17 @@ class TraineeList extends Component {
   }
 
   render() {
-    const { open, orderBy, order, data } = this.state;
-    const { match: { url } } = this.props;
-    console.log(data);
+    const {
+      open, orderBy, order,
+    } = this.state;
     return (
       <div>
-        <br />
-        <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
-          Add Trainee
-        </Button>
-        <AddDialog open={open} onClose={this.handlerOnClose} />
+        <Box justifyContent="row" lineHeight={4}>
+          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+            Add Trainee
+          </Button>
+          <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+        </Box>
         <Table
           id="id"
           data={trainees}
@@ -79,18 +87,14 @@ class TraineeList extends Component {
           order={order}
           onSelect={this.handleSelect}
         />
-        {/* {
-          trainees.map((elements) => (
-            <React.Fragment key={elements.id}>
-              <li>
-                <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
-              </li>
-            </React.Fragment>
-          ))
-        } */}
+        {trainees && this.traineeLinks()}
       </div>
     );
   }
 }
+
+TraineeList.propTypes = {
+  match: PropTypes.objectOf(PropTypes.object).isRequired,
+};
 
 export { TraineeList };
