@@ -13,7 +13,7 @@ class TraineeList extends Component {
     this.state = {
       open: false,
       orderBy: '',
-      order: '',
+      order: 'asc',
       data: {},
     };
   }

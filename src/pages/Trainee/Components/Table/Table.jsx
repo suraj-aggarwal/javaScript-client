@@ -22,7 +22,7 @@ function SimpleTable(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow key={id}>
-              {columns.map((column) => (
+              {columns.map((column = {}) => (
                 <TableCell
                   className={classes.header}
                   align={column.align}
