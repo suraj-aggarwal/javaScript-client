@@ -10,10 +10,11 @@ const useStyles = (theme) => ({
     color: 'grey',
   },
   row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
+    '&:nth-child(odd)': { background: '#D3D3D3' },
     cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#808080',
+    },
   },
 });
 

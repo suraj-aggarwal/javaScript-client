@@ -14,7 +14,7 @@ class TraineeList extends Component {
       open: false,
       orderBy: '',
       order: '',
-      data: null,
+      data: {},
     };
   }
 
@@ -36,7 +36,7 @@ class TraineeList extends Component {
     });
   }
 
-  handleSort = (field) => (event) => {
+  handleSort = (field) => {
     const { order } = this.state;
     this.setState({
       orderBy: field,
@@ -44,7 +44,7 @@ class TraineeList extends Component {
     });
   }
 
-  handleSelect = (element) => (event) => {
+  handleSelect = (element) => {
     this.setState({
       data: element,
     });
@@ -56,7 +56,7 @@ class TraineeList extends Component {
     } = this.state;
     return (
       <div>
-        <Box justifyContent="row" lineHeight={4}>
+        <Box justifyContent="row" lineHeight={4} margin="2%">
           <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
             Add Trainee
           </Button>

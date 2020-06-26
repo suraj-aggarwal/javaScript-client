@@ -22,20 +22,20 @@ function SimpleTable(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow key={id}>
-              {columns.map((col) => (
+              {columns.map((column) => (
                 <TableCell
                   className={classes.header}
-                  align={col.align}
-                  sortDirection={orderBy === col.field ? order : false}
+                  align={column.align}
+                  sortDirection={orderBy === column.field ? order : false}
                 >
                   <TableSortLabel
                     className={classes.tableCell}
-                    active={orderBy === col.field}
+                    active={orderBy === column.field}
                     hideSortIcon
-                    direction={orderBy === col.field ? order : 'asc'}
-                    onClick={onSort(col.field)}
+                    direction={orderBy === column.field ? order : 'asc'}
+                    onClick={() => onSort(column.field)}
                   >
-                    {col.label}
+                    {column.label}
                   </TableSortLabel>
                 </TableCell>
               ))}
@@ -43,10 +43,12 @@ function SimpleTable(props) {
           </TableHead>
           <TableBody>
             {data.map((element = {}) => (
-              <TableRow key={element.id} className={classes.row} hover onClick={onSelect(element)}>
+              <TableRow key={element.id} className={classes.row} hover onClick={() => onSelect(element)}>
                 {columns.map(({ field, align, format }) => (
-                  <TableCell align={align}>
-                    {format !== undefined ? format(element[field]) : element[field]}
+                  <TableCell
+                    align={align}
+                  >
+                    {format ? format(element[field]) : element[field]}
                   </TableCell>
                 ))}
               </TableRow>
@@ -65,7 +67,7 @@ SimpleTable.propTypes = {
   orderBy: PropTypes.string,
   order: PropTypes.string,
   onSort: PropTypes.func,
-  onSelect: PropTypes.func,
+  onSelect: PropTypes.func.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
@@ -75,7 +77,6 @@ SimpleTable.defaultProps = {
   data: [],
   columns: [],
   onSort: () => { },
-  onSelect: () => { },
 };
 
 export default withStyles(useStyles)(SimpleTable);
