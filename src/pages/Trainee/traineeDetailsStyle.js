@@ -20,7 +20,6 @@ const styles = (theme) => ({
     color: 'white',
     marginLeft: theme.spacing(5),
   },
-
   container: {
     flexDirection: 'column',
     alignItems: 'center',

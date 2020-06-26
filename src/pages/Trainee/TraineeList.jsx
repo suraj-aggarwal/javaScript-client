@@ -5,12 +5,16 @@ import PropTypes from 'prop-types';
 import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
+import { getDateFormat } from '../../libs/utils/helper';
 
 class TraineeList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
+      orderBy: '',
+      order: 'asc',
+      data: {},
     };
   }
 
@@ -32,12 +36,27 @@ class TraineeList extends Component {
     });
   }
 
+  handleSort = (field) => {
+    const { order } = this.state;
+    this.setState({
+      orderBy: field,
+      order: order === 'asc' ? 'desc' : 'asc',
+    });
+  }
+
+  handleSelect = (element) => {
+    this.setState({
+      data: element,
+    });
+  }
+
   render() {
-    const { open } = this.state;
+    const {
+      open, orderBy, order,
+    } = this.state;
     return (
       <div>
-        <br />
-        <Box justifyContent="row" lineHeight={4}>
+        <Box justifyContent="row" lineHeight={4} margin="2%">
           <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
             Add Trainee
           </Button>
@@ -50,13 +69,23 @@ class TraineeList extends Component {
             {
               field: 'name',
               label: 'Name',
-              align: 'center',
             },
             {
               field: 'email',
               label: 'Email Address',
+              format: (value) => value && value.toUpperCase(),
+            },
+            {
+              field: 'createdAt',
+              label: 'Date',
+              align: 'right',
+              format: getDateFormat,
             },
           ]}
+          onSort={this.handleSort}
+          orderBy={orderBy}
+          order={order}
+          onSelect={this.handleSelect}
         />
         {trainees && this.traineeLinks()}
       </div>
