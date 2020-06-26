@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { AddDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
-import { getDateFormat } from '../../libs/utils/formatDate';
+import { getDateFormat } from '../../libs/utils/helper';
 
 class TraineeList extends Component {
   constructor(props) {
