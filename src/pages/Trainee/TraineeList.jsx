@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import { Link } from 'react-router-dom';
+
+import PropTypes from 'prop-types';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
-import { getDateFormat } from '../../libs/utils/formatDate';
+import { getDateFormat } from '../../libs/utils/helper';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -13,30 +16,36 @@ class TraineeList extends Component {
     this.state = {
       open: false,
       orderBy: '',
-      order: '',
-      data: null,
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
       rowsPerPage: 10,
       email: '',
       name: '',
+      order: 'asc',
+      data: {},
     };
   }
 
-  handlerOnClick = () => {
+  traineeLinks = () => {
+    const { match: { url } } = this.props;
+    return trainees.map((elements) => (
+      <ul key={elements.id}>
+        <li>
+          <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
+        </li>
+      </ul>
+    ));
+  }
+
+  toggleOpenState = () => {
+    const { open } = this.state;
     this.setState({
-      open: true,
+      open: !open,
     });
   }
 
-  handlerOnClose = () => {
-    this.setState({
-      open: false,
-    });
-  }
-
-  handleSort = (field) => (event) => {
+  handleSort = (field) => {
     const { order } = this.state;
     this.setState({
       orderBy: field,
@@ -44,7 +53,7 @@ class TraineeList extends Component {
     });
   }
 
-  handleSelect = (element) => (event) => {
+  handleSelect = (element) => {
     const { name, email } = element;
     this.setState({
       data: element,
@@ -97,7 +106,6 @@ class TraineeList extends Component {
     console.log({ email, name });
   }
 
-
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage,
@@ -128,68 +136,73 @@ class TraineeList extends Component {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
       email, name,
     } = this.state;
-    const { match: { url } } = this.props;
     return (
       <div>
-        <br />
-        <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
-          Add Trainee
-        </Button>
-        <AddDialog open={open} onClose={this.handlerOnClose} />
-        <EditDialog
-          openEditDialog={openEditDialog}
-          handleEditClose={this.handleEditClose}
-          handleEdit={this.handleEdit}
-          email={email}
-          name={name}
-          handleOnChangeEmail={this.handleOnChangeEmail}
-          handleOnChangeName={this.handleOnChangeName}
-        />
-        <RemoveDialog
-          openRemoveDialog={openRemoveDialog}
-          handleRemoveClose={this.handleRemoveClose}
-          handleRemove={this.handleRemove}
-        />
-        <Table
-          id="id"
-          data={trainees}
-          columns={[
-            {
-              field: 'name',
-              label: 'Name',
-            },
-            {
-              field: 'email',
-              label: 'Email Address',
-              format: (value) => value && value.toUpperCase(),
-            },
-            {
-              field: 'createdAt',
-              label: 'Date',
-              align: 'right',
-              format: getDateFormat,
-            },
-          ]}
-          onSort={this.handleSort}
-          orderBy={orderBy}
-          order={order}
-          onSelect={this.handleSelect}
-          actions={[{
-            Icon: <EditIcon />,
-            handler: this.handleEditOpen,
-          }, {
-            Icon: <DeleteIcon />,
-            handler: this.handleRemoveOpen,
-          }]}
-          count={100}
-          page={page}
-          onChangePage={this.handleChangePage}
-          rowsPerPage={rowsPerPage}
-          handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
+        <Box justifyContent="row" lineHeight={4} margin="2%">
+          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+            Add Trainee
+          </Button>
+          <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+          <EditDialog
+            openEditDialog={openEditDialog}
+            handleEditClose={this.handleEditClose}
+            handleEdit={this.handleEdit}
+            email={email}
+            name={name}
+            handleOnChangeEmail={this.handleOnChangeEmail}
+            handleOnChangeName={this.handleOnChangeName}
+          />
+          <RemoveDialog
+            openRemoveDialog={openRemoveDialog}
+            handleRemoveClose={this.handleRemoveClose}
+            handleRemove={this.handleRemove}
+          />
+          <Table
+            id="id"
+            data={trainees}
+            columns={[
+              {
+                field: 'name',
+                label: 'Name',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: getDateFormat,
+              },
+            ]}
+            onSort={this.handleSort}
+            orderBy={orderBy}
+            order={order}
+            onSelect={this.handleSelect}
+            actions={[{
+              Icon: <EditIcon />,
+              handler: this.handleEditOpen,
+            }, {
+              Icon: <DeleteIcon />,
+              handler: this.handleRemoveOpen,
+            }]}
+            count={100}
+            page={page}
+            onChangePage={this.handleChangePage}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+          {/* {trainees && this.traineeLinks()} */}
+        </Box>
       </div>
     );
   }
 }
+
+TraineeList.propTypes = {
+  match: PropTypes.objectOf(PropTypes.object).isRequired,
+};
 
 export { TraineeList };

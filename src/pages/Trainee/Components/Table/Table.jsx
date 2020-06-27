@@ -10,20 +10,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
-
-const useStyles = (theme) => ({
-  table: {
-    minWidth: 650,
-  },
-  header: {
-    color: 'grey',
-  },
-  row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-});
+import { Box } from '@material-ui/core';
+import { useStyles } from './tableStyle';
 
 function SimpleTable(props) {
   const {
@@ -31,65 +19,71 @@ function SimpleTable(props) {
     page, onChangePage, count, handleChangeRowsPerPage,
   } = props;
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow key={id}>
-            {columns.map((col) => (
-              <TableCell
-                className={classes.header}
-                align={col.align}
-                sortDirection={orderBy === col.field ? order : false}
-              >
-                <TableSortLabel
-                  active={orderBy === col.field}
-                  direction={orderBy === col.field ? order : 'asc'}
-                  onClick={onSort(col.field)}
+    <Box margin="2%">
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow key={id}>
+              {columns.map((column = {}) => (
+                <TableCell
+                  className={classes.header}
+                  align={column.align}
+                  sortDirection={orderBy === column.field ? order : false}
                 >
-                  {col.label}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((element) => (
-            <TableRow key={element.id} className={classes.row} hover onClick={onSelect(element)}>
-              {columns.map(({ field, align, format }) => (
-                <TableCell align={align}>
-                  {format !== undefined ? format(element[field]) : element[field]}
-                </TableCell>
-              ))}
-              {actions.map(({ Icon, handler }) => (
-                <TableCell onClick={handler()}>
-                  {Icon}
+                  <TableSortLabel
+                    className={classes.tableCell}
+                    active={orderBy === column.field}
+                    hideSortIcon
+                    direction={orderBy === column.field ? order : 'asc'}
+                    onClick={() => onSort(column.field)}
+                  >
+                    {column.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={count}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onChangePage={onChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {data.map((element = {}) => (
+              <TableRow key={element.id} className={classes.row} hover onClick={() => onSelect(element)}>
+                {columns.map(({ field, align, format }) => (
+                  <TableCell
+                    align={align}
+                  >
+                    {format ? format(element[field]) : element[field]}
+                  </TableCell>
+                ))}
+                {actions.map(({ Icon, handler }) => (
+                  <TableCell onClick={handler()}>
+                    {Icon}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={count}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onChangePage={onChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </TableContainer>
+    </Box>
   );
 }
 
 SimpleTable.propTypes = {
   id: PropTypes.string.isRequired,
-  data: PropTypes.objectOf(PropTypes.object).isRequired,
-  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.objectOf(PropTypes.object),
+  columns: PropTypes.arrayOf(PropTypes.object),
   orderBy: PropTypes.string,
   order: PropTypes.string,
   onSort: PropTypes.func,
-  onSelect: PropTypes.func,
+  onSelect: PropTypes.func.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   actions: PropTypes.arrayOf(PropTypes.object),
   rowsPerPage: PropTypes.number.isRequired,
@@ -102,8 +96,9 @@ SimpleTable.propTypes = {
 SimpleTable.defaultProps = {
   orderBy: 'createdAt',
   order: 'asc',
+  data: [],
+  columns: [],
   onSort: () => { },
-  onSelect: () => { },
   actions: [],
 };
 

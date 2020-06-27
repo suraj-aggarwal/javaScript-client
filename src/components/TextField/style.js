@@ -6,18 +6,22 @@ width: 100%;
 padding: 1%;
 border-radius: 4px;
 ${(props) => props.value === 'Disabled Input'
-&& css`
+        && css`
 border-color: lightgray;
 `};
 ${(props) => props.value === 'Accessiable'
-&& css`
+        && css`
 border-color: orange;
 font-weight: bold;
 `};
 ${(props) => props.value === '101'
-&& css`
+        && css`
 font-weight: bold;
 `};
 `;
 
-export { Input };
+const style = {
+  color: 'red',
+};
+
+export { Input, style };

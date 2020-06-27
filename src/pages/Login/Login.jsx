@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
+import { Paper, Box } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -18,6 +19,7 @@ const useStyles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    padding: 6,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -32,120 +34,144 @@ const useStyles = (theme) => ({
   },
 });
 
+const initialState = {
+  email: '',
+  password: '',
+  touched: {},
+  allErrors: {},
+  disabled: true,
+};
+
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      touched: {},
-      error: {},
-    };
+    this.state = { ...initialState };
   }
 
-  handleOnChange = (field) => ({ target: { value } }) => {
+  handleOnSubmit = () => {
+    this.setState(initialState);
+  }
+
+  handleOnChange = (event) => {
     this.setState({
-      [field]: value,
+      [event.target.name]: event.target.value,
     });
-    this.getError(field);
+    this.hasError();
   }
 
-  isTouched = (field) => {
+  isTouched = (event) => {
     const { touched } = this.state;
-    touched[field] = true;
+    touched[event.target.name] = true;
     this.setState({
       touched,
     });
-  }
-
-  getError = (field) => {
-    const { touched, error } = this.state;
-    if (touched[field]) {
-      validateLogin.validateAt(field, this.state)
-        .then(() => {
-          delete error[field];
-          this.setState({
-            error,
-          });
-        })
-        .catch((err) => {
-          error[field] = err.message;
-          this.setState({
-            error,
-          });
-        });
-    }
+    this.hasError();
   }
 
   hasError = () => {
-    const { error } = this.state;
-    return (Object.keys(error).length !== 0);
+    const {
+      email, password,
+    } = this.state;
+    const error = {};
+    validateLogin.validate({
+      email, password,
+    }, { abortEarly: false }).then(() => {
+      this.setState({ disabled: false });
+    })
+      .catch((err) => {
+        const values = Object.values(err.inner);
+        values.forEach((val) => {
+          error[val.path] = val.message;
+        });
+        this.setState({ disabled: true });
+      })
+      .finally(() => {
+        this.setState({
+          allErrors: error,
+        });
+      });
+  }
+
+  getError = (field) => {
+    const { allErrors, touched } = this.state;
+    if (touched[field]) {
+      return allErrors[field];
+    }
+    return '';
   }
 
   render() {
     const { classes } = this.props;
-    const { email, password, error } = this.state;
+    const { email, password, disabled } = this.state;
     return (
       <Container component="main" maxWidth="xs" justify="column">
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
+        <Paper elevation={3} className={classes.paper}>
+          <Box display="flex" lineHeight={4} alignItems="center" marginRight="4%" marginLeft="4%" flexDirection="column">
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h6">
             Login
-          </Typography>
-          <form classes={classes.form}>
-            <TextField
-              onChange={this.handleOnChange('email')}
-              onBlur={() => this.isTouched('email')}
-              error={error.email}
-              helperText={error.email}
-              autoFocus
-              margin="normal"
-              id="name"
-              label="Email Address"
-              type="email"
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailIcon />
-                  </InputAdornment>
-                ),
-              }}
-              value={email}
-              fullWidth
-            />
-            <TextField
-              onChange={this.handleOnChange('password')}
-              onBlur={() => this.isTouched('password')}
-              autoFocus
-              error={error.password}
-              helperText={error.password}
-              margin="normal"
-              id="name"
-              label="Confirm Password"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <VisibilityOffIcon />
-                  </InputAdornment>
-                ),
-              }}
-              type="Password"
-              value={password}
-              variant="outlined"
-              fullWidth
-            />
-            <Button
-              classes={classes.submit}
-              color="primary"
-              variant="contained"
-              disabled={this.hasError()}
-              fullWidth
-            >
+            </Typography>
+            <form classes={classes.form}>
+              <TextField
+                onChange={(event) => this.handleOnChange(event)}
+                onBlur={(event) => this.isTouched(event)}
+                error={this.getError('email')}
+                helperText={this.getError('email')}
+                size="small"
+                name="email"
+                margin="normal"
+                id="email"
+                label="Email Address"
+                type="email"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                value={email}
+                fullWidth
+              />
+              <TextField
+                onChange={(event) => this.handleOnChange(event)}
+                onBlur={(event) => this.isTouched(event)}
+                error={this.getError('password')}
+                helperText={this.getError('password')}
+                name="password"
+                size="small"
+                margin="normal"
+                id="password"
+                label="Password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <VisibilityOffIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                type="Password"
+                value={password}
+                variant="outlined"
+                fullWidth
+              />
+              <Button
+                classes={classes.submit}
+                color="primary"
+                variant="contained"
+                disabled={disabled}
+                size="small"
+                fullWidth
+                onClick={(event) => this.handleOnSubmit(event)}
+              >
               LOGIN
-            </Button>
-          </form>
-        </div>
+              </Button>
+            </form>
+          </Box>
+        </Paper>
       </Container>
     );
   }
