@@ -133,8 +133,7 @@ class TraineeList extends Component {
             handleEdit={this.handleEdit}
             email={email}
             name={name}
-            handleOnChangeEmail={this.handleFieldChange}
-            handleOnChangeName={this.handleFieldChange}
+            handleChange={this.handleFieldChange}
           />
           <RemoveDialog
             openRemoveDialog={openRemoveDialog}
