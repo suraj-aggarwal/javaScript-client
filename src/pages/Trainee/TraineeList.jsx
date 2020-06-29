@@ -57,8 +57,6 @@ class TraineeList extends Component {
     const { name, email } = element;
     this.setState({
       data: element,
-    });
-    this.setState({
       email,
       name,
     });
