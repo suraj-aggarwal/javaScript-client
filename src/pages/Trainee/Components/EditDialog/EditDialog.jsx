@@ -10,7 +10,6 @@ import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
 
-
 export default function EditDialog(props) {
   const {
     openEditDialog, handleEditClose, handleEdit, name, email, handleOnChangeEmail,
