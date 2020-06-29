@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Box } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Link } from 'react-router-dom';
+
 import PropTypes from 'prop-types';
-import { AddDialog } from './Components';
+import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/helper';
@@ -13,6 +16,12 @@ class TraineeList extends Component {
     this.state = {
       open: false,
       orderBy: '',
+      openRemoveDialog: false,
+      openEditDialog: false,
+      page: 0,
+      rowsPerPage: 10,
+      email: '',
+      name: '',
       order: 'asc',
       data: {},
     };
@@ -45,14 +54,69 @@ class TraineeList extends Component {
   }
 
   handleSelect = (element) => {
+    const { name, email } = element;
     this.setState({
       data: element,
+      email,
+      name,
+    });
+  }
+
+  toggleRemoveDialog = () => {
+    const { openRemoveDialog } = this.state;
+    this.setState({
+      openRemoveDialog: !openRemoveDialog,
+    });
+  }
+
+  handleRemove = () => {
+    const { data } = this.state;
+    this.setState({
+      openRemoveDialog: false,
+    });
+    console.log('DELETE ITEM');
+    console.log(data);
+  }
+
+  toggleEditDialog = () => {
+    const { openEditDialog } = this.state;
+    this.setState({
+      openEditDialog: !openEditDialog,
+    });
+  }
+
+  handleEdit = () => {
+    const { email, name } = this.state;
+    this.setState({
+      openEditDialog: false,
+    });
+    console.log('Edit Data');
+    console.log({ email, name });
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage,
+    });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage: event.target.value,
+      page: 0,
+    });
+  };
+
+  handleFieldChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value,
     });
   }
 
   render() {
     const {
-      open, orderBy, order,
+      open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
+      email, name,
     } = this.state;
     return (
       <div>
@@ -61,33 +125,57 @@ class TraineeList extends Component {
             Add Trainee
           </Button>
           <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+          <EditDialog
+            openEditDialog={openEditDialog}
+            handleEditClose={this.toggleEditDialog}
+            handleEdit={this.handleEdit}
+            email={email}
+            name={name}
+            handleChange={this.handleFieldChange}
+          />
+          <RemoveDialog
+            openRemoveDialog={openRemoveDialog}
+            handleRemoveClose={this.toggleRemoveDialog}
+            handleRemove={this.handleRemove}
+          />
+          <Table
+            id="id"
+            data={trainees}
+            columns={[
+              {
+                field: 'name',
+                label: 'Name',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: getDateFormat,
+              },
+            ]}
+            onSort={this.handleSort}
+            orderBy={orderBy}
+            order={order}
+            onSelect={this.handleSelect}
+            actions={[{
+              Icon: <EditIcon />,
+              handler: () => this.toggleEditDialog,
+            }, {
+              Icon: <DeleteIcon />,
+              handler: () => this.toggleRemoveDialog,
+            }]}
+            count={100}
+            page={page}
+            onChangePage={this.handleChangePage}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
         </Box>
-        <Table
-          id="id"
-          data={trainees}
-          columns={[
-            {
-              field: 'name',
-              label: 'Name',
-            },
-            {
-              field: 'email',
-              label: 'Email Address',
-              format: (value) => value && value.toUpperCase(),
-            },
-            {
-              field: 'createdAt',
-              label: 'Date',
-              align: 'right',
-              format: getDateFormat,
-            },
-          ]}
-          onSort={this.handleSort}
-          orderBy={orderBy}
-          order={order}
-          onSelect={this.handleSelect}
-        />
-        {trainees && this.traineeLinks()}
       </div>
     );
   }

@@ -1,4 +1,4 @@
-const useStyles = (theme) => ({
+const useStyles = () => ({
   table: {
     minWidth: 600,
     spacing: 8,

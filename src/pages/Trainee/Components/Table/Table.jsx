@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
@@ -14,7 +15,8 @@ import { useStyles } from './tableStyle';
 
 function SimpleTable(props) {
   const {
-    id, data, columns, orderBy, order, onSort, onSelect, classes,
+    id, data, columns, orderBy, order, onSort, onSelect, classes, actions, rowsPerPage,
+    page, onChangePage, count, handleChangeRowsPerPage,
   } = props;
   return (
     <Box margin="2%">
@@ -43,7 +45,12 @@ function SimpleTable(props) {
           </TableHead>
           <TableBody>
             {data.map((element = {}) => (
-              <TableRow key={element.id} className={classes.row} hover onClick={() => onSelect(element)}>
+              <TableRow
+                key={element.id}
+                className={classes.row}
+                hover
+                onClick={() => onSelect(element)}
+              >
                 {columns.map(({ field, align, format }) => (
                   <TableCell
                     align={align}
@@ -51,10 +58,24 @@ function SimpleTable(props) {
                     {format ? format(element[field]) : element[field]}
                   </TableCell>
                 ))}
+                {actions.map(({ Icon, handler }) => (
+                  <TableCell onClick={handler()}>
+                    {Icon}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={count}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onChangePage={onChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </TableContainer>
     </Box>
   );
@@ -69,6 +90,12 @@ SimpleTable.propTypes = {
   onSort: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  actions: PropTypes.arrayOf(PropTypes.object),
+  rowsPerPage: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  count: PropTypes.number.isRequired,
+  handleChangeRowsPerPage: PropTypes.func.isRequired,
 };
 
 SimpleTable.defaultProps = {
@@ -77,6 +104,7 @@ SimpleTable.defaultProps = {
   data: [],
   columns: [],
   onSort: () => { },
+  actions: [],
 };
 
 export default withStyles(useStyles)(SimpleTable);
