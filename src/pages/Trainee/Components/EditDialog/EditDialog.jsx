@@ -22,8 +22,9 @@ export default function EditDialog(props) {
             Edit Trainee
         </DialogContentText>
         <TextField
-          onChange={handleOnChangeName()}
+          onChange={(event) => handleOnChangeName(event)}
           autoFocus
+          name="name"
           margin="dense"
           id="name"
           label="Name"
@@ -40,8 +41,9 @@ export default function EditDialog(props) {
           fullWidth
         />
         <TextField
-          onChange={handleOnChangeEmail()}
+          onChange={(event) => handleOnChangeEmail(event)}
           autoFocus
+          name="email"
           margin="dense"
           id="name"
           label="Email Address"

@@ -64,15 +64,10 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemoveOpen = () => (event) => {
+  toggleRemoveDialog = () => {
+    const { openRemoveDialog } = this.state;
     this.setState({
-      openRemoveDialog: true,
-    });
-  }
-
-  handleRemoveClose = () => {
-    this.setState({
-      openRemoveDialog: false,
+      openRemoveDialog: !openRemoveDialog,
     });
   }
 
@@ -85,15 +80,10 @@ class TraineeList extends Component {
     console.log(data);
   }
 
-  handleEditOpen = () => (event) => {
+  toggleEditDialog = () => {
+    const { openEditDialog } = this.state;
     this.setState({
-      openEditDialog: true,
-    });
-  }
-
-  handleEditClose = () => {
-    this.setState({
-      openEditDialog: false,
+      openEditDialog: !openEditDialog,
     });
   }
 
@@ -119,15 +109,9 @@ class TraineeList extends Component {
     });
   };
 
-  handleOnChangeEmail = () => (event) => {
+  handleFieldChange = (event) => {
     this.setState({
-      email: event.target.value,
-    });
-  }
-
-  handleOnChangeName = () => (event) => {
-    this.setState({
-      name: event.target.value,
+      [event.target.name]: event.target.value,
     });
   }
 
@@ -145,16 +129,16 @@ class TraineeList extends Component {
           <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
           <EditDialog
             openEditDialog={openEditDialog}
-            handleEditClose={this.handleEditClose}
+            handleEditClose={this.toggleEditDialog}
             handleEdit={this.handleEdit}
             email={email}
             name={name}
-            handleOnChangeEmail={this.handleOnChangeEmail}
-            handleOnChangeName={this.handleOnChangeName}
+            handleOnChangeEmail={this.handleFieldChange}
+            handleOnChangeName={this.handleFieldChange}
           />
           <RemoveDialog
             openRemoveDialog={openRemoveDialog}
-            handleRemoveClose={this.handleRemoveClose}
+            handleRemoveClose={this.toggleRemoveDialog}
             handleRemove={this.handleRemove}
           />
           <Table
@@ -183,10 +167,10 @@ class TraineeList extends Component {
             onSelect={this.handleSelect}
             actions={[{
               Icon: <EditIcon />,
-              handler: this.handleEditOpen,
+              handler: () => this.toggleEditDialog,
             }, {
               Icon: <DeleteIcon />,
-              handler: this.handleRemoveOpen,
+              handler: () => this.toggleRemoveDialog,
             }]}
             count={100}
             page={page}
@@ -194,7 +178,6 @@ class TraineeList extends Component {
             rowsPerPage={rowsPerPage}
             handleChangeRowsPerPage={this.handleChangeRowsPerPage}
           />
-          {/* {trainees && this.traineeLinks()} */}
         </Box>
       </div>
     );

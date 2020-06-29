@@ -45,7 +45,12 @@ function SimpleTable(props) {
           </TableHead>
           <TableBody>
             {data.map((element = {}) => (
-              <TableRow key={element.id} className={classes.row} hover onClick={() => onSelect(element)}>
+              <TableRow
+                key={element.id}
+                className={classes.row}
+                hover
+                onClick={() => onSelect(element)}
+              >
                 {columns.map(({ field, align, format }) => (
                   <TableCell
                     align={align}
