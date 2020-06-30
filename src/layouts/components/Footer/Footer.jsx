@@ -1,8 +1,13 @@
 import React from 'react';
+import { style } from './style';
 
 function Footer() {
   return (
-    <p>@SUCCESSIVE TECH</p>
+    <div style={{ 'margin-top': '5%' }}>
+      <span style={style}>
+      &#9400; SUCCESSIVE TECHNOLOGIES
+      </span>
+    </div>
   );
 }
 

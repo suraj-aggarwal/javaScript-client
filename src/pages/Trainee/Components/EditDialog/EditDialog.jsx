@@ -13,8 +13,7 @@ import { alert } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
-    openEditDialog, handleEditClose, handleEdit, name, email, handleOnChangeEmail,
-    handleOnChangeName,
+    openEditDialog, handleEditClose, handleEdit, name, email, handleChange,
   } = props;
   return (
     <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
@@ -23,8 +22,9 @@ export default function EditDialog(props) {
             Edit Trainee
         </DialogContentText>
         <TextField
-          onChange={handleOnChangeName()}
+          onChange={(event) => handleChange(event)}
           autoFocus
+          name="name"
           margin="dense"
           id="name"
           label="Name"
@@ -41,8 +41,9 @@ export default function EditDialog(props) {
           fullWidth
         />
         <TextField
-          onChange={handleOnChangeEmail()}
+          onChange={(event) => handleChange(event)}
           autoFocus
+          name="email"
           margin="dense"
           id="name"
           label="Email Address"
@@ -81,6 +82,5 @@ EditDialog.propTypes = {
   handleEdit: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  handleOnChangeEmail: PropTypes.func.isRequired,
-  handleOnChangeName: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
 };

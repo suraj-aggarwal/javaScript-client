@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Navbar } from '../components/Navbar';
 
-function PrivateLayout({ children, ...rest }) {
+function PrivateLayout({ children }) {
   return (
     <div>
       <Navbar />
@@ -9,5 +10,9 @@ function PrivateLayout({ children, ...rest }) {
     </div>
   );
 }
+
+PrivateLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default PrivateLayout;
