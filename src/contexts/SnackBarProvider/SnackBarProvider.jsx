@@ -63,7 +63,6 @@ export default class SnackBarProvider extends Component {
   }
 }
 
-
 SimpleSnackbar.propTypes = {
   open: PropTypes.bool.isRequired,
   alertMessage: PropTypes.string.isRequired,
