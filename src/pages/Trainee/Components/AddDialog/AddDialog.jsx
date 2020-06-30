@@ -12,7 +12,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import propTypes from 'prop-types';
 import { validateTrainee } from '../../../../config/constants';
-import { alert } from '../../../../contexts';
+import { snackBarContext } from '../../../../contexts';
 
 const initialState = {
   name: '',
@@ -206,10 +206,10 @@ class AddDialog extends Component {
           >
             Cancel
           </Button>
-          <alert.Consumer>
-            {(value) => (
+          <snackBarContext.Consumer>
+            {({ openSnackBar }) => (
               <Button
-                onClick={() => { value('This is success message', 'success'); }}
+                onClick={() => { openSnackBar('This is success message', 'success'); }}
                 color="primary"
                 variant="contained"
                 disabled={this.handleOnSubmit()}
@@ -217,7 +217,7 @@ class AddDialog extends Component {
                         Submit
               </Button>
             )}
-          </alert.Consumer>
+          </snackBarContext.Consumer>
         </DialogActions>
       </Dialog>
     );

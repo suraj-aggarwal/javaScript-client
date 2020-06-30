@@ -70,7 +70,7 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = (value) => {
+  handleRemove = (openSnackBar) => {
     const compareTo = '2019-02-14T18:15:11.778Z';
     const { data } = this.state;
     const { createdAt } = data;
@@ -78,9 +78,9 @@ class TraineeList extends Component {
     this.setState({
       openRemoveDialog: false,
     });
-    const message = isAfter ? 'This is Error Message' : 'This is Success Message';
+    const message = isAfter ? 'Trainee Deletion UnSuccessfull' : 'Trainee Deleted Successfully';
     const status = isAfter ? 'error' : 'success';
-    value(message, status);
+    openSnackBar(message, status);
     console.log('DELETE ITEM');
     console.log(data);
   }
@@ -92,12 +92,12 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = (value) => {
+  handleEdit = (openSnackBar) => {
     const { email, name } = this.state;
     this.setState({
       openEditDialog: false,
     });
-    value('This is success message', 'success');
+    openSnackBar('Trainee Update Successfull', 'success');
     console.log('Edit Data');
     console.log({ email, name });
   }
