@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import * as moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
@@ -69,11 +70,17 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = () => {
+  handleRemove = (openSnackBar) => {
+    const compareTo = '2019-02-14T18:15:11.778Z';
     const { data } = this.state;
+    const { createdAt } = data;
+    const isAfter = moment(createdAt).isAfter(compareTo);
     this.setState({
       openRemoveDialog: false,
     });
+    const message = isAfter ? 'Trainee Deletion UnSuccessfull' : 'Trainee Deleted Successfully';
+    const status = isAfter ? 'error' : 'success';
+    openSnackBar(message, status);
     console.log('DELETE ITEM');
     console.log(data);
   }
@@ -85,11 +92,12 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = () => {
+  handleEdit = (openSnackBar) => {
     const { email, name } = this.state;
     this.setState({
       openEditDialog: false,
     });
+    openSnackBar('Trainee Update Successfull', 'success');
     console.log('Edit Data');
     console.log({ email, name });
   }

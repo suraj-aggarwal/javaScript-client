@@ -7,23 +7,26 @@ import {
   InputDemo, ChildernDemo, Login, NotFound, TextFieldDemo, TraineeDetails, TraineeList,
 } from './pages';
 import { PrivateRoute, AuthRoute } from './routes';
+import { SnackBarProvider } from './contexts';
 
 function App() {
   return (
     <>
       <CssBaseline />
-      <Router>
-        <Switch>
-          <AuthRoute exact path="/" component={Login} />
-          <AuthRoute exact path="/login" component={Login} />
-          <PrivateRoute exact path="/TextFieldDemo" component={TextFieldDemo} />
-          <PrivateRoute exact path="/InputDemo" component={InputDemo} />
-          <PrivateRoute exact path="/ChildernDemo" component={ChildernDemo} />
-          <PrivateRoute exact path="/Trainee" component={TraineeList} />
-          <PrivateRoute exact path="/Trainee/:id" component={TraineeDetails} />
-          <PrivateRoute path="/" component={NotFound} />
-        </Switch>
-      </Router>
+      <SnackBarProvider>
+        <Router>
+          <Switch>
+            <AuthRoute exact path="/" component={Login} />
+            <AuthRoute exact path="/login" component={Login} />
+            <PrivateRoute exact path="/TextFieldDemo" component={TextFieldDemo} />
+            <PrivateRoute exact path="/InputDemo" component={InputDemo} />
+            <PrivateRoute exact path="/ChildernDemo" component={ChildernDemo} />
+            <PrivateRoute exact path="/Trainee" component={TraineeList} />
+            <PrivateRoute exact path="/Trainee/:id" component={TraineeDetails} />
+            <PrivateRoute path="/" component={NotFound} />
+          </Switch>
+        </Router>
+      </SnackBarProvider>
     </>
   );
 }

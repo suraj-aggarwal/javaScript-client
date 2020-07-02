@@ -9,6 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
+import { snackBarContext } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
@@ -63,9 +64,13 @@ export default function EditDialog(props) {
         <Button onClick={handleEditClose} color="primary" variant="outlined">
             Cancel
         </Button>
-        <Button onClick={() => { handleEdit(); }} color="primary" variant="contained">
-            Submit
-        </Button>
+        <snackBarContext.Consumer>
+          {({ openSnackBar }) => (
+            <Button onClick={() => { handleEdit(openSnackBar); }} color="primary" variant="contained">
+                        Submit
+            </Button>
+          )}
+        </snackBarContext.Consumer>
       </DialogActions>
     </Dialog>
   );
