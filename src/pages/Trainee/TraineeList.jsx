@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import { Table } from './Components/Table';
-import { getDateFormat } from '../../libs/utils/formatDate';
+import { getDateFormat } from '../../libs/utils/helper';
 import { callApi } from '../../libs/utils/api';
-import { alert } from '../../contexts';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -14,8 +13,6 @@ class TraineeList extends Component {
     this.state = {
       open: false,
       orderBy: '',
-      order: '',
-      data: null,
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
@@ -59,13 +56,14 @@ class TraineeList extends Component {
     });
   }
 
-  handlerOnClose = () => {
+  toggleOpenState = () => {
+    const { open } = this.state;
     this.setState({
-      open: false,
+      open: !open,
     });
   }
 
-  handleSort = (field) => (event) => {
+  handleSort = (field) => {
     const { order } = this.state;
     this.setState({
       orderBy: field,
@@ -73,26 +71,19 @@ class TraineeList extends Component {
     });
   }
 
-  handleSelect = (element) => (event) => {
+  handleSelect = (element) => {
     const { name, email } = element;
     this.setState({
       data: element,
-    });
-    this.setState({
       email,
       name,
     });
   }
 
-  handleRemoveOpen = () => (event) => {
+  toggleRemoveDialog = () => {
+    const { openRemoveDialog } = this.state;
     this.setState({
-      openRemoveDialog: true,
-    });
-  }
-
-  handleRemoveClose = () => {
-    this.setState({
-      openRemoveDialog: false,
+      openRemoveDialog: !openRemoveDialog,
     });
   }
 
@@ -129,9 +120,10 @@ class TraineeList extends Component {
       });
   }
 
-  handleEditOpen = () => (event) => {
+  toggleEditDialog = () => {
+    const { openEditDialog } = this.state;
     this.setState({
-      openEditDialog: true,
+      openEditDialog: !openEditDialog,
     });
   }
 
@@ -189,7 +181,7 @@ class TraineeList extends Component {
     });
   };
 
-  handleOnChangeEmail = () => (event) => {
+  handleFieldChange = (event) => {
     this.setState({
       email: event.target.value,
     });

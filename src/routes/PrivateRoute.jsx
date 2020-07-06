@@ -1,7 +1,7 @@
 import { Route, Redirect } from 'react-router-dom';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { PrivateLayout } from '../layouts/PrivateLayout';
-
 
 function PrivateRoute({ component: Component, ...rest }) {
   return (
@@ -18,5 +18,9 @@ function PrivateRoute({ component: Component, ...rest }) {
     />
   );
 }
+
+PrivateRoute.propTypes = {
+  component: PropTypes.node.isRequired,
+};
 
 export default PrivateRoute;

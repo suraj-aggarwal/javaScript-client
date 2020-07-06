@@ -87,12 +87,12 @@ function SimpleTable(props) {
 
 SimpleTable.propTypes = {
   id: PropTypes.string.isRequired,
-  data: PropTypes.objectOf(PropTypes.object).isRequired,
-  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.objectOf(PropTypes.object),
+  columns: PropTypes.arrayOf(PropTypes.object),
   orderBy: PropTypes.string,
   order: PropTypes.string,
   onSort: PropTypes.func,
-  onSelect: PropTypes.func,
+  onSelect: PropTypes.func.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   actions: PropTypes.arrayOf(PropTypes.object),
   rowsPerPage: PropTypes.number.isRequired,
@@ -105,8 +105,9 @@ SimpleTable.propTypes = {
 SimpleTable.defaultProps = {
   orderBy: 'createdAt',
   order: 'asc',
+  data: [],
+  columns: [],
   onSort: () => { },
-  onSelect: () => { },
   actions: [],
 };
 

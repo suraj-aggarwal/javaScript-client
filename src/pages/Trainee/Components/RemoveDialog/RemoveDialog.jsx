@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
-import { alert } from '../../../../contexts';
+import { snackBarContext } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
   const {
@@ -30,14 +30,14 @@ export default function RemoveDialog(props) {
           <Button onClick={handleRemoveClose} color="primary">
             Cancel
           </Button>
-          <alert.Consumer>
-            {(value) => (
-              <Button onClick={() => { handleRemove(value); }} color="primary" variant="contained" autoFocus disabled={loading}>
+          <snackBarContext.Consumer>
+            {({ openSnackBar }) => (
+              <Button onClick={() => { handleRemove(openSnackBar); }} color="primary" variant="contained" autoFocus disabled={loading}>
                 {loading && <CircularProgress size={24} />}
                        Delete
               </Button>
             )}
-          </alert.Consumer>
+          </snackBarContext.Consumer>
         </DialogActions>
       </Dialog>
     </div>

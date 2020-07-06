@@ -1,7 +1,7 @@
-export { default as TextField } from './TextField';
-export { default as Slider } from './Slider';
-export { default as SelectField } from './SelectField';
-export { default as RadioGroup } from './RadioGroup';
-export { default as Button } from './Button';
-export { default as Math } from './Math';
+export { Math } from './Math';
+export { SelectField } from './SelectField';
+export { RadioGroup } from './RadioGroup';
+export { TextField } from './TextField';
+export { Slider } from './Slider';
+export { Button } from './Button';
 export { withLoaderAndMessage } from './HOC';

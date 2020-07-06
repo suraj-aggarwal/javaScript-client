@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -13,7 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import { validateTrainee } from '../../../../config/constants';
-import { alert } from '../../../../contexts';
+import { snackBarContext } from '../../../../contexts';
 import { callApi } from '../../../../libs/utils/api';
 
 const useStyles = () => ({
@@ -37,43 +38,58 @@ class AddDialog extends Component {
     };
   }
 
-  handleOnChange = (field) => ({ target: { value } }) => {
-    this.setState({
-      [field]: value,
-    });
-    this.getError(field);
+  handleOnCancel = () => {
+    const { toggleDialogBox } = this.props;
+    this.setState(initialState);
+    toggleDialogBox();
   }
 
-  isTouched = (field) => {
+  handleOnChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+    this.hasError();
+  }
+
+  isTouched = (event) => {
     const { touched } = this.state;
-    touched[field] = true;
+    touched[event.target.name] = true;
     this.setState({
       touched,
     });
-  }
-
-  getError = (field) => {
-    const { touched, error } = this.state;
-    if (touched[field]) {
-      validateTrainee.validateAt(field, this.state)
-        .then(() => {
-          delete error[field];
-          this.setState({
-            error,
-          });
-        })
-        .catch((err) => {
-          error[field] = err.message;
-          this.setState({
-            error,
-          });
-        });
-    }
+    this.hasError();
   }
 
   hasError = () => {
-    const { error, touched } = this.state;
-    return (Object.keys(error).length !== 0) && (Object.keys(touched).length > 3);
+    const {
+      name, email, password, confirmPassword,
+    } = this.state;
+    const error = {};
+    validateTrainee.validate({
+      name, email, password, confirmPassword,
+    }, { abortEarly: false }).then(() => {
+      this.setState({ disabled: false });
+    })
+      .catch((err) => {
+        const values = Object.values(err.inner);
+        values.forEach((val) => {
+          error[val.path] = val.message;
+        });
+        this.setState({ disabled: true });
+      })
+      .finally(() => {
+        this.setState({
+          allErrors: error,
+        });
+      });
+  }
+
+  getError = (field) => {
+    const { allErrors, touched } = this.state;
+    if (touched[field]) {
+      return allErrors[field];
+    }
+    return '';
   }
 
   handleOnSubmit = (value) => {
@@ -105,17 +121,18 @@ class AddDialog extends Component {
     } = this.state;
     const { open, onClose, classes } = this.props;
     return (
-      <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-        <DialogContent>
+      <Dialog open={open} onClose={toggleDialogBox} aria-labelledby="form-dialog-title">
+        <DialogContent spacing={2}>
           <DialogContentText>
             Add Trainee
           </DialogContentText>
           <TextField
-            onChange={this.handleOnChange('name')}
-            onClick={() => this.isTouched('name')}
-            autoFocus
-            error={error.name}
-            helperText={error.name}
+            onChange={(event) => this.handleOnChange(event)}
+            onBlur={(event) => this.isTouched(event)}
+            helperText={this.getError('name')}
+            error={this.getError('name')}
+            name="name"
+            placeholder="name"
             margin="dense"
             id="name"
             label="Name"
@@ -132,13 +149,14 @@ class AddDialog extends Component {
             fullWidth
           />
           <TextField
-            onChange={this.handleOnChange('email')}
-            onBlur={() => this.isTouched('email')}
-            error={error.email}
-            helperText={error.email}
-            autoFocus
+            onChange={(event) => this.handleOnChange(event)}
+            onBlur={(event) => this.isTouched(event)}
+            helperText={this.getError('email')}
+            error={this.getError('email')}
+            name="email"
+            placeholder="email"
             margin="dense"
-            id="name"
+            id="email"
             label="Email Address"
             type="email"
             variant="outlined"
@@ -154,59 +172,72 @@ class AddDialog extends Component {
           />
         </DialogContent>
         <DialogContent spacing={2}>
-          <TextField
-            onChange={this.handleOnChange('password')}
-            onBlur={() => this.isTouched('password')}
-            autoFocus
-            error={error.password}
-            helperText={error.password}
-            margin="dense"
-            id="name"
-            label="Password"
-            type="Password"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="end">
-                  <VisibilityOffIcon />
-                </InputAdornment>
-              ),
-            }}
-            value={password}
-            variant="outlined"
-          />
-          <TextField
-            onChange={this.handleOnChange('confirmPassword')}
-            onBlur={() => this.isTouched('confirmPassword')}
-            autoFocus
-            error={error.confirmPassword}
-            helperText={error.confirmPassword}
-            margin="dense"
-            id="name"
-            label="Confirm Password"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <VisibilityOffIcon />
-                </InputAdornment>
-              ),
-            }}
-            type="Password"
-            value={confirmPassword}
-            variant="outlined"
-          />
+          <Box display="flex" spacing={2} flexDirection="row" justifyContent="space-between">
+            <Box width="47%">
+              <TextField
+                onChange={(event) => this.handleOnChange(event)}
+                onBlur={(event) => this.isTouched(event)}
+                helperText={this.getError('password')}
+                error={this.getError('password')}
+                name="password"
+                placeholder="password"
+                margin="dense"
+                id="password"
+                label="Password"
+                type="Password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="end">
+                      <VisibilityOffIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                value={password}
+                variant="outlined"
+              />
+            </Box>
+            <Box width="47%">
+              <TextField
+                onChange={(event) => this.handleOnChange(event)}
+                onBlur={(event) => this.isTouched(event)}
+                helperText={this.getError('confirmPassword')}
+                error={this.getError('confirmPassword')}
+                name="confirmPassword"
+                placeholder="confirmPassword"
+                margin="dense"
+                id="confirmPassword"
+                label="confirm password"
+                type="Password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="end">
+                      <VisibilityOffIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                value={confirmPassword}
+                variant="outlined"
+              />
+            </Box>
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="primary" variant="outlined">
+          <Button
+            onClick={(event) => this.handleOnCancel(event)}
+            color="primary"
+            variant="outlined"
+            disabled={disabled}
+          >
             Cancel
           </Button>
           {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
-          <alert.Consumer>
-            {(value) => (
-              <Button onClick={() => { this.handleOnSubmit(value); }} color="primary" variant="contained" disabled={this.hasError()}>
+          <snackBarContext.Consumer>
+            {({openSnackBar}) => (
+              <Button onClick={() => { this.handleOnSubmit(openSnackBar); }} color="primary" variant="contained" disabled={this.hasError()}>
                         Submit
               </Button>
             )}
-          </alert.Consumer>
+          </snackBarContext.Consumer>
         </DialogActions>
       </Dialog>
     );

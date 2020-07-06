@@ -1,48 +1,14 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropType from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Card, CardContent, CardMedia, Typography, Button,
 } from '@material-ui/core';
-import { Link, Route, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import * as moment from 'moment';
 import { NotFound } from '../NoMatch';
 import trainees from './data/Trainee';
-
-
-const Styles = (theme) => ({
-  root: {
-    display: 'flex',
-    margin: theme.spacing(5),
-  },
-  details: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  content: {
-    flex: '1 0 auto',
-  },
-  cover: {
-    width: 151,
-    backgroundColor: '#545454',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  Text: {
-    color: 'white',
-    marginLeft: theme.spacing(5),
-  },
-
-  container: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: 'lightgrey',
-    color: 'black',
-    marginLeft: theme.spacing(70),
-  },
-});
-
+import { styles } from './traineeDetailsStyle';
 
 function TraineeDetail(props) {
   const { id: traineeId } = useParams();
@@ -52,10 +18,8 @@ function TraineeDetail(props) {
     moment(value).format('dddd,MMMM Do YYYY, h:mm:ss a')
   );
 
-  if (trainee === undefined) {
-    return (
-      <Route component={NotFound} />
-    );
+  if (!trainee) {
+    return <NotFound />;
   }
   return (
     <>
@@ -74,12 +38,12 @@ function TraineeDetail(props) {
             <Typography component="h6" variant="h6">
               {trainee.email}
             </Typography>
-                &nbsp;
+          &nbsp;
           </CardContent>
         </div>
       </Card>
       <Button color="inherit" className={classes.container} component={Link} to="/trainee">
-        Back
+  Back
       </Button>
     </>
   );
@@ -87,4 +51,4 @@ function TraineeDetail(props) {
 TraineeDetail.propTypes = {
   classes: PropType.objectOf(PropType.string).isRequired,
 };
-export default withStyles(Styles)(TraineeDetail);
+export default withStyles(styles)(TraineeDetail);

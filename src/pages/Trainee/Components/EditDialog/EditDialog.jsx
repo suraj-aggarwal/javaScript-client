@@ -10,7 +10,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
-import { alert } from '../../../../contexts';
+import { snackBarContext } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
@@ -24,8 +24,9 @@ export default function EditDialog(props) {
             Edit Trainee
         </DialogContentText>
         <TextField
-          onChange={handleOnChangeName()}
+          onChange={(event) => handleChange(event)}
           autoFocus
+          name="name"
           margin="dense"
           id="name"
           label="Name"
@@ -42,8 +43,9 @@ export default function EditDialog(props) {
           fullWidth
         />
         <TextField
-          onChange={handleOnChangeEmail()}
+          onChange={(event) => handleChange(event)}
           autoFocus
+          name="email"
           margin="dense"
           id="name"
           label="Email Address"
@@ -64,14 +66,14 @@ export default function EditDialog(props) {
         <Button onClick={handleEditClose} color="primary" variant="outlined">
             Cancel
         </Button>
-        <alert.Consumer>
-          {(value) => (
-            <Button onClick={() => { handleEdit(value); }} color="primary" variant="contained" disabled={loading}>
+        <snackBarContext.Consumer>
+          {({ oprnSnackBar }) => (
+            <Button onClick={() => { handleEdit(oprnSnackBar); }} color="primary" variant="contained" disabled={loading}>
                         Submit
               {loading && <CircularProgress size={24} />}
             </Button>
           )}
-        </alert.Consumer>
+        </snackBarContext.Consumer>
       </DialogActions>
     </Dialog>
   );
@@ -83,6 +85,5 @@ EditDialog.propTypes = {
   handleEdit: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  handleOnChangeEmail: PropTypes.func.isRequired,
-  handleOnChangeName: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
 };

@@ -3,7 +3,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { Alert } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 
-export const alert = React.createContext();
+export const snackBarContext = React.createContext();
 
 function SimpleSnackbar(props) {
   const {
@@ -49,20 +49,19 @@ export default class SnackBarProvider extends Component {
     const { children } = this.props;
     return (
       <div>
-        <alert.Provider value={this.openSnackBar}>
+        <snackBarContext.Provider value={{ openSnackBar: this.openSnackBar }}>
           {children}
-        </alert.Provider>
-        <SimpleSnackbar
-          open={open}
-          alertMessage={alertMessage}
-          alertStatus={alertStatus}
-          handleClose={this.closeSnackBar}
-        />
+          <SimpleSnackbar
+            open={open}
+            alertMessage={alertMessage}
+            alertStatus={alertStatus}
+            handleClose={this.closeSnackBar}
+          />
+        </snackBarContext.Provider>
       </div>
     );
   }
 }
-
 
 SimpleSnackbar.propTypes = {
   open: PropTypes.bool.isRequired,
