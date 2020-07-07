@@ -42,8 +42,9 @@ class Login extends Component {
       loading: true,
     });
     const res = await callApi({ reqType, url, query });
-    if (res.data) {
-      localStorage.setItem('token', res.data);
+    const { data: { data: token } = {} } = res;
+    if (token) {
+      localStorage.setItem('token', token);
       history.push('/Trainee');
     } else {
       openSnackBar(res.message, res.status);

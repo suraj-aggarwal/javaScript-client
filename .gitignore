@@ -10,7 +10,6 @@
 
 # production
 /build
-.eslintrc
 # misc
 .DS_Store
 .env.local
