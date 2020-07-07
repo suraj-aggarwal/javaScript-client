@@ -11,28 +11,11 @@ import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { validateLogin } from '../../config/constants';
-
-const useStyles = (theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: 6,
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-});
+import { callApi } from '../../libs/utils/api';
+import { snackBarContext } from '../../contexts';
+import { useStyles } from './login.style';
 
 const initialState = {
   email: '',
@@ -40,6 +23,7 @@ const initialState = {
   touched: {},
   allErrors: {},
   disabled: true,
+  loading: false,
 };
 
 class Login extends Component {
@@ -48,7 +32,26 @@ class Login extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = () => {
+  handleOnSubmit = async (openSnackBar) => {
+    const { history } = this.props;
+    const { email, password } = this.state;
+    const reqType = 'post';
+    const url = '/api/user/login';
+    const query = { email, password };
+    this.setState({
+      loading: true,
+    });
+    const res = await callApi({ reqType, url, query });
+    const { data: { data: token } = {} } = res;
+    if (token) {
+      localStorage.setItem('token', token);
+      history.push('/Trainee');
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
+      loading: false,
+    });
     this.setState(initialState);
   }
 
@@ -102,7 +105,9 @@ class Login extends Component {
 
   render() {
     const { classes } = this.props;
-    const { email, password, disabled } = this.state;
+    const {
+      email, password, disabled, loading,
+    } = this.state;
     return (
       <Container component="main" maxWidth="xs" justify="column">
         <Paper elevation={3} className={classes.paper}>
@@ -111,7 +116,7 @@ class Login extends Component {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h6">
-            Login
+              Login
             </Typography>
             <form classes={classes.form}>
               <TextField
@@ -158,17 +163,24 @@ class Login extends Component {
                 variant="outlined"
                 fullWidth
               />
-              <Button
-                classes={classes.submit}
-                color="primary"
-                variant="contained"
-                disabled={disabled}
-                size="small"
-                fullWidth
-                onClick={(event) => this.handleOnSubmit(event)}
-              >
-              LOGIN
-              </Button>
+              <snackBarContext.Consumer>
+                {({ openSnackBar }) => (
+                  (
+                    <Button
+                      classes={classes.submit}
+                      color="primary"
+                      variant="contained"
+                      disabled={disabled || loading}
+                      size="small"
+                      fullWidth
+                      onClick={() => this.handleOnSubmit(openSnackBar)}
+                    >
+                      LOGIN
+                      {loading && <CircularProgress size={30} className={classes.buttonProgress} />}
+                    </Button>
+                  )
+                )}
+              </snackBarContext.Consumer>
             </form>
           </Box>
         </Paper>
@@ -179,6 +191,7 @@ class Login extends Component {
 
 Login.propTypes = {
   classes: PropTypes.objectOf.isRequired,
+  history: PropTypes.func.isRequired,
 };
 
 export default withStyles(useStyles)(Login);
