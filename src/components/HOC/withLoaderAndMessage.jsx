@@ -1,6 +1,6 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useStyles } from './withLoaderAndMessage';
+import { useStyles } from './style';
 
 function withLoaderAndMessage(Wrapper) {
   return function Loader(props) {

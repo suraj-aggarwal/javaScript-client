@@ -8,13 +8,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { snackBarContext } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
-    openEditDialog, handleEditClose, handleEdit, name, email, handleChange, loading,
+    openEditDialog, handleEditClose, handleEdit, name, email, handleChange,
   } = props;
   return (
     <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
@@ -69,7 +68,6 @@ export default function EditDialog(props) {
           {({ openSnackBar }) => (
             <Button onClick={() => { handleEdit(openSnackBar); }} color="primary" variant="contained">
                         Submit
-              {loading && <CircularProgress size={24} />}
             </Button>
           )}
         </snackBarContext.Consumer>
@@ -85,5 +83,4 @@ EditDialog.propTypes = {
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
 };

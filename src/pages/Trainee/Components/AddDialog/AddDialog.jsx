@@ -211,7 +211,7 @@ class AddDialog extends Component {
                 onClick={() => { openSnackBar('This is success message', 'success'); }}
                 color="primary"
                 variant="contained"
-                disabled={() => this.handleOnSubmit()}
+                disabled={this.handleOnSubmit}
               >
                         Submit
               </Button>

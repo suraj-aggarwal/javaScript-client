@@ -30,7 +30,7 @@ class TraineeList extends Component {
 
   async componentDidMount() {
     const value = this.context;
-    const params = { skip: 0, limit: 20 };
+    const params = { skip: 0, limit: 5 };
     const reqType = 'get';
     const url = '/api/trainee';
     this.setState({
@@ -110,16 +110,59 @@ class TraineeList extends Component {
     console.log({ email, name });
   }
 
-  handleChangePage = (event, newPage) => {
+  handleChangePage = async (event, newPage) => {
+    const { rowsPerPage, page } = this.state;
     this.setState({
       page: newPage,
     });
+    const value = this.context;
+    const params = { skip: page * rowsPerPage, limit: rowsPerPage };
+    const reqType = 'get';
+    const url = '/api/trainee';
+    this.setState({
+      loading: true,
+    });
+    const res = await callApi({ reqType, url, params });
+    if (res) {
+      const { data: { data: { records, count } } } = res;
+      this.setState({
+        trainees: records,
+        count,
+        dataLength: records.length,
+      });
+    } else {
+      value(res.message, res.status);
+    }
+    this.setState({
+      loading: false,
+    });
   };
 
-  handleChangeRowsPerPage = (event) => {
+  handleChangeRowsPerPage = async (event) => {
+    const { page } = this.state;
     this.setState({
       rowsPerPage: parseInt(event.target.value, 10),
-      page: 0,
+    });
+    const value = this.context;
+    const params = { skip: page * event.target.value, limit: event.target.value };
+    const reqType = 'get';
+    const url = '/api/trainee';
+    this.setState({
+      loading: true,
+    });
+    const res = await callApi({ reqType, url, params });
+    if (res) {
+      const { data: { data: { records, count } } } = res;
+      this.setState({
+        trainees: records,
+        count,
+        dataLength: records.length,
+      });
+    } else {
+      value(res.message, res.status);
+    }
+    this.setState({
+      loading: false,
     });
   };
 

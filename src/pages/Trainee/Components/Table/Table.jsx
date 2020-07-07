@@ -45,28 +45,27 @@ function SimpleTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((element = {}) => (
-                <TableRow
-                  key={element.id}
-                  className={classes.row}
-                  hover
-                  onClick={() => onSelect(element)}
-                >
-                  {columns.map(({ field, align, format }) => (
-                    <TableCell
-                      align={align}
-                    >
-                      {format ? format(element[field]) : element[field]}
-                    </TableCell>
-                  ))}
-                  {actions.map(({ Icon, handler }) => (
-                    <TableCell onClick={handler()}>
-                      {Icon}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+            {data.map((element = {}) => (
+              <TableRow
+                key={element.id}
+                className={classes.row}
+                hover
+                onClick={() => onSelect(element)}
+              >
+                {columns.map(({ field, align, format }) => (
+                  <TableCell
+                    align={align}
+                  >
+                    {format ? format(element[field]) : element[field]}
+                  </TableCell>
+                ))}
+                {actions.map(({ Icon, handler }) => (
+                  <TableCell onClick={handler()}>
+                    {Icon}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         <TablePagination
