@@ -9,7 +9,9 @@ import PropTypes from 'prop-types';
 import { snackBarContext } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
-  const { openRemoveDialog, handleRemoveClose, handleRemove } = props;
+  const {
+    openRemoveDialog, handleRemoveClose, handleRemove,
+  } = props;
   return (
     <div>
       <Dialog

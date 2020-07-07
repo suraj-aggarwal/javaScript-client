@@ -52,7 +52,6 @@ const validateTrainee = yup.object().shape({
       return this.parent.password === value;
     }),
 });
-
 export const validateLogin = yup.object().shape({
   email: yup
     .string()

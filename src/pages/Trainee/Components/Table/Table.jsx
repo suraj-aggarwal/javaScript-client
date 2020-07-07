@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
 import { useStyles } from './tableStyle';
+import { withLoaderAndMessage } from '../../../../components';
 
 function SimpleTable(props) {
   const {
@@ -44,27 +45,28 @@ function SimpleTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((element = {}) => (
-              <TableRow
-                key={element.id}
-                className={classes.row}
-                hover
-                onClick={() => onSelect(element)}
-              >
-                {columns.map(({ field, align, format }) => (
-                  <TableCell
-                    align={align}
-                  >
-                    {format ? format(element[field]) : element[field]}
-                  </TableCell>
-                ))}
-                {actions.map(({ Icon, handler }) => (
-                  <TableCell onClick={handler()}>
-                    {Icon}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((element = {}) => (
+                <TableRow
+                  key={element.id}
+                  className={classes.row}
+                  hover
+                  onClick={() => onSelect(element)}
+                >
+                  {columns.map(({ field, align, format }) => (
+                    <TableCell
+                      align={align}
+                    >
+                      {format ? format(element[field]) : element[field]}
+                    </TableCell>
+                  ))}
+                  {actions.map(({ Icon, handler }) => (
+                    <TableCell onClick={handler()}>
+                      {Icon}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <TablePagination
@@ -107,4 +109,4 @@ SimpleTable.defaultProps = {
   actions: [],
 };
 
-export default withStyles(useStyles)(SimpleTable);
+export default withStyles(useStyles)(withLoaderAndMessage(SimpleTable));
