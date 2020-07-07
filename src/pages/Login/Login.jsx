@@ -32,23 +32,26 @@ class Login extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = (openSnackBar) => {
+  handleOnSubmit = async (openSnackBar) => {
     const { history } = this.props;
     const { email, password } = this.state;
+    const reqType = 'post';
+    const url = '/api/user/login';
+    const query = { email, password };
     this.setState({
       loading: true,
     });
-    callApi('post', '/api/user/login', { email, password }).then((token) => {
-      localStorage.setItem('token', token);
+    const res = await callApi({ reqType, url, query });
+    if (res.data) {
+      localStorage.setItem('token', res.data);
       history.push('/Trainee');
-    }).catch(() => {
-      openSnackBar('Login failed', 'error');
-    }).finally(() => {
-      this.setState({
-        loading: false,
-      });
-      this.setState(initialState);
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
+      loading: false,
     });
+    this.setState(initialState);
   }
 
   handleOnChange = (event) => {
@@ -161,20 +164,22 @@ class Login extends Component {
               />
               <snackBarContext.Consumer>
                 {({ openSnackBar }) => (
-                  <Button
-                    classes={classes.submit}
-                    color="primary"
-                    variant="contained"
-                    disabled={disabled}
-                    size="small"
-                    fullWidth
-                    onClick={(event) => this.handleOnSubmit(event, openSnackBar)}
-                  >
-                    LOGIN
-                  </Button>
+                  (
+                    <Button
+                      classes={classes.submit}
+                      color="primary"
+                      variant="contained"
+                      disabled={disabled || loading}
+                      size="small"
+                      fullWidth
+                      onClick={() => this.handleOnSubmit(openSnackBar)}
+                    >
+                      LOGIN
+                      {loading && <CircularProgress size={30} className={classes.buttonProgress} />}
+                    </Button>
+                  )
                 )}
               </snackBarContext.Consumer>
-              {loading && <CircularProgress size={50} className={classes.buttonProgress} />}
             </form>
           </Box>
         </Paper>
