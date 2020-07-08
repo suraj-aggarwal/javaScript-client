@@ -7,11 +7,11 @@ function PrivateRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
-      render={(matchProps) => (
+      render={(matchProps) => ((
         <PrivateLayout>
           <Component {...matchProps} />
         </PrivateLayout>
-      )}
+      ))}
     />
   );
 }

@@ -9,7 +9,9 @@ import PropTypes from 'prop-types';
 import { snackBarContext } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
-  const { openRemoveDialog, handleRemoveClose, handleRemove } = props;
+  const {
+    openRemoveDialog, handleRemoveClose, handleRemove,
+  } = props;
   return (
     <div>
       <Dialog
@@ -29,7 +31,11 @@ export default function RemoveDialog(props) {
           </Button>
           <snackBarContext.Consumer>
             {({ openSnackBar }) => (
-              <Button onClick={() => { handleRemove(openSnackBar); }} color="primary" autoFocus>
+              <Button
+                onClick={() => handleRemove(openSnackBar)}
+                color="primary"
+                variant="contained"
+              >
                        Delete
               </Button>
             )}

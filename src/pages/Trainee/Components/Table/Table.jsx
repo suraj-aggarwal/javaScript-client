@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
 import { useStyles } from './tableStyle';
+import { withLoaderAndMessage } from '../../../../components';
 
 function SimpleTable(props) {
   const {
@@ -107,4 +108,4 @@ SimpleTable.defaultProps = {
   actions: [],
 };
 
-export default withStyles(useStyles)(SimpleTable);
+export default withStyles(useStyles)(withLoaderAndMessage(SimpleTable));

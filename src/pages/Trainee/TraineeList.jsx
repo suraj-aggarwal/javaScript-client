@@ -3,13 +3,10 @@ import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import * as moment from 'moment';
-import { Link } from 'react-router-dom';
-
-import PropTypes from 'prop-types';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
-import trainees from './data/Trainee';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/helper';
+import { callApi } from '../../libs/utils/api';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -20,23 +17,39 @@ class TraineeList extends Component {
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 5,
       email: '',
       name: '',
       order: 'asc',
       data: {},
+      trainees: [],
+      loading: true,
+      dataLength: 0,
     };
   }
 
-  traineeLinks = () => {
-    const { match: { url } } = this.props;
-    return trainees.map((elements) => (
-      <ul key={elements.id}>
-        <li>
-          <Link to={`${url}/${elements.id}`}>{elements.name}</Link>
-        </li>
-      </ul>
-    ));
+
+  componentDidMount() {
+    const { page, rowsPerPage } = this.state;
+    const params = { skip: page, limit: rowsPerPage };
+    this.fetchTrainees(params);
+  }
+
+  fetchTrainees = async (params) => {
+    const reqType = 'get';
+    const url = '/api/trainee';
+    const res = await callApi({ reqType, url, params });
+    if (res.data) {
+      const { data: { data: { records, count } } } = res;
+      this.setState({
+        trainees: records,
+        count,
+        dataLength: records.length,
+      });
+    }
+    this.setState({
+      loading: false,
+    });
   }
 
   toggleOpenState = () => {
@@ -53,6 +66,7 @@ class TraineeList extends Component {
       order: order === 'asc' ? 'desc' : 'asc',
     });
   }
+
 
   handleSelect = (element) => {
     const { name, email } = element;
@@ -75,9 +89,6 @@ class TraineeList extends Component {
     const { data } = this.state;
     const { createdAt } = data;
     const isAfter = moment(createdAt).isAfter(compareTo);
-    this.setState({
-      openRemoveDialog: false,
-    });
     const message = isAfter ? 'Trainee Deletion UnSuccessfull' : 'Trainee Deleted Successfully';
     const status = isAfter ? 'error' : 'success';
     openSnackBar(message, status);
@@ -94,25 +105,29 @@ class TraineeList extends Component {
 
   handleEdit = (openSnackBar) => {
     const { email, name } = this.state;
-    this.setState({
-      openEditDialog: false,
-    });
     openSnackBar('Trainee Update Successfull', 'success');
     console.log('Edit Data');
     console.log({ email, name });
   }
 
-  handleChangePage = (event, newPage) => {
+  handleChangePage = async (event, newPage) => {
+    const { rowsPerPage } = this.state;
+    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
     this.setState({
       page: newPage,
+      loading: true,
     });
+    this.fetchTrainees(params);
   };
 
-  handleChangeRowsPerPage = (event) => {
+  handleChangeRowsPerPage = async (event) => {
+    const { page } = this.state;
+    const params = { skip: page * event.target.value, limit: event.target.value };
     this.setState({
       rowsPerPage: event.target.value,
-      page: 0,
+      loading: true,
     });
+    this.fetchTrainees(params);
   };
 
   handleFieldChange = (event) => {
@@ -124,7 +139,7 @@ class TraineeList extends Component {
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name,
+      email, name, trainees, loading, count, dataLength,
     } = this.state;
     return (
       <div>
@@ -177,20 +192,17 @@ class TraineeList extends Component {
               Icon: <DeleteIcon />,
               handler: () => this.toggleRemoveDialog,
             }]}
-            count={100}
+            count={count}
             page={page}
             onChangePage={this.handleChangePage}
             rowsPerPage={rowsPerPage}
             handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+            loader={loading}
+            dataLength={dataLength}
           />
         </Box>
       </div>
     );
   }
 }
-
-TraineeList.propTypes = {
-  match: PropTypes.objectOf(PropTypes.object).isRequired,
-};
-
 export { TraineeList };
