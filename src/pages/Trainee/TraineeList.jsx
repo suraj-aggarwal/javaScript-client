@@ -111,12 +111,12 @@ class TraineeList extends Component {
   }
 
   handleChangePage = async (event, newPage) => {
-    const { rowsPerPage, page } = this.state;
+    const { rowsPerPage } = this.state;
     this.setState({
       page: newPage,
     });
     const value = this.context;
-    const params = { skip: page * rowsPerPage, limit: rowsPerPage };
+    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
     const reqType = 'get';
     const url = '/api/trainee';
     this.setState({
@@ -141,7 +141,7 @@ class TraineeList extends Component {
   handleChangeRowsPerPage = async (event) => {
     const { page } = this.state;
     this.setState({
-      rowsPerPage: parseInt(event.target.value, 10),
+      rowsPerPage: event.target.value,
     });
     const value = this.context;
     const params = { skip: page * event.target.value, limit: event.target.value };

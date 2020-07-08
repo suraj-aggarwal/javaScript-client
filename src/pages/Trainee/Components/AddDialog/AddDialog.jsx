@@ -30,10 +30,11 @@ class AddDialog extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = () => {
+  handleOnSubmit = (openSnackBar) => {
     const { toggleDialogBox } = this.props;
     this.setState(initialState);
     toggleDialogBox();
+    openSnackBar('Trainee added', 'success');
   }
 
   handleOnCancel = () => {
@@ -208,10 +209,10 @@ class AddDialog extends Component {
           <snackBarContext.Consumer>
             {({ openSnackBar }) => (
               <Button
-                onClick={() => { openSnackBar('This is success message', 'success'); }}
+                onClick={() => this.handleOnSubmit(openSnackBar)}
                 color="primary"
                 variant="contained"
-                disabled={this.handleOnSubmit}
+                disabled={disabled}
               >
                         Submit
               </Button>
