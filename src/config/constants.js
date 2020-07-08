@@ -52,7 +52,6 @@ const validateTrainee = yup.object().shape({
       return this.parent.password === value;
     }),
 });
-// const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 export const validateLogin = yup.object().shape({
   email: yup
     .string()

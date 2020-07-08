@@ -14,8 +14,7 @@ import { snackBarContext } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
-    openEditDialog, handleEditClose, handleEdit, name, email, handleOnChangeEmail,
-    handleOnChangeName, loading,
+    openEditDialog, handleEditClose, handleEdit, name, email, handleChange, loading,
   } = props;
   return (
     <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
@@ -67,8 +66,13 @@ export default function EditDialog(props) {
             Cancel
         </Button>
         <snackBarContext.Consumer>
-          {({ oprnSnackBar }) => (
-            <Button onClick={() => { handleEdit(oprnSnackBar); }} color="primary" variant="contained" disabled={loading}>
+          {({ openSnackBar }) => (
+            <Button
+              onClick={() => handleEdit(openSnackBar)}
+              color="primary"
+              variant="contained"
+              disabled={loading}
+            >
                         Submit
               {loading && <CircularProgress size={24} />}
             </Button>
@@ -86,4 +90,5 @@ EditDialog.propTypes = {
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };

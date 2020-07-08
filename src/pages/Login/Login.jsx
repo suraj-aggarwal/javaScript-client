@@ -8,7 +8,6 @@ import { Paper, Box } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import { green } from '@material-ui/core/colors';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -16,35 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { validateLogin } from '../../config/constants';
 import { callApi } from '../../libs/utils/api';
 import { snackBarContext } from '../../contexts';
-
-const useStyles = (theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: 6,
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  buttonProgress: {
-    color: green[500],
-    position: 'absolute',
-    top: '70%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-});
+import { useStyles } from './login.style';
 
 const initialState = {
   email: '',
@@ -61,7 +32,26 @@ class Login extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = () => {
+  handleOnSubmit = async (openSnackBar) => {
+    const { history } = this.props;
+    const { email, password } = this.state;
+    const reqType = 'post';
+    const url = '/api/user/login';
+    const query = { email, password };
+    this.setState({
+      loading: true,
+    });
+    const res = await callApi({ reqType, url, query });
+    const { data: { data: token } = {} } = res;
+    if (token) {
+      localStorage.setItem('token', token);
+      history.push('/Trainee');
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
+      loading: false,
+    });
     this.setState(initialState);
   }
 
@@ -113,24 +103,6 @@ class Login extends Component {
     return '';
   }
 
-  handleOnSubmit = (opensnackBar) => {
-    const { history } = this.props;
-    const { email, password } = this.state;
-    this.setState({
-      loading: true,
-    });
-    callApi('post', '/api/user/login', { email, password }).then((token) => {
-      localStorage.setItem('token', token);
-      history.push('/Trainee');
-    }).catch(() => {
-      opensnackBar('Login failed', 'error');
-    }).finally(() => {
-      this.setState({
-        loading: false,
-      });
-    });
-  }
-
   render() {
     const { classes } = this.props;
     const {
@@ -144,7 +116,7 @@ class Login extends Component {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h6">
-            Login
+              Login
             </Typography>
             <form classes={classes.form}>
               <TextField
@@ -191,28 +163,24 @@ class Login extends Component {
                 variant="outlined"
                 fullWidth
               />
-              <snackBarContext.context>
-                {
+              <snackBarContext.Consumer>
+                {({ openSnackBar }) => (
                   (
-                    { opensnackBar },
-                  ) => (
                     <Button
                       classes={classes.submit}
                       color="primary"
                       variant="contained"
-                      disabled={disabled}
+                      disabled={disabled || loading}
                       size="small"
                       fullWidth
-                      onClick={(event) => this.handleOnSubmit(event, opensnackBar)}
+                      onClick={() => this.handleOnSubmit(openSnackBar)}
                     >
-                LOGIN
+                      LOGIN
+                      {loading && <CircularProgress size={30} className={classes.buttonProgress} />}
                     </Button>
-
-
                   )
-                }
-                {loading && <CircularProgress size={50} className={classes.buttonProgress} />}
-              </snackBarContext.context>
+                )}
+              </snackBarContext.Consumer>
             </form>
           </Box>
         </Paper>

@@ -12,30 +12,45 @@ import PersonIcon from '@material-ui/icons/Person';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/styles';
 import { validateTrainee } from '../../../../config/constants';
 import { snackBarContext } from '../../../../contexts';
 import { callApi } from '../../../../libs/utils/api';
 
-const useStyles = () => ({
-  buttonProgress: {
-    position: 'absolute',
-    top: '70%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-});
 
-class AddDialog extends Component {
+const initialState = {
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  touched: {},
+  allErrors: {},
+  disabled: true,
+  loading: false,
+};
+
+export default class AddDialog extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      touched: {},
-      error: {},
-      disabled: true,
+    this.state = { ...initialState };
+  }
+
+  handleOnSubmit = async (openSnackBar) => {
+    const { name, email, password } = this.state;
+    const { toggleDialogBox } = this.props;
+    const reqType = 'post';
+    const url = '/api/trainee';
+    const query = { name, email, password };
+    const res = await callApi({ reqType, url, query });
+    if (res.data) {
+      openSnackBar('Trainee added', 'success');
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
       loading: false,
-    };
+    });
+    toggleDialogBox();
+    this.setState(initialState);
   }
 
   handleOnCancel = () => {
@@ -92,34 +107,11 @@ class AddDialog extends Component {
     return '';
   }
 
-  handleOnSubmit = (value) => {
-    const { email, name, password } = this.state;
-    const { onClose } = this.props;
-    this.setState({
-      loading: true,
-    });
-    callApi('post', '/api/trainee', { email, name, password })
-      .then((res) => {
-        value('Trainee Added sucessfully', 'success');
-        console.log(res);
-      })
-      .catch((err) => {
-        value(err.message, 'error');
-      })
-      .finally(() => {
-        this.setState({
-          loading: false,
-        });
-        onClose();
-      });
-  }
-
-
   render() {
     const {
-      error, name, email, password, confirmPassword, loading,
+      name, email, password, confirmPassword, disabled, loading,
     } = this.state;
-    const { open, onClose, classes } = this.props;
+    const { open, toggleDialogBox } = this.props;
     return (
       <Dialog open={open} onClose={toggleDialogBox} aria-labelledby="form-dialog-title">
         <DialogContent spacing={2}>
@@ -230,11 +222,16 @@ class AddDialog extends Component {
           >
             Cancel
           </Button>
-          {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
           <snackBarContext.Consumer>
-            {({openSnackBar}) => (
-              <Button onClick={() => { this.handleOnSubmit(openSnackBar); }} color="primary" variant="contained" disabled={this.hasError()}>
+            {({ openSnackBar }) => (
+              <Button
+                onClick={() => this.handleOnSubmit(openSnackBar)}
+                color="primary"
+                variant="contained"
+                disabled={disabled}
+              >
                         Submit
+                {loading && <CircularProgress size={24} />}
               </Button>
             )}
           </snackBarContext.Consumer>
@@ -244,10 +241,7 @@ class AddDialog extends Component {
   }
 }
 
-export default withStyles(useStyles)(AddDialog);
-
 AddDialog.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.bool.isRequired,
-  classes: PropTypes.objectOf(PropTypes.objectOf).isRequired,
+  toggleDialogBox: PropTypes.func.isRequired,
 };

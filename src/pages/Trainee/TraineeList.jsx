@@ -19,40 +19,36 @@ class TraineeList extends Component {
       rowsPerPage: 5,
       email: '',
       name: '',
+      order: 'asc',
+      data: {},
       trainees: [],
       loading: true,
       dataLength: 0,
-      count: 0,
       load: false,
     };
   }
 
+
   componentDidMount() {
-    const value = this.context;
-    const params = { skip: 0, limit: 20 };
-    callApi('get', '/api/trainee', {}, params)
-      .then((res) => {
-        console.log(res);
-        const { records } = res;
-        this.setState({
-          trainees: records,
-          dataLength: records.length,
-          count: records.length,
-        });
-      })
-      .catch((err) => {
-        value(err.message, 'error');
-      })
-      .finally(() => {
-        this.setState({
-          loading: false,
-        });
-      });
+    const { page, rowsPerPage } = this.state;
+    const params = { skip: page, limit: rowsPerPage };
+    this.fetchTrainees(params);
   }
 
-  handlerOnClick = () => {
+  fetchTrainees = async (params) => {
+    const reqType = 'get';
+    const url = '/api/trainee';
+    const res = await callApi({ reqType, url, params });
+    if (res.data) {
+      const { data: { data: { records, count } = {} } = {} } = res;
+      this.setState({
+        trainees: records,
+        count,
+        dataLength: records.length,
+      });
+    }
     this.setState({
-      open: true,
+      loading: false,
     });
   }
 
@@ -71,6 +67,7 @@ class TraineeList extends Component {
     });
   }
 
+
   handleSelect = (element) => {
     const { name, email } = element;
     this.setState({
@@ -87,37 +84,42 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = (value, event) => {
-    const { data, trainees } = this.state;
+  handleRemove = async (openSnackBar) => {
+    const {
+      data, trainees, count, page, rowsPerPage,
+    } = this.state;
+    const reqType = 'delete';
+    const url = `/api/trainee/${data.originalId}`;
     this.setState({
       load: true,
     });
-    callApi('delete', `/api/trainee/${data.originalId}`)
-      .then(() => {
-        value('Trainee Deleted Successfully', 'success');
-        const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
-        trainees.splice(removeIndex, 1);
-        const { page, count, rowsPerPage } = this.state;
-        const mod = count % rowsPerPage;
-        if (mod === 1) {
+    const res = await callApi({ reqType, url, params: data.originalId });
+    if (res.data) {
+      openSnackBar('Trainee Deleted Successfully', 'success');
+      const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
+      trainees.splice(removeIndex, 1);
+      if (!trainees.length) {
+        const newPage = page - 1;
+        this.setState({ page: newPage }, () => {
+          const params = { skip: newPage * rowsPerPage, rowsPerPage };
+          this.fetchTrainees(params);
           this.setState({
-            page: page - 1,
+            count: count - 1,
           });
-        }
+        });
+      } else {
         this.setState({
           trainees,
           count: count - 1,
         });
-      })
-      .catch((err) => {
-        value(err.message, 'error');
-      })
-      .finally(() => {
-        this.setState({
-          openRemoveDialog: false,
-          load: false,
-        });
-      });
+      }
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
+      openRemoveDialog: false,
+      load: false,
+    });
   }
 
   toggleEditDialog = () => {
@@ -133,140 +135,135 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = (value) => {
+  handleEdit = async (openSnackBar) => {
     const {
       email, name, data, trainees,
     } = this.state;
+    const reqType = 'put';
+    const url = '/api/trainee';
+    const query = { id: data.originalId, email, name };
     this.setState({
       load: true,
     });
-    callApi('put', '/api/trainee', { id: data.originalId, email, name })
-      .then(
-        (res) => {
-          console.log(res);
-          value('This is success message', 'success');
-          const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
-            if (_id === data._id) {
-              return {
-                _id, ...rest, name, email,
-              };
-            }
-            return { _id, ...rest };
-          });
-          this.setState({
-            trainees: updatedList,
-          });
-        },
-      )
-      .catch((err) => {
-        value(err.message, 'error');
-      }).finally(() => {
-        this.setState({
-          openEditDialog: false,
-          load: false,
-        });
+    const res = await callApi({ reqType, url, query });
+    if (res.data) {
+      openSnackBar('This is success message', 'success');
+      const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
+        if (_id === data._id) {
+          return {
+            _id, ...rest, name, email,
+          };
+        }
+        return { _id, ...rest };
       });
+      this.setState({
+        trainees: updatedList,
+      });
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+
+    this.setState({
+      openEditDialog: false,
+      load: false,
+    });
   }
 
-  handleChangePage = (event, newPage) => {
+  handleChangePage = async (event, newPage) => {
+    const { rowsPerPage } = this.state;
+    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
     this.setState({
       page: newPage,
+      loading: true,
     });
+    this.fetchTrainees(params);
   };
 
-  handleChangeRowsPerPage = (event) => {
+  handleChangeRowsPerPage = async (event) => {
+    const { page } = this.state;
+    const params = { skip: page * event.target.value, limit: event.target.value };
     this.setState({
-      rowsPerPage: parseInt(event.target.value, 10),
-      page: 0,
+      rowsPerPage: event.target.value,
+      loading: true,
     });
+    this.fetchTrainees(params);
   };
 
   handleFieldChange = (event) => {
     this.setState({
-      email: event.target.value,
-    });
-  }
-
-
-  handleOnChangeName = () => (event) => {
-    this.setState({
-      name: event.target.value,
+      [event.target.name]: event.target.value,
     });
   }
 
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name, trainees, loading, dataLength, load, count,
+      email, name, trainees, loading, count, dataLength, load,
     } = this.state;
-    const { match: { url }, classes } = this.props;
     return (
       <div>
-        <br />
-        <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
-          Add Trainee
-        </Button>
-        <AddDialog open={open} onClose={this.handlerOnClose} />
-        <EditDialog
-          openEditDialog={openEditDialog}
-          handleEditClose={this.handleEditClose}
-          handleEdit={this.handleEdit}
-          email={email}
-          name={name}
-          handleOnChangeEmail={this.handleOnChangeEmail}
-          handleOnChangeName={this.handleOnChangeName}
-          loading={load}
-        />
-        <RemoveDialog
-          openRemoveDialog={openRemoveDialog}
-          handleRemoveClose={this.handleRemoveClose}
-          handleRemove={this.handleRemove}
-          loading={load}
-        />
-        <Table
-          id="id"
-          data={trainees}
-          columns={[
-            {
-              field: 'name',
-              label: 'Name',
-            },
-            {
-              field: 'email',
-              label: 'Email Address',
-              format: (value) => value && value.toUpperCase(),
-            },
-            {
-              field: 'createdAt',
-              label: 'Date',
-              align: 'right',
-              format: getDateFormat,
-            },
-          ]}
-          onSort={this.handleSort}
-          orderBy={orderBy}
-          order={order}
-          onSelect={this.handleSelect}
-          actions={[{
-            Icon: <EditIcon />,
-            handler: this.handleEditOpen,
-          }, {
-            Icon: <DeleteIcon />,
-            handler: this.handleRemoveOpen,
-          }]}
-          count={count}
-          page={page}
-          onChangePage={this.handleChangePage}
-          rowsPerPage={rowsPerPage}
-          handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-          loader={loading}
-          dataLength={dataLength}
-        />
+        <Box justifyContent="row" lineHeight={4} margin="2%">
+          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+            Add Trainee
+          </Button>
+          <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+          <EditDialog
+            openEditDialog={openEditDialog}
+            handleEditClose={this.toggleEditDialog}
+            handleEdit={this.handleEdit}
+            email={email}
+            name={name}
+            handleChange={this.handleFieldChange}
+            loading={load}
+          />
+          <RemoveDialog
+            openRemoveDialog={openRemoveDialog}
+            handleRemoveClose={this.toggleRemoveDialog}
+            handleRemove={this.handleRemove}
+            loading={load}
+          />
+          <Table
+            id="id"
+            data={trainees}
+            columns={[
+              {
+                field: 'name',
+                label: 'Name',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: getDateFormat,
+              },
+            ]}
+            onSort={this.handleSort}
+            orderBy={orderBy}
+            order={order}
+            onSelect={this.handleSelect}
+            actions={[{
+              Icon: <EditIcon />,
+              handler: () => this.toggleEditDialog,
+            }, {
+              Icon: <DeleteIcon />,
+              handler: () => this.toggleRemoveDialog,
+            }]}
+            count={count}
+            page={page}
+            onChangePage={this.handleChangePage}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+            loader={loading}
+            dataLength={dataLength}
+          />
+        </Box>
       </div>
     );
   }
 }
-
 export default TraineeList;
-
-TraineeList.contextType = alert;
