@@ -23,29 +23,29 @@ class TraineeList extends Component {
       order: 'asc',
       data: {},
       trainees: [],
-      loading: false,
+      loading: true,
       dataLength: 0,
     };
   }
 
-  async componentDidMount() {
-    const value = this.context;
-    const params = { skip: 0, limit: 5 };
+
+  componentDidMount() {
+    const { page, rowsPerPage } = this.state;
+    const params = { skip: page, limit: rowsPerPage };
+    this.fetchTrainees(params);
+  }
+
+  fetchTrainees = async (params) => {
     const reqType = 'get';
     const url = '/api/trainee';
-    this.setState({
-      loading: true,
-    });
     const res = await callApi({ reqType, url, params });
-    if (res) {
+    if (res.data) {
       const { data: { data: { records, count } } } = res;
       this.setState({
         trainees: records,
         count,
         dataLength: records.length,
       });
-    } else {
-      value(res.message, res.status);
     }
     this.setState({
       loading: false,
@@ -112,58 +112,22 @@ class TraineeList extends Component {
 
   handleChangePage = async (event, newPage) => {
     const { rowsPerPage } = this.state;
+    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
     this.setState({
       page: newPage,
-    });
-    const value = this.context;
-    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
-    const reqType = 'get';
-    const url = '/api/trainee';
-    this.setState({
       loading: true,
     });
-    const res = await callApi({ reqType, url, params });
-    if (res) {
-      const { data: { data: { records, count } } } = res;
-      this.setState({
-        trainees: records,
-        count,
-        dataLength: records.length,
-      });
-    } else {
-      value(res.message, res.status);
-    }
-    this.setState({
-      loading: false,
-    });
+    this.fetchTrainees(params);
   };
 
   handleChangeRowsPerPage = async (event) => {
     const { page } = this.state;
+    const params = { skip: page * event.target.value, limit: event.target.value };
     this.setState({
       rowsPerPage: event.target.value,
-    });
-    const value = this.context;
-    const params = { skip: page * event.target.value, limit: event.target.value };
-    const reqType = 'get';
-    const url = '/api/trainee';
-    this.setState({
       loading: true,
     });
-    const res = await callApi({ reqType, url, params });
-    if (res) {
-      const { data: { data: { records, count } } } = res;
-      this.setState({
-        trainees: records,
-        count,
-        dataLength: records.length,
-      });
-    } else {
-      value(res.message, res.status);
-    }
-    this.setState({
-      loading: false,
-    });
+    this.fetchTrainees(params);
   };
 
   handleFieldChange = (event) => {

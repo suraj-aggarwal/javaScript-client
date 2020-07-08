@@ -224,9 +224,9 @@ class AddDialog extends Component {
   }
 }
 
-export default AddDialog;
-
 AddDialog.propTypes = {
   open: propTypes.bool.isRequired,
   toggleDialogBox: propTypes.func.isRequired,
 };
+
+export default AddDialog;

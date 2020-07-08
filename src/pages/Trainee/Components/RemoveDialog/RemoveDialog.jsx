@@ -32,7 +32,7 @@ export default function RemoveDialog(props) {
           <snackBarContext.Consumer>
             {({ openSnackBar }) => (
               <Button
-                onClick={() => { handleRemove(openSnackBar); }}
+                onClick={() => handleRemove(openSnackBar)}
                 color="primary"
                 variant="contained"
               >
