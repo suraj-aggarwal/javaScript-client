@@ -24,7 +24,7 @@ class TraineeList extends Component {
       trainees: [],
       loading: true,
       dataLength: 0,
-      waiting: false,
+      onSubmitLoading: false,
     };
   }
 
@@ -55,7 +55,7 @@ class TraineeList extends Component {
   handleCreate = async (query, openSnackBar) => {
     const { page, rowsPerPage } = this.state;
     this.setState({
-      waiting: true,
+      onSubmitLoading: true,
     });
     const reqType = 'post';
     const url = '/api/trainee';
@@ -68,7 +68,7 @@ class TraineeList extends Component {
       openSnackBar(res.message, res.status);
     }
     this.setState({
-      waiting: false,
+      onSubmitLoading: false,
     });
   }
 
@@ -106,22 +106,21 @@ class TraineeList extends Component {
 
   handleRemove = async (openSnackBar) => {
     const {
-      data, page, rowsPerPage, dataLength, count,
+      data, page, rowsPerPage, dataLength,
     } = this.state;
     const reqType = 'delete';
     const url = `/api/trainee/${data.originalId}`;
     this.setState({
-      waiting: true,
+      onSubmitLoading: true,
     });
-    const lastPage = Math.ceil(count / rowsPerPage) - 1;
-    const currentPage = (page === lastPage && dataLength === 1)
+    const currentPage = (page !== 0 && dataLength === 1)
       ? page - 1 : page;
     const res = await callApi({ reqType, url, params: data.originalId });
     if (!res.data) {
       openSnackBar(res.message, res.status);
       this.setState({
         openRemoveDialog: false,
-        waiting: false,
+        onSubmitLoading: false,
       });
       return;
     }
@@ -130,7 +129,7 @@ class TraineeList extends Component {
     this.fetchTrainees(params);
     this.setState({
       openRemoveDialog: false,
-      waiting: false,
+      onSubmitLoading: false,
       page: currentPage,
     });
   }
@@ -156,14 +155,14 @@ class TraineeList extends Component {
     const url = '/api/trainee';
     const query = { id: data.originalId, email, name };
     this.setState({
-      waiting: true,
+      onSubmitLoading: true,
     });
     const res = await callApi({ reqType, url, query });
     if (!res.data) {
       openSnackBar(res.message, res.status);
       this.setState({
         openEditDialog: false,
-        waiting: false,
+        onSubmitLoading: false,
       });
       return;
     }
@@ -179,7 +178,7 @@ class TraineeList extends Component {
     });
     this.setState({
       openEditDialog: false,
-      waiting: false,
+      onSubmitLoading: false,
       trainees: updatedList,
     });
   }
@@ -213,7 +212,7 @@ class TraineeList extends Component {
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name, trainees, loading, count, dataLength, waiting,
+      email, name, trainees, loading, count, dataLength, onSubmitLoading,
     } = this.state;
     return (
       <div>
@@ -224,7 +223,7 @@ class TraineeList extends Component {
           <AddDialog
             open={open}
             toggleDialogBox={this.toggleOpenState}
-            loading={waiting}
+            loading={onSubmitLoading}
             handleCreate={this.handleCreate}
           />
           <EditDialog
@@ -234,13 +233,13 @@ class TraineeList extends Component {
             email={email}
             name={name}
             handleChange={this.handleFieldChange}
-            loading={waiting}
+            loading={onSubmitLoading}
           />
           <RemoveDialog
             openRemoveDialog={openRemoveDialog}
             handleRemoveClose={this.toggleRemoveDialog}
             handleRemove={this.handleRemove}
-            loading={waiting}
+            loading={onSubmitLoading}
           />
           <Table
             id="id"
