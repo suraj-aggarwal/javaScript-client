@@ -38,17 +38,17 @@ class Login extends Component {
     this.setState({
       loading: true,
     });
-    loginuser({ variables: { email, password } }).then((data) => {
-      const { data: { loginUser } } = data;
-      localStorage.setItem('token', loginUser);
-      history.push('/Trainee');
-    }).catch(() => {
-      openSnackBar('Login failed', 'error');
-    }).finally(() => {
-      this.setState({
-        loading: false,
-      });
+    const data = await loginuser({ variables: { email, password } });
+    this.setState({
+      loading: false,
     });
+    const { data: { loginUser } } = data;
+    if (!loginUser) {
+      openSnackBar('Login failed', 'error');
+      return;
+    }
+    localStorage.setItem('token', loginUser);
+    history.push('/Trainee');
   }
 
   handleOnChange = (event) => {
