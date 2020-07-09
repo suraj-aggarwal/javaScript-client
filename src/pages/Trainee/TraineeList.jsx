@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import { Table } from './Components/Table';
-import { getDateFormat } from '../../libs/utils/formatDate';
+import { getDateFormat } from '../../libs/utils/helper';
 import { callApi } from '../../libs/utils/api';
-import { alert } from '../../contexts';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -14,58 +13,73 @@ class TraineeList extends Component {
     this.state = {
       open: false,
       orderBy: '',
-      order: '',
-      data: null,
       openRemoveDialog: false,
       openEditDialog: false,
       page: 0,
       rowsPerPage: 5,
       email: '',
       name: '',
+      order: 'asc',
+      data: {},
       trainees: [],
       loading: true,
       dataLength: 0,
-      count: 0,
-      load: false,
+      onSubmitLoading: false,
     };
   }
 
+
   componentDidMount() {
-    const value = this.context;
-    const params = { skip: 0, limit: 20 };
-    callApi('get', '/api/trainee', {}, params)
-      .then((res) => {
-        console.log(res);
-        const { records } = res;
-        this.setState({
-          trainees: records,
-          dataLength: records.length,
-          count: records.length,
-        });
-      })
-      .catch((err) => {
-        value(err.message, 'error');
-      })
-      .finally(() => {
-        this.setState({
-          loading: false,
-        });
+    const { page, rowsPerPage } = this.state;
+    const params = { skip: page, limit: rowsPerPage };
+    this.fetchTrainees(params);
+  }
+
+  fetchTrainees = async (params) => {
+    const reqType = 'get';
+    const url = '/api/trainee';
+    const res = await callApi({ reqType, url, params });
+    if (res.data) {
+      const { data: { data: { records, count } = {} } = {} } = res;
+      this.setState({
+        trainees: records,
+        count,
+        dataLength: records.length,
       });
-  }
-
-  handlerOnClick = () => {
+    }
     this.setState({
-      open: true,
+      loading: false,
     });
   }
 
-  handlerOnClose = () => {
+  handleCreate = async (query, openSnackBar) => {
+    const { page, rowsPerPage } = this.state;
     this.setState({
-      open: false,
+      onSubmitLoading: true,
+    });
+    const reqType = 'post';
+    const url = '/api/trainee';
+    const res = await callApi({ reqType, url, query });
+    const params = { skip: page, limit: rowsPerPage };
+    if (res.data) {
+      openSnackBar('Trainee added', 'success');
+      this.fetchTrainees(params);
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
+      onSubmitLoading: false,
     });
   }
 
-  handleSort = (field) => (event) => {
+  toggleOpenState = () => {
+    const { open } = this.state;
+    this.setState({
+      open: !open,
+    });
+  }
+
+  handleSort = (field) => {
     const { order } = this.state;
     this.setState({
       orderBy: field,
@@ -73,65 +87,57 @@ class TraineeList extends Component {
     });
   }
 
-  handleSelect = (element) => (event) => {
+
+  handleSelect = (element) => {
     const { name, email } = element;
     this.setState({
       data: element,
-    });
-    this.setState({
       email,
       name,
     });
   }
 
-  handleRemoveOpen = () => (event) => {
+  toggleRemoveDialog = () => {
+    const { openRemoveDialog } = this.state;
     this.setState({
-      openRemoveDialog: true,
+      openRemoveDialog: !openRemoveDialog,
     });
   }
 
-  handleRemoveClose = () => {
+  handleRemove = async (openSnackBar) => {
+    const {
+      data, page, rowsPerPage, dataLength,
+    } = this.state;
+    const reqType = 'delete';
+    const url = `/api/trainee/${data.originalId}`;
+    this.setState({
+      onSubmitLoading: true,
+    });
+    const currentPage = (page !== 0 && dataLength === 1)
+      ? page - 1 : page;
+    const res = await callApi({ reqType, url, params: data.originalId });
+    if (!res.data) {
+      openSnackBar(res.message, res.status);
+      this.setState({
+        openRemoveDialog: false,
+        onSubmitLoading: false,
+      });
+      return;
+    }
+    openSnackBar('Trainee Deleted Successfully', 'success');
+    const params = { skip: currentPage * rowsPerPage, limit: rowsPerPage };
+    this.fetchTrainees(params);
     this.setState({
       openRemoveDialog: false,
+      onSubmitLoading: false,
+      page: currentPage,
     });
   }
 
-  handleRemove = (value, event) => {
-    const { data, trainees } = this.state;
+  toggleEditDialog = () => {
+    const { openEditDialog } = this.state;
     this.setState({
-      load: true,
-    });
-    callApi('delete', `/api/trainee/${data.originalId}`)
-      .then(() => {
-        value('Trainee Deleted Successfully', 'success');
-        const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
-        trainees.splice(removeIndex, 1);
-        const { page, count, rowsPerPage } = this.state;
-        const mod = count % rowsPerPage;
-        if (mod === 1) {
-          this.setState({
-            page: page - 1,
-          });
-        }
-        this.setState({
-          trainees,
-          count: count - 1,
-        });
-      })
-      .catch((err) => {
-        value(err.message, 'error');
-      })
-      .finally(() => {
-        this.setState({
-          openRemoveDialog: false,
-          load: false,
-        });
-      });
-  }
-
-  handleEditOpen = () => (event) => {
-    this.setState({
-      openEditDialog: true,
+      openEditDialog: !openEditDialog,
     });
   }
 
@@ -141,140 +147,142 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = (value) => {
+  handleEdit = async (openSnackBar) => {
     const {
       email, name, data, trainees,
     } = this.state;
+    const reqType = 'put';
+    const url = '/api/trainee';
+    const query = { id: data.originalId, email, name };
     this.setState({
-      load: true,
+      onSubmitLoading: true,
     });
-    callApi('put', '/api/trainee', { id: data.originalId, email, name })
-      .then(
-        (res) => {
-          console.log(res);
-          value('This is success message', 'success');
-          const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
-            if (_id === data._id) {
-              return {
-                _id, ...rest, name, email,
-              };
-            }
-            return { _id, ...rest };
-          });
-          this.setState({
-            trainees: updatedList,
-          });
-        },
-      )
-      .catch((err) => {
-        value(err.message, 'error');
-      }).finally(() => {
-        this.setState({
-          openEditDialog: false,
-          load: false,
-        });
+    const res = await callApi({ reqType, url, query });
+    if (!res.data) {
+      openSnackBar(res.message, res.status);
+      this.setState({
+        openEditDialog: false,
+        onSubmitLoading: false,
       });
+      return;
+    }
+    openSnackBar('This is success message', 'success');
+    // updates the current trainee in ui at particular index.
+    const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
+      if (_id === data._id) {
+        return {
+          _id, ...rest, name, email,
+        };
+      }
+      return { _id, ...rest };
+    });
+    this.setState({
+      openEditDialog: false,
+      onSubmitLoading: false,
+      trainees: updatedList,
+    });
   }
 
-  handleChangePage = (event, newPage) => {
+  handleChangePage = async (event, newPage) => {
+    const { rowsPerPage } = this.state;
+    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
     this.setState({
       page: newPage,
+      loading: true,
     });
+    this.fetchTrainees(params);
   };
 
-  handleChangeRowsPerPage = (event) => {
+  handleChangeRowsPerPage = async (event) => {
+    const { page } = this.state;
+    const params = { skip: page * event.target.value, limit: event.target.value };
     this.setState({
-      rowsPerPage: parseInt(event.target.value, 10),
-      page: 0,
+      rowsPerPage: event.target.value,
+      loading: true,
     });
+    this.fetchTrainees(params);
   };
 
-  handleOnChangeEmail = () => (event) => {
+  handleFieldChange = (event) => {
     this.setState({
-      email: event.target.value,
-    });
-  }
-
-
-  handleOnChangeName = () => (event) => {
-    this.setState({
-      name: event.target.value,
+      [event.target.name]: event.target.value,
     });
   }
 
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name, trainees, loading, dataLength, load, count,
+      email, name, trainees, loading, count, dataLength, onSubmitLoading,
     } = this.state;
-    const { match: { url }, classes } = this.props;
     return (
       <div>
-        <br />
-        <Button color="primary" variant="outlined" onClick={this.handlerOnClick}>
-          Add Trainee
-        </Button>
-        <AddDialog open={open} onClose={this.handlerOnClose} />
-        <EditDialog
-          openEditDialog={openEditDialog}
-          handleEditClose={this.handleEditClose}
-          handleEdit={this.handleEdit}
-          email={email}
-          name={name}
-          handleOnChangeEmail={this.handleOnChangeEmail}
-          handleOnChangeName={this.handleOnChangeName}
-          loading={load}
-        />
-        <RemoveDialog
-          openRemoveDialog={openRemoveDialog}
-          handleRemoveClose={this.handleRemoveClose}
-          handleRemove={this.handleRemove}
-          loading={load}
-        />
-        <Table
-          id="id"
-          data={trainees}
-          columns={[
-            {
-              field: 'name',
-              label: 'Name',
-            },
-            {
-              field: 'email',
-              label: 'Email Address',
-              format: (value) => value && value.toUpperCase(),
-            },
-            {
-              field: 'createdAt',
-              label: 'Date',
-              align: 'right',
-              format: getDateFormat,
-            },
-          ]}
-          onSort={this.handleSort}
-          orderBy={orderBy}
-          order={order}
-          onSelect={this.handleSelect}
-          actions={[{
-            Icon: <EditIcon />,
-            handler: this.handleEditOpen,
-          }, {
-            Icon: <DeleteIcon />,
-            handler: this.handleRemoveOpen,
-          }]}
-          count={count}
-          page={page}
-          onChangePage={this.handleChangePage}
-          rowsPerPage={rowsPerPage}
-          handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-          loader={loading}
-          dataLength={dataLength}
-        />
+        <Box justifyContent="row" lineHeight={4} margin="2%">
+          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+            Add Trainee
+          </Button>
+          <AddDialog
+            open={open}
+            toggleDialogBox={this.toggleOpenState}
+            loading={onSubmitLoading}
+            handleCreate={this.handleCreate}
+          />
+          <EditDialog
+            openEditDialog={openEditDialog}
+            handleEditClose={this.toggleEditDialog}
+            handleEdit={this.handleEdit}
+            email={email}
+            name={name}
+            handleChange={this.handleFieldChange}
+            loading={onSubmitLoading}
+          />
+          <RemoveDialog
+            openRemoveDialog={openRemoveDialog}
+            handleRemoveClose={this.toggleRemoveDialog}
+            handleRemove={this.handleRemove}
+            loading={onSubmitLoading}
+          />
+          <Table
+            id="id"
+            data={trainees}
+            columns={[
+              {
+                field: 'name',
+                label: 'Name',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: getDateFormat,
+              },
+            ]}
+            onSort={this.handleSort}
+            orderBy={orderBy}
+            order={order}
+            onSelect={this.handleSelect}
+            actions={[{
+              Icon: <EditIcon />,
+              handler: () => this.toggleEditDialog,
+            }, {
+              Icon: <DeleteIcon />,
+              handler: () => this.toggleRemoveDialog,
+            }]}
+            count={count}
+            page={page}
+            onChangePage={this.handleChangePage}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+            loader={loading}
+            dataLength={dataLength}
+          />
+        </Box>
       </div>
     );
   }
 }
-
 export default TraineeList;
-
-TraineeList.contextType = alert;

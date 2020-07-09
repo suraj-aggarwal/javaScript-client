@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { AuthLayout } from '../layouts/AuthLayout';
 
-function AuthRoute({ children, ...rest }) {
+function AuthRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
@@ -14,5 +15,9 @@ function AuthRoute({ children, ...rest }) {
     />
   );
 }
+
+AuthRoute.propTypes = {
+  component: PropTypes.node.isRequired,
+};
 
 export default AuthRoute;

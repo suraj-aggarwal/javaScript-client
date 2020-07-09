@@ -1,13 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Footer } from '../components/Footer';
 
-function AuthLayout({ component: children, ...rest }) {
-  return (
+const AuthLayout = ({ children }) => (
+
+  <div>
     <div>
-      <div>{children}</div>
+      {children}
+    </div>
+    <div>
       <Footer />
     </div>
-  );
-}
+  </div>
+);
+
+AuthLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default AuthLayout;

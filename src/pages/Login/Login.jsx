@@ -4,95 +4,35 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
+import { Paper, Box } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import { green } from '@material-ui/core/colors';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { validateLogin } from '../../config/constants';
-import { alert } from '../../contexts';
+// import { callApi } from '../../libs/utils/api';
+import { snackBarContext } from '../../contexts';
+import { useStyles } from './login.style';
 
-const useStyles = (theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  buttonProgress: {
-    color: green[500],
-    position: 'absolute',
-    top: '70%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-});
+const initialState = {
+  email: '',
+  password: '',
+  touched: {},
+  allErrors: {},
+  disabled: true,
+  loading: false,
+};
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      touched: {},
-      error: {},
-      loading: false,
-    };
+    this.state = { ...initialState };
   }
 
-  handleOnChange = (field) => ({ target: { value } }) => {
-    this.setState({
-      [field]: value,
-    });
-    this.getError(field);
-  }
-
-  isTouched = (field) => {
-    const { touched } = this.state;
-    touched[field] = true;
-    this.setState({
-      touched,
-    });
-  }
-
-  getError = (field) => {
-    const { touched, error } = this.state;
-    if (touched[field]) {
-      validateLogin.validateAt(field, this.state)
-        .then(() => {
-          delete error[field];
-          this.setState({
-            error,
-          });
-        })
-        .catch((err) => {
-          error[field] = err.message;
-          this.setState({
-            error,
-          });
-        });
-    }
-  }
-
-  hasError = () => {
-    const { error } = this.state;
-    return (Object.keys(error).length !== 0);
-  }
-
-  handleOnSubmit = async (value) => {
+  handleOnSubmit = async (openSnackBar) => {
     const { history, loginuser } = this.props;
     const { email, password } = this.state;
     this.setState({
@@ -101,13 +41,9 @@ class Login extends Component {
     loginuser({ variables: { email, password } }).then((data) => {
       const { data: { loginUser } } = data;
       localStorage.setItem('token', loginUser);
-      this.setState({
-        redirect: true,
-      });
       history.push('/Trainee');
-    }).catch((err) => {
-      value('Login failed', 'error');
-      throw new Error(err);
+    }).catch(() => {
+      openSnackBar('Login failed', 'error');
     }).finally(() => {
       this.setState({
         loading: false,
@@ -115,80 +51,135 @@ class Login extends Component {
     });
   }
 
+  handleOnChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+    this.hasError();
+  }
+
+  isTouched = (event) => {
+    const { touched } = this.state;
+    touched[event.target.name] = true;
+    this.setState({
+      touched,
+    });
+    this.hasError();
+  }
+
+  hasError = () => {
+    const {
+      email, password,
+    } = this.state;
+    const error = {};
+    validateLogin.validate({
+      email, password,
+    }, { abortEarly: false }).then(() => {
+      this.setState({ disabled: false });
+    })
+      .catch((err) => {
+        const values = Object.values(err.inner);
+        values.forEach((val) => {
+          error[val.path] = val.message;
+        });
+        this.setState({ disabled: true });
+      })
+      .finally(() => {
+        this.setState({
+          allErrors: error,
+        });
+      });
+  }
+
+  getError = (field) => {
+    const { allErrors, touched } = this.state;
+    if (touched[field]) {
+      return allErrors[field];
+    }
+    return '';
+  }
+
   render() {
     const { classes } = this.props;
     const {
-      email, password, error, loading,
+      email, password, disabled, loading,
     } = this.state;
     return (
       <Container component="main" maxWidth="xs" justify="column">
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <form classes={classes.form}>
-            <TextField
-              onChange={this.handleOnChange('email')}
-              onBlur={() => this.isTouched('email')}
-              error={error.email}
-              helperText={error.email}
-              autoFocus
-              margin="normal"
-              id="name"
-              label="Email Address"
-              type="email"
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailIcon />
-                  </InputAdornment>
-                ),
-              }}
-              value={email}
-              fullWidth
-            />
-            <TextField
-              onChange={this.handleOnChange('password')}
-              onBlur={() => this.isTouched('password')}
-              autoFocus
-              error={error.password}
-              helperText={error.password}
-              margin="normal"
-              id="name"
-              label="Confirm Password"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <VisibilityOffIcon />
-                  </InputAdornment>
-                ),
-              }}
-              type="Password"
-              value={password}
-              variant="outlined"
-              fullWidth
-            />
-            <alert.Consumer>
-              {(value) => (
-                <Button
-                  classes={classes.submit}
-                  color="primary"
-                  variant="contained"
-                  disabled={this.hasError() || loading}
-                  fullWidth
-                  onClick={() => { this.handleOnSubmit(value); }}
-                >
-                LOGIN
-                </Button>
-              )}
-            </alert.Consumer>
-            {loading && <CircularProgress size={50} className={classes.buttonProgress} />}
-          </form>
-        </div>
+        <Paper elevation={3} className={classes.paper}>
+          <Box display="flex" lineHeight={4} alignItems="center" marginRight="4%" marginLeft="4%" flexDirection="column">
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h6">
+              Login
+            </Typography>
+            <form classes={classes.form}>
+              <TextField
+                onChange={(event) => this.handleOnChange(event)}
+                onBlur={(event) => this.isTouched(event)}
+                error={this.getError('email')}
+                helperText={this.getError('email')}
+                size="small"
+                name="email"
+                margin="normal"
+                id="email"
+                label="Email Address"
+                type="email"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                value={email}
+                fullWidth
+              />
+              <TextField
+                onChange={(event) => this.handleOnChange(event)}
+                onBlur={(event) => this.isTouched(event)}
+                error={this.getError('password')}
+                helperText={this.getError('password')}
+                name="password"
+                size="small"
+                margin="normal"
+                id="password"
+                label="Password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <VisibilityOffIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                type="Password"
+                value={password}
+                variant="outlined"
+                fullWidth
+              />
+              <snackBarContext.Consumer>
+                {({ openSnackBar }) => (
+                  (
+                    <Button
+                      classes={classes.submit}
+                      color="primary"
+                      variant="contained"
+                      disabled={disabled || loading}
+                      size="small"
+                      fullWidth
+                      onClick={() => this.handleOnSubmit(openSnackBar)}
+                    >
+                      LOGIN
+                      {loading && <CircularProgress size={30} className={classes.buttonProgress} />}
+                    </Button>
+                  )
+                )}
+              </snackBarContext.Consumer>
+            </form>
+          </Box>
+        </Paper>
       </Container>
     );
   }
