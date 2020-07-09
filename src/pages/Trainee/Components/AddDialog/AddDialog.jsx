@@ -24,7 +24,6 @@ const initialState = {
   touched: {},
   allErrors: {},
   disabled: true,
-  loading: false,
 };
 
 export default class AddDialog extends Component {
