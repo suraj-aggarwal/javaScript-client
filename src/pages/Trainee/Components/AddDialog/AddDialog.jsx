@@ -14,7 +14,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { validateTrainee } from '../../../../config/constants';
 import { snackBarContext } from '../../../../contexts';
-import { callApi } from '../../../../libs/utils/api';
 
 
 const initialState = {
@@ -34,21 +33,11 @@ export default class AddDialog extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = async (openSnackBar) => {
+  handleOnSubmit = async (handleCreate, openSnackBar) => {
     const { name, email, password } = this.state;
     const { toggleDialogBox } = this.props;
-    const reqType = 'post';
-    const url = '/api/trainee';
     const query = { name, email, password };
-    const res = await callApi({ reqType, url, query });
-    if (res.data) {
-      openSnackBar('Trainee added', 'success');
-    } else {
-      openSnackBar(res.message, res.status);
-    }
-    this.setState({
-      loading: false,
-    });
+    handleCreate(query, openSnackBar);
     toggleDialogBox();
     this.setState(initialState);
   }
@@ -109,9 +98,11 @@ export default class AddDialog extends Component {
 
   render() {
     const {
-      name, email, password, confirmPassword, disabled, loading,
+      name, email, password, confirmPassword, disabled,
     } = this.state;
-    const { open, toggleDialogBox } = this.props;
+    const {
+      open, toggleDialogBox, loading, handleCreate,
+    } = this.props;
     return (
       <Dialog open={open} onClose={toggleDialogBox} aria-labelledby="form-dialog-title">
         <DialogContent spacing={2}>
@@ -225,7 +216,7 @@ export default class AddDialog extends Component {
           <snackBarContext.Consumer>
             {({ openSnackBar }) => (
               <Button
-                onClick={() => this.handleOnSubmit(openSnackBar)}
+                onClick={() => this.handleOnSubmit(handleCreate, openSnackBar)}
                 color="primary"
                 variant="contained"
                 disabled={disabled}
@@ -244,4 +235,6 @@ export default class AddDialog extends Component {
 AddDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   toggleDialogBox: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  handleCreate: PropTypes.func.isRequired,
 };

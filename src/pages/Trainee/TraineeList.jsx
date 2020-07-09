@@ -24,7 +24,7 @@ class TraineeList extends Component {
       trainees: [],
       loading: true,
       dataLength: 0,
-      load: false,
+      waiting: false,
     };
   }
 
@@ -49,6 +49,26 @@ class TraineeList extends Component {
     }
     this.setState({
       loading: false,
+    });
+  }
+
+  handleCreate = async (query, openSnackBar) => {
+    const { page, rowsPerPage } = this.state;
+    this.setState({
+      waiting: true,
+    });
+    const reqType = 'post';
+    const url = '/api/trainee';
+    const res = await callApi({ reqType, url, query });
+    const params = { skip: page, limit: rowsPerPage };
+    if (res.data) {
+      openSnackBar('Trainee added', 'success');
+      this.fetchTrainees(params);
+    } else {
+      openSnackBar(res.message, res.status);
+    }
+    this.setState({
+      waiting: false,
     });
   }
 
@@ -86,39 +106,32 @@ class TraineeList extends Component {
 
   handleRemove = async (openSnackBar) => {
     const {
-      data, trainees, count, page, rowsPerPage,
+      data, page, rowsPerPage, dataLength, count,
     } = this.state;
     const reqType = 'delete';
     const url = `/api/trainee/${data.originalId}`;
     this.setState({
-      load: true,
+      waiting: true,
     });
+    const lastPage = Math.ceil(count / rowsPerPage) - 1;
+    const currentPage = (page === lastPage && dataLength === 1)
+      ? page - 1 : page;
     const res = await callApi({ reqType, url, params: data.originalId });
-    if (res.data) {
-      openSnackBar('Trainee Deleted Successfully', 'success');
-      const removeIndex = trainees.map((item) => item._id).indexOf(data.originalId);
-      trainees.splice(removeIndex, 1);
-      if (!trainees.length) {
-        const newPage = page - 1;
-        this.setState({ page: newPage }, () => {
-          const params = { skip: newPage * rowsPerPage, rowsPerPage };
-          this.fetchTrainees(params);
-          this.setState({
-            count: count - 1,
-          });
-        });
-      } else {
-        this.setState({
-          trainees,
-          count: count - 1,
-        });
-      }
-    } else {
+    if (!res.data) {
       openSnackBar(res.message, res.status);
+      this.setState({
+        openRemoveDialog: false,
+        waiting: false,
+      });
+      return;
     }
+    openSnackBar('Trainee Deleted Successfully', 'success');
+    const params = { skip: currentPage * rowsPerPage, limit: rowsPerPage };
+    this.fetchTrainees(params);
     this.setState({
       openRemoveDialog: false,
-      load: false,
+      waiting: false,
+      page: currentPage,
     });
   }
 
@@ -143,29 +156,31 @@ class TraineeList extends Component {
     const url = '/api/trainee';
     const query = { id: data.originalId, email, name };
     this.setState({
-      load: true,
+      waiting: true,
     });
     const res = await callApi({ reqType, url, query });
-    if (res.data) {
-      openSnackBar('This is success message', 'success');
-      const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
-        if (_id === data._id) {
-          return {
-            _id, ...rest, name, email,
-          };
-        }
-        return { _id, ...rest };
-      });
-      this.setState({
-        trainees: updatedList,
-      });
-    } else {
+    if (!res.data) {
       openSnackBar(res.message, res.status);
+      this.setState({
+        openEditDialog: false,
+        waiting: false,
+      });
+      return;
     }
-
+    openSnackBar('This is success message', 'success');
+    // updates the current trainee in ui at particular index.
+    const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
+      if (_id === data._id) {
+        return {
+          _id, ...rest, name, email,
+        };
+      }
+      return { _id, ...rest };
+    });
     this.setState({
       openEditDialog: false,
-      load: false,
+      waiting: false,
+      trainees: updatedList,
     });
   }
 
@@ -198,7 +213,7 @@ class TraineeList extends Component {
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name, trainees, loading, count, dataLength, load,
+      email, name, trainees, loading, count, dataLength, waiting,
     } = this.state;
     return (
       <div>
@@ -206,7 +221,12 @@ class TraineeList extends Component {
           <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
             Add Trainee
           </Button>
-          <AddDialog open={open} toggleDialogBox={this.toggleOpenState} />
+          <AddDialog
+            open={open}
+            toggleDialogBox={this.toggleOpenState}
+            loading={waiting}
+            handleCreate={this.handleCreate}
+          />
           <EditDialog
             openEditDialog={openEditDialog}
             handleEditClose={this.toggleEditDialog}
@@ -214,13 +234,13 @@ class TraineeList extends Component {
             email={email}
             name={name}
             handleChange={this.handleFieldChange}
-            loading={load}
+            loading={waiting}
           />
           <RemoveDialog
             openRemoveDialog={openRemoveDialog}
             handleRemoveClose={this.toggleRemoveDialog}
             handleRemove={this.handleRemove}
-            loading={load}
+            loading={waiting}
           />
           <Table
             id="id"
