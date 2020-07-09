@@ -10,9 +10,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MailIcon from '@material-ui/icons/Mail';
 import PersonIcon from '@material-ui/icons/Person';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import propTypes from 'prop-types';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import PropTypes from 'prop-types';
 import { validateTrainee } from '../../../../config/constants';
 import { snackBarContext } from '../../../../contexts';
+
 
 const initialState = {
   name: '',
@@ -24,17 +26,19 @@ const initialState = {
   disabled: true,
 };
 
-class AddDialog extends Component {
+export default class AddDialog extends Component {
   constructor(props) {
     super(props);
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = (openSnackBar) => {
+  handleOnSubmit = async (handleCreate, openSnackBar) => {
+    const { name, email, password } = this.state;
     const { toggleDialogBox } = this.props;
-    this.setState(initialState);
+    const query = { name, email, password };
+    handleCreate(query, openSnackBar);
     toggleDialogBox();
-    openSnackBar('Trainee added', 'success');
+    this.setState(initialState);
   }
 
   handleOnCancel = () => {
@@ -95,7 +99,9 @@ class AddDialog extends Component {
     const {
       name, email, password, confirmPassword, disabled,
     } = this.state;
-    const { open, toggleDialogBox } = this.props;
+    const {
+      open, toggleDialogBox, loading, handleCreate,
+    } = this.props;
     return (
       <Dialog open={open} onClose={toggleDialogBox} aria-labelledby="form-dialog-title">
         <DialogContent spacing={2}>
@@ -209,12 +215,13 @@ class AddDialog extends Component {
           <snackBarContext.Consumer>
             {({ openSnackBar }) => (
               <Button
-                onClick={() => this.handleOnSubmit(openSnackBar)}
+                onClick={() => this.handleOnSubmit(handleCreate, openSnackBar)}
                 color="primary"
                 variant="contained"
                 disabled={disabled}
               >
                         Submit
+                {loading && <CircularProgress size={24} />}
               </Button>
             )}
           </snackBarContext.Consumer>
@@ -225,8 +232,8 @@ class AddDialog extends Component {
 }
 
 AddDialog.propTypes = {
-  open: propTypes.bool.isRequired,
-  toggleDialogBox: propTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  toggleDialogBox: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  handleCreate: PropTypes.func.isRequired,
 };
-
-export default AddDialog;
