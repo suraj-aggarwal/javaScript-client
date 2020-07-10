@@ -13,7 +13,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { validateLogin } from '../../config/constants';
-import { callApi } from '../../libs/utils/api';
 import { snackBarContext } from '../../contexts';
 import { useStyles } from './login.style';
 
@@ -32,26 +31,14 @@ class Login extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = async (openSnackBar) => {
-    const { history } = this.props;
+  handleOnSubmit = async () => {
+    const { loginuser } = this.props;
     const { email, password } = this.state;
-    const reqType = 'post';
-    const url = '/api/user/login';
-    const query = { email, password };
+    const payload = { variables: { email, password } };
     this.setState({
       loading: true,
     });
-    const res = await callApi({ reqType, url, query });
-    const { data: { data: token } = {} } = res;
-    if (token) {
-      localStorage.setItem('token', token);
-      history.push('/Trainee');
-    } else {
-      openSnackBar(res.message, res.status);
-    }
-    this.setState({
-      loading: false,
-    });
+    await loginuser(payload);
     this.setState(initialState);
   }
 
@@ -191,7 +178,7 @@ class Login extends Component {
 
 Login.propTypes = {
   classes: PropTypes.objectOf.isRequired,
-  history: PropTypes.func.isRequired,
+  loginuser: PropTypes.func.isRequired,
 };
 
 export default withStyles(useStyles)(Login);

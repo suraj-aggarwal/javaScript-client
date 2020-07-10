@@ -2,16 +2,18 @@ import React from 'react';
 import {
   BrowserRouter as Router, Switch,
 } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/react-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   InputDemo, ChildernDemo, Login, NotFound, TextFieldDemo, TraineeDetails, TraineeList,
 } from './pages';
 import { PrivateRoute, AuthRoute } from './routes';
 import { SnackBarProvider } from './contexts';
+import client from './libs/apllo-client';
 
 function App() {
   return (
-    <>
+    <ApolloProvider client={client}>
       <CssBaseline />
       <SnackBarProvider>
         <Router>
@@ -27,7 +29,7 @@ function App() {
           </Switch>
         </Router>
       </SnackBarProvider>
-    </>
+    </ApolloProvider>
   );
 }
 
