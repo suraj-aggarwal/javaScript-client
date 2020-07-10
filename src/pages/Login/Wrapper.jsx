@@ -3,7 +3,7 @@ import { Mutation } from '@apollo/react-components';
 import loginUser from './mutation';
 import Login from './Login';
 
-export default ({history}) => (
+export default ({ history }) => (
   <Mutation mutation={loginUser}>
     {
       (loginuser) => (

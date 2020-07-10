@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { validateLogin } from '../../config/constants';
-// import { callApi } from '../../libs/utils/api';
+import { graphQlApiHandler } from '../../libs/utils/graphQLApiHandler';
 import { snackBarContext } from '../../contexts';
 import { useStyles } from './login.style';
 
@@ -35,18 +35,18 @@ class Login extends Component {
   handleOnSubmit = async (openSnackBar) => {
     const { history, loginuser } = this.props;
     const { email, password } = this.state;
+    const payload = { variables: { email, password } };
+    const reqType = 'Login';
     this.setState({
       loading: true,
     });
-    const data = await loginuser({ variables: { email, password } });
-    this.setState({
-      loading: false,
-    });
-    const { data: { loginUser } } = data;
-    if (!loginUser) {
-      openSnackBar('Login failed', 'error');
+    const res = await graphQlApiHandler(reqType, loginuser, payload);
+    this.setState(initialState);
+    if (!res.data) {
+      openSnackBar(res.message, res.status);
       return;
     }
+    const { data: { loginUser } } = res;
     localStorage.setItem('token', loginUser);
     history.push('/Trainee');
   }
