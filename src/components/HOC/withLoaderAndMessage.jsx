@@ -6,11 +6,11 @@ const withLoaderAndMessage = (Wrapper) => (props) => {
   const { loader, dataLength, ...rest } = props;
   return (
     <div>
-      {loader && <CircularProgress size={50} style={useStyles.circularProgress} /> }
+      {/* {loader && <CircularProgress size={50} style={useStyles.circularProgress} /> } */}
       {
-        (!dataLength && !loader)
-          ? <p style={useStyles.pStyle}>Oops! NO MORE TRAINEE</p>
-          : <Wrapper loader={loader} dataLength={dataLength} {...rest} />
+       !loader ? <Wrapper loader={loader} dataLength={dataLength} {...rest} />
+       :<CircularProgress size={50} style={useStyles.circularProgress} />
+        //  <p style={useStyles.pStyle}>Oops! NO MORE TRAINEE</p>
       }
     </div>
   );

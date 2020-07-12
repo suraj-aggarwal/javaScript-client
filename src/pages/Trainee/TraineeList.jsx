@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import { graphql } from '@apollo/react-hoc';
+import PropTypes from 'prop-types';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/helper';
 import { callApi } from '../../libs/utils/api';
+import GET_ALL_TRAINEE from './query';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -21,35 +24,9 @@ class TraineeList extends Component {
       name: '',
       order: 'asc',
       data: {},
-      trainees: [],
-      loading: true,
       dataLength: 0,
       onSubmitLoading: false,
     };
-  }
-
-
-  componentDidMount() {
-    const { page, rowsPerPage } = this.state;
-    const params = { skip: page, limit: rowsPerPage };
-    this.fetchTrainees(params);
-  }
-
-  fetchTrainees = async (params) => {
-    const reqType = 'get';
-    const url = '/api/trainee';
-    const res = await callApi({ reqType, url, params });
-    if (res.data) {
-      const { data: { data: { records, count } = {} } = {} } = res;
-      this.setState({
-        trainees: records,
-        count,
-        dataLength: records.length,
-      });
-    }
-    this.setState({
-      loading: false,
-    });
   }
 
   handleCreate = async (query, openSnackBar) => {
@@ -86,7 +63,6 @@ class TraineeList extends Component {
       order: order === 'asc' ? 'desc' : 'asc',
     });
   }
-
 
   handleSelect = (element) => {
     const { name, email } = element;
@@ -183,24 +159,18 @@ class TraineeList extends Component {
     });
   }
 
-  handleChangePage = async (event, newPage) => {
+  handleChangePage = (refetch) => (event, newPage) => {
     const { rowsPerPage } = this.state;
-    const params = { skip: newPage * rowsPerPage, limit: rowsPerPage };
-    this.setState({
-      page: newPage,
-      loading: true,
+    this.setState({ page: newPage }, () => {
+      refetch({ skip: rowsPerPage * newPage, limit: rowsPerPage });
     });
-    this.fetchTrainees(params);
   };
 
-  handleChangeRowsPerPage = async (event) => {
+  handleChangeRowsPerPage = (refetch) => (event) => {
     const { page } = this.state;
-    const params = { skip: page * event.target.value, limit: event.target.value };
-    this.setState({
-      rowsPerPage: event.target.value,
-      loading: true,
+    this.setState({ rowsPerPage: event.target.value }, () => {
+      refetch({ skip: page * event.target.value, limit: event.target.value });
     });
-    this.fetchTrainees(params);
   };
 
   handleFieldChange = (event) => {
@@ -212,8 +182,17 @@ class TraineeList extends Component {
   render() {
     const {
       open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
-      email, name, trainees, loading, count, dataLength, onSubmitLoading,
+      email, name, onSubmitLoading,
     } = this.state;
+
+    const {
+      data: {
+        getAllTrainee: { records = [], count = 0 } = {},
+        refetch,
+        loading = false,
+      },
+
+    } = this.props;
     return (
       <div>
         <Box justifyContent="row" lineHeight={4} margin="2%">
@@ -243,7 +222,7 @@ class TraineeList extends Component {
           />
           <Table
             id="id"
-            data={trainees}
+            data={records}
             columns={[
               {
                 field: 'name',
@@ -274,15 +253,25 @@ class TraineeList extends Component {
             }]}
             count={count}
             page={page}
-            onChangePage={this.handleChangePage}
+            onChangePage={this.handleChangePage(refetch)}
             rowsPerPage={rowsPerPage}
-            handleChangeRowsPerPage={this.handleChangeRowsPerPage}
+            handleChangeRowsPerPage={this.handleChangeRowsPerPage(refetch)}
             loader={loading}
-            dataLength={dataLength}
+            dataLength={records.length}
           />
         </Box>
       </div>
     );
   }
 }
-export default TraineeList;
+
+TraineeList.propTypes = {
+  data: PropTypes.objectOf(PropTypes.object).isRequired,
+  refetch: PropTypes.func.isRequired,
+};
+
+export default graphql(
+  GET_ALL_TRAINEE, {
+    options: { variables: { skip: 0, limit: 5 } },
+  },
+)(TraineeList);
