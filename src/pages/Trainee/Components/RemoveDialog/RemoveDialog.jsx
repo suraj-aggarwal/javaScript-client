@@ -11,7 +11,7 @@ import { snackBarContext } from '../../../../contexts';
 
 export default function RemoveDialog(props) {
   const {
-    openRemoveDialog, handleRemoveClose, handleRemove, loading,
+    openRemoveDialog, handleRemoveClose, handleRemove, loading, deleteTrainee,
   } = props;
   return (
     <div>
@@ -33,7 +33,7 @@ export default function RemoveDialog(props) {
           <snackBarContext.Consumer>
             {({ openSnackBar }) => (
               <Button
-                onClick={() => handleRemove(openSnackBar)}
+                onClick={() => handleRemove(deleteTrainee, openSnackBar)}
                 color="primary"
                 variant="contained"
                 disabled={loading}

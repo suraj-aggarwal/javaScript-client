@@ -32,11 +32,11 @@ export default class AddDialog extends Component {
     this.state = { ...initialState };
   }
 
-  handleOnSubmit = async (handleCreate, openSnackBar) => {
+  handleOnSubmit = async (handleCreate ,openSnackBar) => {
     const { name, email, password } = this.state;
-    const { toggleDialogBox } = this.props;
+    const { toggleDialogBox ,createTrainee } = this.props;
     const query = { name, email, password };
-    handleCreate(query, openSnackBar);
+    handleCreate(query ,createTrainee, openSnackBar);
     toggleDialogBox();
     this.setState(initialState);
   }
@@ -100,7 +100,7 @@ export default class AddDialog extends Component {
       name, email, password, confirmPassword, disabled,
     } = this.state;
     const {
-      open, toggleDialogBox, loading, handleCreate,
+      open, toggleDialogBox, loading, handleCreate
     } = this.props;
     return (
       <Dialog open={open} onClose={toggleDialogBox} aria-labelledby="form-dialog-title">
