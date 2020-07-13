@@ -15,7 +15,7 @@ class TraineeList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      openCreateDialog: false,
       orderBy: '',
       openRemoveDialog: false,
       openEditDialog: false,
@@ -46,10 +46,10 @@ class TraineeList extends Component {
     });
   }
 
-  toggleOpenState = () => {
-    const { open } = this.state;
+  toggleCreateDialog = () => {
+    const { openCreateDialog } = this.state;
     this.setState({
-      open: !open,
+      openCreateDialog: !openCreateDialog,
     });
   }
 
@@ -156,7 +156,7 @@ class TraineeList extends Component {
 
   render() {
     const {
-      open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
+      openCreateDialog, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
       email, name, onSubmitLoading,
     } = this.state;
 
@@ -172,14 +172,14 @@ class TraineeList extends Component {
     return (
       <div>
         <Box justifyContent="row" lineHeight={4} margin="2%">
-          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+          <Button color="primary" variant="outlined" onClick={this.toggleCreateDialog}>
             Add Trainee
           </Button>
           <Mutation mutation={CREATE_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
             { (createTrainee) => (
               <AddDialog
-              open={open}
-              toggleDialogBox={this.toggleOpenState}
+              open={openCreateDialog}
+              toggleDialogBox={this.toggleCreateDialog}
               loading={onSubmitLoading}
               handleCreate={this.handleCreate}
               createTrainee={createTrainee}
