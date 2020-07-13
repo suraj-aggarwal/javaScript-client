@@ -3,18 +3,19 @@ import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { graphql } from '@apollo/react-hoc';
+import { Mutation } from '@apollo/react-components';
 import PropTypes from 'prop-types';
 import { AddDialog, EditDialog, RemoveDialog } from './Components';
 import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/helper';
-import { callApi } from '../../libs/utils/api';
 import GET_ALL_TRAINEE from './query';
+import { DELETE_TRAINEE, EDIT_TRAINEE, CREATE_TRAINEE } from './mutation';
 
 class TraineeList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      openCreateDialog: false,
       orderBy: '',
       openRemoveDialog: false,
       openEditDialog: false,
@@ -29,18 +30,14 @@ class TraineeList extends Component {
     };
   }
 
-  handleCreate = async (query, openSnackBar) => {
-    const { page, rowsPerPage } = this.state;
+  handleCreate = async (query, createTrainee, openSnackBar) => {
     this.setState({
       onSubmitLoading: true,
     });
-    const reqType = 'post';
-    const url = '/api/trainee';
-    const res = await callApi({ reqType, url, query });
-    const params = { skip: page, limit: rowsPerPage };
+    const payload = { variables: query };
+    const res = await createTrainee(payload);
     if (res.data) {
       openSnackBar('Trainee added', 'success');
-      this.fetchTrainees(params);
     } else {
       openSnackBar(res.message, res.status);
     }
@@ -49,10 +46,10 @@ class TraineeList extends Component {
     });
   }
 
-  toggleOpenState = () => {
-    const { open } = this.state;
+  toggleCreateDialog = () => {
+    const { openCreateDialog } = this.state;
     this.setState({
-      open: !open,
+      openCreateDialog: !openCreateDialog,
     });
   }
 
@@ -80,34 +77,24 @@ class TraineeList extends Component {
     });
   }
 
-  handleRemove = async (openSnackBar) => {
+  handleRemove = async (deleteTrainee ,openSnackBar) => {
     const {
-      data, page, rowsPerPage, dataLength,
-    } = this.state;
-    const reqType = 'delete';
-    const url = `/api/trainee/${data.originalId}`;
+      data,
+    } = this.state;    
     this.setState({
       onSubmitLoading: true,
     });
-    const currentPage = (page !== 0 && dataLength === 1)
-      ? page - 1 : page;
-    const res = await callApi({ reqType, url, params: data.originalId });
-    if (!res.data) {
-      openSnackBar(res.message, res.status);
-      this.setState({
-        openRemoveDialog: false,
-        onSubmitLoading: false,
-      });
-      return;
-    }
-    openSnackBar('Trainee Deleted Successfully', 'success');
-    const params = { skip: currentPage * rowsPerPage, limit: rowsPerPage };
-    this.fetchTrainees(params);
+    const query = { variables: { id: data.originalId } };
+    const res = await deleteTrainee(query);
     this.setState({
       openRemoveDialog: false,
       onSubmitLoading: false,
-      page: currentPage,
     });
+    if (!res.data) {
+      openSnackBar(res.message, res.status);
+      return;
+    }
+    openSnackBar('Trainee Deleted Successfully', 'success');
   }
 
   toggleEditDialog = () => {
@@ -123,17 +110,15 @@ class TraineeList extends Component {
     });
   }
 
-  handleEdit = async (openSnackBar) => {
+  handleEdit = async (editTrainee, openSnackBar) => {
     const {
-      email, name, data, trainees,
+      email, name, data,
     } = this.state;
-    const reqType = 'put';
-    const url = '/api/trainee';
-    const query = { id: data.originalId, email, name };
+    const payload = { variables: { id: data.originalId, name, email } };
     this.setState({
       onSubmitLoading: true,
     });
-    const res = await callApi({ reqType, url, query });
+    const res = await editTrainee(payload);
     if (!res.data) {
       openSnackBar(res.message, res.status);
       this.setState({
@@ -142,20 +127,10 @@ class TraineeList extends Component {
       });
       return;
     }
-    openSnackBar('This is success message', 'success');
-    // updates the current trainee in ui at particular index.
-    const updatedList = Object.values(trainees).map(({ _id, ...rest }) => {
-      if (_id === data._id) {
-        return {
-          _id, ...rest, name, email,
-        };
-      }
-      return { _id, ...rest };
-    });
+    openSnackBar('Trainee Updated Successfully', 'success');
     this.setState({
       openEditDialog: false,
       onSubmitLoading: false,
-      trainees: updatedList,
     });
   }
 
@@ -181,7 +156,7 @@ class TraineeList extends Component {
 
   render() {
     const {
-      open, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
+      openCreateDialog, orderBy, order, openRemoveDialog, page, rowsPerPage, openEditDialog,
       email, name, onSubmitLoading,
     } = this.state;
 
@@ -193,33 +168,50 @@ class TraineeList extends Component {
       },
 
     } = this.props;
+    const variables = { skip: rowsPerPage * page, limit: rowsPerPage };
     return (
       <div>
         <Box justifyContent="row" lineHeight={4} margin="2%">
-          <Button color="primary" variant="outlined" onClick={this.toggleOpenState}>
+          <Button color="primary" variant="outlined" onClick={this.toggleCreateDialog}>
             Add Trainee
           </Button>
-          <AddDialog
-            open={open}
-            toggleDialogBox={this.toggleOpenState}
-            loading={onSubmitLoading}
-            handleCreate={this.handleCreate}
-          />
-          <EditDialog
-            openEditDialog={openEditDialog}
-            handleEditClose={this.toggleEditDialog}
-            handleEdit={this.handleEdit}
-            email={email}
-            name={name}
-            handleChange={this.handleFieldChange}
-            loading={onSubmitLoading}
-          />
-          <RemoveDialog
-            openRemoveDialog={openRemoveDialog}
-            handleRemoveClose={this.toggleRemoveDialog}
-            handleRemove={this.handleRemove}
-            loading={onSubmitLoading}
-          />
+          <Mutation mutation={CREATE_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
+            { (createTrainee) => (
+              <AddDialog
+              open={openCreateDialog}
+              toggleDialogBox={this.toggleCreateDialog}
+              loading={onSubmitLoading}
+              handleCreate={this.handleCreate}
+              createTrainee={createTrainee}
+              />
+            )}
+          </Mutation>
+          <Mutation mutation={EDIT_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
+            {(editTrainee) => (
+              <EditDialog
+                openEditDialog={openEditDialog}
+                handleEditClose={this.toggleEditDialog}
+                handleEdit={this.handleEdit}
+                email={email}
+                name={name}
+                handleChange={this.handleFieldChange}
+                loading={onSubmitLoading}
+                editTrainee={editTrainee}
+              />            
+            )}
+          </Mutation>
+          <Mutation mutation={DELETE_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
+            {(deleteTrainee)=>(
+              <RemoveDialog
+                openRemoveDialog={openRemoveDialog}
+                handleRemoveClose={this.toggleRemoveDialog}
+                handleRemove={this.handleRemove}
+                loading={onSubmitLoading}
+                deleteTrainee={deleteTrainee}
+              />
+            )}
+          </Mutation>
+
           <Table
             id="id"
             data={records}

@@ -8,6 +8,9 @@ getAllTrainee(skip: $skip, limit: $limit) {
       name
       email
       createdAt
+      createdAt
+      originalId
+      role
     }
   } 
 }

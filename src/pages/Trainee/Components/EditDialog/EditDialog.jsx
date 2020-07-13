@@ -14,7 +14,7 @@ import { snackBarContext } from '../../../../contexts';
 
 export default function EditDialog(props) {
   const {
-    openEditDialog, handleEditClose, handleEdit, name, email, handleChange, loading,
+    openEditDialog, handleEditClose, handleEdit, name, email, handleChange, loading, editTrainee,
   } = props;
   return (
     <Dialog open={openEditDialog} aria-labelledby="form-dialog-title">
@@ -68,7 +68,7 @@ export default function EditDialog(props) {
         <snackBarContext.Consumer>
           {({ openSnackBar }) => (
             <Button
-              onClick={() => handleEdit(openSnackBar)}
+              onClick={() => handleEdit(editTrainee, openSnackBar)}
               color="primary"
               variant="contained"
               disabled={loading}
