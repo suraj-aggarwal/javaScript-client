@@ -10,6 +10,7 @@ import { Table } from './Components/Table';
 import { getDateFormat } from '../../libs/utils/helper';
 import GET_ALL_TRAINEE from './query';
 import { DELETE_TRAINEE, EDIT_TRAINEE, CREATE_TRAINEE } from './mutation';
+import { UPDATE_TRAINEE_SUB, DELETE_TRAINEE_SUB } from './subscription';
 
 class TraineeList extends Component {
   constructor(props) {
@@ -28,6 +29,51 @@ class TraineeList extends Component {
       dataLength: 0,
       onSubmitLoading: false,
     };
+  }
+
+  componentDidMount() {
+    const { data: { subscribeToMore } } = this.props;
+    subscribeToMore({
+      document: UPDATE_TRAINEE_SUB,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData) return prev;
+        const { getAllTrainee: { records } } = prev;
+        const { data: { updateTrainee } } = subscriptionData;
+        const updateRecords = records.map((record) => {
+          if (record.originalId === updateTrainee.originalId) {
+            return {
+              ...record,
+              ...updateTrainee,
+            };
+          }
+          return record;
+        });
+        return {
+          getAllTrainee: {
+            ...prev.getAllTrainee,
+            count: prev.getAllTrainee.count,
+            records: updateRecords,
+          },
+        };
+      },
+    });
+
+    subscribeToMore({
+      document: DELETE_TRAINEE_SUB,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData) return prev;
+        const { getAllTrainee: { records, count } } = prev;
+        const { data: { deleteTrainee } } = subscriptionData;
+        const updateRecords = [...records].filter((record) => deleteTrainee !== record.originalId);
+        return {
+          getAllTrainee: {
+            ...prev.getAllTrainee,
+            count: count - 1,
+            records: updateRecords,
+          },
+        };
+      },
+    });
   }
 
   handleCreate = async (query, createTrainee, openSnackBar) => {
@@ -186,7 +232,7 @@ class TraineeList extends Component {
               />
             )}
           </Mutation>
-          <Mutation mutation={EDIT_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
+          <Mutation mutation={EDIT_TRAINEE}>
             {(editTrainee) => (
               <EditDialog
                 openEditDialog={openEditDialog}
@@ -200,7 +246,7 @@ class TraineeList extends Component {
               />            
             )}
           </Mutation>
-          <Mutation mutation={DELETE_TRAINEE} refetchQueries={[{ query: GET_ALL_TRAINEE, variables }]}>
+          <Mutation mutation={DELETE_TRAINEE}>
             {(deleteTrainee)=>(
               <RemoveDialog
                 openRemoveDialog={openRemoveDialog}
