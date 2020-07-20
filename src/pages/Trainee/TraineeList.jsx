@@ -37,22 +37,18 @@ class TraineeList extends Component {
       document: UPDATE_TRAINEE_SUB,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData) return prev;
-        const { getAllTrainee: { records } } = prev;
+        const { getAllTrainee: { records={} } } = prev || {};
         const { data: { updateTrainee } } = subscriptionData;
-        const updateRecords = records.map((record) => {
-          if (record.originalId === updateTrainee.originalId) {
-            return {
-              ...record,
-              ...updateTrainee,
-            };
-          }
-          return record;
-        });
+        const index = records.findIndex((record) => (record.originalId === updateTrainee.originalId));
+        records[index] = {
+          ...records[index],
+          ...updateTrainee,
+        }
         return {
           getAllTrainee: {
             ...prev.getAllTrainee,
             count: prev.getAllTrainee.count,
-            records: updateRecords,
+            records,
           },
         };
       },
@@ -62,7 +58,7 @@ class TraineeList extends Component {
       document: DELETE_TRAINEE_SUB,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData) return prev;
-        const { getAllTrainee: { records, count } } = prev;
+        const { getAllTrainee: { records={}, count=0 } } = prev||{};
         const { data: { deleteTrainee } } = subscriptionData;
         const updateRecords = [...records].filter((record) => deleteTrainee !== record.originalId);
         return {

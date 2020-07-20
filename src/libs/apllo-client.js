@@ -8,14 +8,14 @@ import { getMainDefinition } from 'apollo-utilities';
 import authLink from './graphql-client';
 
 const reactAppGraphalUri = process.env.REACT_APP_GRAPHQL_API_URL;
-const webSocketLink = process.env.REACT_APP_API_WS_URL;
+const webSocketUri = process.env.REACT_APP_API_WS_URL;
 const httpLink = new HttpLink({
   uri: reactAppGraphalUri,
 });
 
 const wsLink = new WebSocketLink(
   {
-    uri: webSocketLink,
+    uri: webSocketUri,
     options: {
       reconnect: true,
     },
